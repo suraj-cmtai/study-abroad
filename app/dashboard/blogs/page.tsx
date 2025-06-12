@@ -116,6 +116,7 @@ export default function BlogsPage() {
 
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
   
   const [newBlogForm, setNewBlogForm] = useState<BlogFormState>(initialFormState)
@@ -216,15 +217,17 @@ export default function BlogsPage() {
       });
   }
 
-  const handleDelete = (id: string) => {
-    dispatch(deleteBlog(id))
-      .unwrap()
-      .then(() => {
-        toast.success("Blog deleted successfully!");
-      })
-      .catch((err) => {
-        toast.error(err || "Failed to delete blog");
-      });
+  const handleDelete = async () => {
+    if (!selectedBlogId) return
+
+    try {
+      await dispatch(deleteBlog(selectedBlogId)).unwrap()
+      setIsDeleteDialogOpen(false)
+      setSelectedBlogId(null)
+      toast.success("Blog deleted successfully!")
+    } catch (error) {
+      toast.error("Failed to delete blog")
+    }
   }
 
   const renderFormFields = (
@@ -524,7 +527,10 @@ export default function BlogsPage() {
                         </DropdownMenuItem>
                         <DropdownMenuItem 
                           className="text-red-600 focus:text-red-600 focus:bg-red-50" 
-                          onClick={() => handleDelete(blog.id)}
+                          onSelect={() => {
+                            setSelectedBlogId(blog.id)
+                            setIsDeleteDialogOpen(true)
+                          }}
                         >
                           <Trash2 className="mr-2 h-4 w-4"/>
                           Delete
@@ -557,6 +563,33 @@ export default function BlogsPage() {
                 </>
               ) : (
                 'Save Changes'
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Blog Dialog */}
+      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete Blog</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete this blog? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={handleDelete} disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Deleting...
+                </>
+              ) : (
+                'Delete'
               )}
             </Button>
           </DialogFooter>

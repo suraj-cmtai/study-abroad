@@ -16,7 +16,12 @@ import {
   X,
   ChevronLeft,
   ChevronRight,
-  ContactRound
+  ContactRound,
+  BookOpenText,
+  Newspaper,
+  Users2,
+  GalleryVerticalEnd,
+  MailCheck
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -26,11 +31,11 @@ import { cn } from "@/lib/utils";
 
 const links = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard, badge: null },
-  { name: "Courses", href: "/dashboard/courses", icon: FileText, badge: null },
-  { name: "Blogs", href: "/dashboard/blogs", icon: FileText, badge: "3" },
-  { name: "Subscribers", href: "/dashboard/subscribers", icon: Users, badge: "12" },
-  { name: "Gallery", href: "/dashboard/gallery", icon: Image, badge: null },
-  { name: "Contact", href: "/dashboard/contact", icon: ContactRound, badge: null },
+  { name: "Courses", href: "/dashboard/courses", icon: BookOpenText, badge: null },
+  { name: "Blogs", href: "/dashboard/blogs", icon: Newspaper, badge: null },
+  { name: "Subscribers", href: "/dashboard/subscribers", icon: Users2, badge: null },
+  { name: "Gallery", href: "/dashboard/gallery", icon: GalleryVerticalEnd, badge: null },
+  { name: "Contact", href: "/dashboard/contact", icon: MailCheck, badge: null },
 ];
 
 interface SidebarProps {
