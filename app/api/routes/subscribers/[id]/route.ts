@@ -5,7 +5,7 @@ import consoleManager from "../../../utils/consoleManager";
 // Get a specific subscriber (GET)
 export async function GET(
     req: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     const { id } = await params;
     try {
@@ -41,7 +41,7 @@ export async function GET(
 // Update a subscriber (PUT)
 export async function PUT(
     req: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     const { id } = await params;
     try {
@@ -101,7 +101,7 @@ export async function PUT(
 // Delete a subscriber (DELETE)
 export async function DELETE(
     req: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     const { id } = await params;
     try {
