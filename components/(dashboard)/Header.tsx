@@ -205,7 +205,7 @@ const Header = ({ title, onMenuClick, className }: HeaderProps) => {
           </Button>
 
           {/* Notifications */}
-          <Popover open={notificationOpen} onOpenChange={setNotificationOpen}>
+          {/* <Popover open={notificationOpen} onOpenChange={setNotificationOpen}>
             <PopoverTrigger asChild>
               <Button variant="ghost" size="icon" className="relative">
                 <Bell className="h-5 w-5" />
@@ -258,7 +258,7 @@ const Header = ({ title, onMenuClick, className }: HeaderProps) => {
                 </div>
               </div>
             </PopoverContent>
-          </Popover>
+          </Popover> */}
 
           {/* User Menu */}
           <DropdownMenu>
