@@ -440,10 +440,12 @@ export default function BlogsPage() {
             <TableRow>
               <TableHead className="w-[100px]">Image</TableHead>
               <TableHead>Title</TableHead>
+              <TableHead>Content</TableHead>
               <TableHead>Author</TableHead>
               <TableHead>Category</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Tags</TableHead>
+              <TableHead>Excerpt</TableHead>
               <TableHead>Created</TableHead>
               <TableHead>Updated</TableHead>
               <TableHead className="text-right">Actions</TableHead>
@@ -475,6 +477,7 @@ export default function BlogsPage() {
                   <TableCell className="font-medium max-w-[250px] truncate" title={blog.title}>
                     {blog.title}
                   </TableCell>
+                  <TableCell className="max-w-[300px] truncate" title={blog.content}> {blog.content}</TableCell>
                   <TableCell>{blog.author}</TableCell>
                   <TableCell>{blog.category || "—"}</TableCell>
                   <TableCell>
@@ -487,6 +490,7 @@ export default function BlogsPage() {
                       {blog.status && blog.status.charAt(0).toUpperCase() + blog.status.slice(1)}
                     </span>
                   </TableCell>
+                  
                   <TableCell>
                     <div className="flex flex-wrap gap-1">
                       {blog.tags.map((tag, index) => (
@@ -495,6 +499,9 @@ export default function BlogsPage() {
                         </span>
                       ))}
                     </div>
+                  </TableCell>
+                  <TableCell className="max-w-[200px] truncate">
+                    {blog.excerpt || "—"}
                   </TableCell>
                   <TableCell>
                     {blog.createdOn ? format(new Date(blog.createdOn), "MMM d, yyyy") : "—"}

@@ -353,7 +353,9 @@ export default function SubscribersPage() {
             <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
               Cancel
             </Button>
-            <Button onClick={handleAdd} disabled={isLoading}></Button>
+            <Button onClick={handleAdd} disabled={isLoading}>
+              {isLoading ? "Adding..." : "Add Subscriber"}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
