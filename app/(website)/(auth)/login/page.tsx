@@ -17,12 +17,10 @@ const LoginPage = () => {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      // Try localStorage first
       let user = null;
       try {
         user = JSON.parse(localStorage.getItem("user") || "null");
       } catch {}
-      // Fallback: Try cookie if needed
       if (!user) {
         const match = document.cookie.match(/user=([^;]+)/);
         if (match) {
@@ -46,7 +44,6 @@ const LoginPage = () => {
     setError("");
     setSuccess(false);
     setLoading(true);
-    // Mock users
     const users = [
       { email: "admin@gmail.com", password: "admin123", role: "admin" },
       { email: "user@gmail.com", password: "user123", role: "user" },
@@ -56,10 +53,8 @@ const LoginPage = () => {
       if (found) {
         setSuccess(true);
         setError("");
-        // Save to localStorage
         if (typeof window !== "undefined") {
           localStorage.setItem("user", JSON.stringify({ email: found.email, role: found.role }));
-          // Save to cookie for middleware
           document.cookie = `user=${encodeURIComponent(JSON.stringify({ email: found.email, role: found.role }))}; path=/`;
         }
         if (found.role === "admin") {
@@ -76,68 +71,68 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#ffe066]/40 via-[#f1faee]/60 to-[#457b9d]/10 px-4">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl p-8 flex flex-col items-center animate-fade-in">
+    <div className="min-h-screen flex items-center justify-center bg-background/95 px-4">
+      <div className="w-full max-w-md bg-card rounded-lg border shadow-sm p-8 flex flex-col items-center">
         <div className="mb-6 flex flex-col items-center">
-          <UserCircle2 className="w-20 h-20 text-[#e63946] drop-shadow-lg animate-bounce" />
-          <h2 className="text-2xl font-bold mt-2 mb-1 text-[#e63946]" style={{ fontFamily: 'var(--font-main)' }}>Welcome Back!</h2>
-          <p className="text-gray-500 text-sm">Sign in to your Prank Holidays account</p>
+          <UserCircle2 className="w-16 h-16 text-foreground/80" />
+          <h2 className="text-2xl font-semibold mt-4 text-foreground">Welcome Back</h2>
+          <p className="text-muted-foreground text-sm mt-1">Sign in to your account</p>
         </div>
-        <form className="w-full space-y-5" onSubmit={handleSubmit} autoComplete="off">
+        <form className="w-full space-y-4" onSubmit={handleSubmit} autoComplete="off">
           <div>
-            <label className="block text-sm font-medium mb-1 text-gray-700">Email</label>
+            <label className="block text-sm font-medium mb-1.5 text-foreground/90">Email</label>
             <div className="relative">
               <Input
                 type="email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 placeholder="you@email.com"
-                className={`pl-10 pr-3 ${error ? "border-red-400" : ""}`}
+                className={`pl-10 pr-3 ${error ? "border-destructive" : ""}`}
                 required
                 autoFocus
               />
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1 text-gray-700">Password</label>
+            <label className="block text-sm font-medium mb-1.5 text-foreground/90">Password</label>
             <div className="relative">
               <Input
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 placeholder="Your password"
-                className={`pl-10 pr-10 ${error ? "border-red-400" : ""}`}
+                className={`pl-10 pr-10 ${error ? "border-destructive" : ""}`}
                 required
               />
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <button
                 type="button"
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#e63946] cursor-pointer"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                 tabIndex={-1}
                 onClick={() => setShowPassword(v => !v)}
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
-                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
             </div>
           </div>
-          {error && <div className="text-red-500 text-sm text-center animate-shake">{error}</div>}
-          {success && <div className="text-green-600 text-sm text-center animate-fade-in">Login successful! 🎉</div>}
+          {error && <div className="text-destructive text-sm text-center">{error}</div>}
+          {success && <div className="text-primary text-sm text-center">Login successful! 🎉</div>}
           <Button
             type="submit"
-            className="w-full mt-2 gap-2 text-lg font-bold bg-[#e63946] hover:bg-[#d90429] transition-all shadow-md cursor-pointer"
+            className="w-full gap-2"
             disabled={loading}
           >
             {loading ? (
-              <span className="flex items-center gap-2"><Loader2 className="w-5 h-5 animate-spin" /> Signing in...</span>
+              <span className="flex items-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Signing in...</span>
             ) : (
               <>Sign In</>
             )}
           </Button>
         </form>
-        <div className="mt-6 text-sm text-gray-500 text-center">
-          Don&apos;t have an account? <a href="#" className="text-[#e63946] font-semibold hover:underline">Sign up</a>
+        <div className="mt-6 text-sm text-muted-foreground text-center">
+          Don&apos;t have an account? <a href="#" className="text-primary font-medium hover:underline">Sign up</a>
         </div>
       </div>
     </div>

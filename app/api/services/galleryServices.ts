@@ -15,7 +15,7 @@ class GalleryService {
 
         galleriesCollection.onSnapshot((snapshot: any) => {
             this.galleries = snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() }));
-            consoleManager.log("🔥 Firestore Read: Galleries updated, count:", this.galleries.length);
+            consoleManager.log("Firestore Read: Galleries updated, count:", this.galleries.length);
         });
 
         this.isInitialized = true;
@@ -43,14 +43,14 @@ class GalleryService {
                 createdOn: timestamp,
             });
 
-            consoleManager.log("✅ New gallery added with ID:", newGalleryRef.id);
+            consoleManager.log("New gallery added with ID:", newGalleryRef.id);
 
             // Force refresh the cache after adding a new gallery
             await this.getAllGalleries(true);
 
             return { id: newGalleryRef.id, ...galleryData, createdOn: timestamp };
         } catch (error) {
-            consoleManager.error("❌ Error adding gallery:", error);
+            consoleManager.error("Error adding gallery:", error);
             throw new Error("Failed to add gallery");
         }
     }
@@ -61,7 +61,7 @@ class GalleryService {
             // Check if gallery exists in cache
             const cachedGallery = this.galleries.find((g: any) => g.id === galleryId);
             if (cachedGallery) {
-                consoleManager.log("✅ Gallery fetched from cache:", galleryId);
+                consoleManager.log("Gallery fetched from cache:", galleryId);
                 return cachedGallery;
             }
 
@@ -70,11 +70,11 @@ class GalleryService {
             const doc = await galleryRef.get();
 
             if (!doc.exists) {
-                consoleManager.warn("⚠️ Gallery not found:", galleryId);
+                consoleManager.warn("Gallery not found:", galleryId);
                 return null;
             }
 
-            consoleManager.log("✅ Gallery fetched from Firestore:", galleryId);
+            consoleManager.log("Gallery fetched from Firestore:", galleryId);
             return { id: doc.id, ...doc.data() };
         } catch (error) {
             consoleManager.error("❌ Error fetching gallery by ID:", error);
@@ -92,14 +92,14 @@ class GalleryService {
                 updatedOn: timestamp,
             });
 
-            consoleManager.log("✅ Gallery updated:", galleryId);
+            consoleManager.log("Gallery updated:", galleryId);
 
             // Force refresh the cache after updating a gallery
             await this.getAllGalleries(true);
 
             return { id: galleryId, ...updatedData, updatedOn: timestamp };
         } catch (error) {
-            consoleManager.error("❌ Error updating gallery:", error);
+            consoleManager.error("Error updating gallery:", error);
             throw new Error("Failed to update gallery");
         }
     }
@@ -108,14 +108,14 @@ class GalleryService {
     static async deleteGallery(galleryId: string) {
         try {
             await db.collection("galleries").doc(galleryId).delete();
-            consoleManager.log("✅ Gallery deleted:", galleryId);
+            consoleManager.log("Gallery deleted:", galleryId);
 
             // Force refresh the cache after deleting a gallery
             await this.getAllGalleries(true);
 
             return { success: true, message: "Gallery deleted successfully" };
         } catch (error) {
-            consoleManager.error("❌ Error deleting gallery:", error);
+            consoleManager.error("Error deleting gallery:", error);
             throw new Error("Failed to delete gallery");
         }
     }

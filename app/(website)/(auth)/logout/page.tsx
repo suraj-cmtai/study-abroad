@@ -21,12 +21,12 @@ const LogoutPage = () => {
   }, [router]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#ffe066]/40 via-[#f1faee]/60 to-[#457b9d]/10 px-4">
-      <div className="w-full max-w-sm bg-white rounded-2xl shadow-2xl p-8 flex flex-col items-center animate-fade-in">
-        <LogOut className="w-16 h-16 text-[#e63946] animate-pulse mb-4" />
-        <h2 className="text-xl font-bold text-[#e63946] mb-2" style={{ fontFamily: 'var(--font-main)' }}>Logging you out...</h2>
-        <div className="text-gray-500 text-sm mb-4">You will be redirected to the homepage in a moment.</div>
-        <div className="w-10 h-10 border-4 border-[#e63946]/30 border-t-[#e63946] rounded-full animate-spin mb-2" />
+    <div className="min-h-screen flex items-center justify-center bg-background/95">
+      <div className="w-full max-w-sm bg-card rounded-lg border shadow-sm p-8 flex flex-col items-center animate-in fade-in">
+        <LogOut className="w-16 h-16 text-foreground/80" />
+        <h2 className="text-xl font-semibold mt-4 text-foreground">Signing Out</h2>
+        <div className="text-muted-foreground text-sm mt-1">Redirecting to homepage...</div>
+        <div className="mt-6 w-8 h-8 border-2 border-foreground/10 border-t-foreground rounded-full animate-spin" />
       </div>
     </div>
   );
