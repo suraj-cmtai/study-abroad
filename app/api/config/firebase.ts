@@ -3,9 +3,6 @@ import { getAuth } from "firebase-admin/auth";
 import { getFirestore } from "firebase-admin/firestore";
 import { getStorage } from "firebase-admin/storage";
 
-// Load environment variables
-
-require("dotenv").config();
 
 // Load Firebase service account credentials
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT || "{}");
