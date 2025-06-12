@@ -37,10 +37,39 @@ class CourseService {
 
   // Helper method to convert Firestore timestamp to Date
   private static convertTimestamp(timestamp: any): Date {
+    // Handle Firestore Timestamp objects
     if (timestamp && timestamp._seconds) {
       return new Date(timestamp._seconds * 1000);
     }
-    return timestamp instanceof Date ? timestamp : new Date(timestamp);
+    
+    // Handle Firestore server timestamp (which might be null/undefined initially)
+    if (timestamp && typeof timestamp.toDate === 'function') {
+      return timestamp.toDate();
+    }
+    
+    // Handle Date objects
+    if (timestamp instanceof Date) {
+      return timestamp;
+    }
+    
+    // Handle string timestamps
+    if (typeof timestamp === 'string') {
+      const date = new Date(timestamp);
+      return isNaN(date.getTime()) ? new Date() : date;
+    }
+    
+    // Handle number timestamps
+    if (typeof timestamp === 'number') {
+      return new Date(timestamp);
+    }
+    
+    // Handle null, undefined, or empty objects - return current date
+    if (!timestamp || (typeof timestamp === 'object' && Object.keys(timestamp).length === 0)) {
+      return new Date();
+    }
+    
+    // Fallback to current date for any other cases
+    return new Date();
   }
 
   // Helper method to convert document data to Course type
@@ -113,8 +142,18 @@ class CourseService {
 
       consoleManager.log("New course added with ID:", newCourseRef.id);
 
+      // Wait a moment for the server timestamp to be resolved
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      // Fetch the newly created course to get the resolved timestamps
+      const newCourseDoc = await db.collection("courses").doc(newCourseRef.id).get();
+      const newCourse = this.convertToType(newCourseDoc.id, newCourseDoc.data());
+      
+      // Update the cache
       await this.getAllCourses(true);
-      return { id: newCourseRef.id, ...courseData,createdAt: timestamp, updatedAt: timestamp };
+      
+      return newCourse;
+      
     } catch (error: any) {
       consoleManager.error("Error adding new course:", error);
       throw error;
@@ -157,6 +196,10 @@ class CourseService {
       });
 
       consoleManager.log("Course updated successfully:", id);
+      
+      // Wait a moment for the server timestamp to be resolved
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
       await this.getAllCourses(true);
       
       const updatedCourse = await this.getCourseById(id);
