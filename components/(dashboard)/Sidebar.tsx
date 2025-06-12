@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { 
@@ -60,6 +60,7 @@ const textVariants = {
 
 const Sidebar = ({ onClose, isMobile = false }: SidebarProps) => {
   const pathname = usePathname();
+  const router = useRouter();
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   // Auto-collapse on mobile
@@ -79,6 +80,13 @@ const Sidebar = ({ onClose, isMobile = false }: SidebarProps) => {
     if (!isMobile) {
       setIsCollapsed(!isCollapsed);
     }
+  };
+
+  const handleLogout = () => {
+    if (isMobile && onClose) {
+      onClose();
+    }
+    router.push("/logout");
   };
 
   const SidebarContent = () => (
@@ -232,7 +240,7 @@ const Sidebar = ({ onClose, isMobile = false }: SidebarProps) => {
                   variant="ghost"
                   size="icon"
                   className="w-full h-12"
-                  onClick={handleLinkClick}
+                  onClick={handleLogout}
                 >
                   <LogOut className="h-5 w-5" />
                 </Button>
@@ -245,7 +253,7 @@ const Sidebar = ({ onClose, isMobile = false }: SidebarProps) => {
             <Button
               variant="ghost"
               className="w-full justify-start space-x-3"
-              onClick={handleLinkClick}
+              onClick={handleLogout}
             >
               <LogOut className="h-5 w-5" />
               <span>Logout</span>
