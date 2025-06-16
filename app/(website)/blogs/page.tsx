@@ -42,16 +42,16 @@ export default function BlogsPage() {
     return matchesSearch && matchesCategory
   })
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="flex items-center space-x-2">
-          <Loader2 className="h-6 w-6 animate-spin text-navy" />
-          <span className="text-navy">Loading blogs...</span>
-        </div>
-      </div>
-    )
-  }
+  // if (loading) {
+  //   return (
+  //     <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+  //       <div className="flex items-center space-x-2">
+  //         <Loader2 className="h-6 w-6 animate-spin text-navy" />
+  //         <span className="text-navy">Loading blogs...</span>
+  //       </div>
+  //     </div>
+  //   )
+  // }
 
   if (error) {
     return (

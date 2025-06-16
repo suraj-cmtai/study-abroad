@@ -7,8 +7,9 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Calendar, User, Clock, Share2, BookmarkPlus, ArrowLeft, Loader2 } from "lucide-react"
+import { Calendar, User, Clock, Share2, BookmarkPlus, ArrowLeft } from "lucide-react"
 import Link from "next/link"
+import { notFound } from "next/navigation"
 import { AppDispatch } from "@/lib/redux/store"
 import {
   fetchBlogBySlug,
@@ -56,24 +57,21 @@ export default function BlogDetailPage({ params }: { params: Promise<{ slug: str
         )
         .slice(0, 2)
     : []
-
   const calculateReadTime = (content: string) => {
     const wordsPerMinute = 200
     const wordCount = content.replace(/<[^>]*>/g, '').split(/\s+/).length
     return Math.ceil(wordCount / wordsPerMinute)
   }
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="flex items-center space-x-2">
-          <Loader2 className="h-6 w-6 animate-spin text-navy" />
-          <span className="text-navy">Loading article...</span>
-        </div>
-      </div>
-    )
+  // Show loading.tsx while loading
+  if (loading) return null
+
+  // Handle blog not found error
+  if (error?.includes("Blog not found") || !currentBlog) {
+    return notFound()
   }
 
+  // Handle other errors
   if (error) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">

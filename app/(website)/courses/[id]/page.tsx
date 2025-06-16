@@ -55,7 +55,7 @@ const careerOpportunities = [
   "Business Development Manager",
 ]
 
-export default function CourseDetailPage({ params }: { params: { id: string } }) {
+export default function CourseDetailPage({ params }: { params: Promise<{ id: string }> }) {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
