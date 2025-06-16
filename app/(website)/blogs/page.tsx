@@ -1,118 +1,71 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useDispatch, useSelector } from "react-redux"
 import { motion } from "framer-motion"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Calendar, User, ArrowRight, Search, Clock } from "lucide-react"
+import { Calendar, User, ArrowRight, Search, Clock, Loader2 } from "lucide-react"
 import Link from "next/link"
-
-// Mock data - replace with actual API call
-const allBlogs = [
-  {
-    id: "1",
-    title: "Top 10 Universities for International Students in 2024",
-    slug: "top-universities-international-students-2024",
-    excerpt:
-      "Discover the best universities worldwide that offer exceptional programs and support for international students. From Ivy League institutions to emerging global leaders.",
-    author: "Sarah Johnson",
-    category: "Education",
-    tags: ["Universities", "Rankings", "International"],
-    image: "/placeholder.svg?height=200&width=400",
-    createdOn: "2024-01-15T10:00:00Z",
-    status: "published" as const,
-    content: "Full blog content here...",
-  },
-  {
-    id: "2",
-    title: "Student Visa Guide: Everything You Need to Know",
-    slug: "student-visa-guide-complete",
-    excerpt:
-      "A comprehensive guide to obtaining student visas for popular study destinations including requirements, documentation, and expert tips for success.",
-    author: "Michael Chen",
-    category: "Visa",
-    tags: ["Visa", "Documentation", "Guide"],
-    image: "/placeholder.svg?height=200&width=400",
-    createdOn: "2024-01-12T14:30:00Z",
-    status: "published" as const,
-    content: "Full blog content here...",
-  },
-  {
-    id: "3",
-    title: "Scholarship Opportunities for Indian Students Abroad",
-    slug: "scholarships-indian-students-abroad",
-    excerpt:
-      "Explore various scholarship programs available for Indian students planning to study abroad. Learn about eligibility criteria and application processes.",
-    author: "Priya Sharma",
-    category: "Scholarships",
-    tags: ["Scholarships", "Funding", "Indian Students"],
-    image: "/placeholder.svg?height=200&width=400",
-    createdOn: "2024-01-10T09:15:00Z",
-    status: "published" as const,
-    content: "Full blog content here...",
-  },
-  {
-    id: "4",
-    title: "Cost of Living: Studying in Canada vs Australia",
-    slug: "cost-living-canada-australia-comparison",
-    excerpt:
-      "Compare the cost of living, tuition fees, and overall expenses for international students choosing between Canada and Australia.",
-    author: "David Wilson",
-    category: "Finance",
-    tags: ["Cost of Living", "Canada", "Australia"],
-    image: "/placeholder.svg?height=200&width=400",
-    createdOn: "2024-01-08T16:45:00Z",
-    status: "published" as const,
-    content: "Full blog content here...",
-  },
-  {
-    id: "5",
-    title: "IELTS vs TOEFL: Which Test Should You Take?",
-    slug: "ielts-vs-toefl-comparison-guide",
-    excerpt:
-      "Understand the differences between IELTS and TOEFL exams to choose the right English proficiency test for your study abroad goals.",
-    author: "Lisa Park",
-    category: "Test Prep",
-    tags: ["IELTS", "TOEFL", "English Tests"],
-    image: "/placeholder.svg?height=200&width=400",
-    createdOn: "2024-01-05T11:20:00Z",
-    status: "published" as const,
-    content: "Full blog content here...",
-  },
-  {
-    id: "6",
-    title: "Cultural Adaptation: Tips for International Students",
-    slug: "cultural-adaptation-international-students",
-    excerpt:
-      "Essential tips and strategies to help international students adapt to new cultures and make the most of their study abroad experience.",
-    author: "Emma Rodriguez",
-    category: "Student Life",
-    tags: ["Culture", "Adaptation", "Student Tips"],
-    image: "/placeholder.svg?height=200&width=400",
-    createdOn: "2024-01-03T13:30:00Z",
-    status: "published" as const,
-    content: "Full blog content here...",
-  },
-]
+import { AppDispatch } from "@/lib/redux/store"
+import { fetchBlogs, selectBlogs, selectBlogLoading, selectBlogError } from "@/lib/redux/features/blogSlice"
 
 export default function BlogsPage() {
+  const dispatch = useDispatch<AppDispatch>()
+  const blogs = useSelector(selectBlogs)
+  const loading = useSelector(selectBlogLoading)
+  const error = useSelector(selectBlogError)
+  
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("all")
 
-  const categories = [...new Set(allBlogs.map((blog) => blog.category))]
+  useEffect(() => {
+    dispatch(fetchBlogs())
+  }, [dispatch])
 
-  const filteredBlogs = allBlogs.filter((blog) => {
+  // Filter only published blogs
+  const publishedBlogs = blogs.filter(blog => blog.status === 'published')
+  
+  // Get unique categories from published blogs
+  const categories = [...new Set(publishedBlogs.map((blog) => blog.category).filter((category): category is string => category !== null))]
+
+  const filteredBlogs = publishedBlogs.filter((blog) => {
     const matchesSearch =
       blog.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      blog.excerpt.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (blog.excerpt && blog.excerpt.toLowerCase().includes(searchTerm.toLowerCase())) ||
       blog.tags.some((tag) => tag.toLowerCase().includes(searchTerm.toLowerCase()))
     const matchesCategory = selectedCategory === "all" || blog.category === selectedCategory
 
     return matchesSearch && matchesCategory
   })
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="flex items-center space-x-2">
+          <Loader2 className="h-6 w-6 animate-spin text-navy" />
+          <span className="text-navy">Loading blogs...</span>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-navy mb-2">Error Loading Blogs</h2>
+          <p className="text-gray-600 mb-4">{error}</p>
+          <Button onClick={() => dispatch(fetchBlogs())} className="bg-orange hover:bg-orange/90">
+            Try Again
+          </Button>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -171,7 +124,7 @@ export default function BlogsPage() {
         <div className="container mx-auto px-4">
           <div className="mb-8">
             <p className="text-gray-600">
-              Showing {filteredBlogs.length} of {allBlogs.length} articles
+              Showing {filteredBlogs.length} of {publishedBlogs.length} articles
             </p>
           </div>
 
@@ -185,15 +138,23 @@ export default function BlogsPage() {
               >
                 <Card className="h-full card-hover overflow-hidden">
                   <div className="relative">
-                    <img src={blog.image || "/placeholder.svg"} alt={blog.title} className="w-full h-48 object-cover" />
-                    <Badge className="absolute top-4 left-4 bg-navy text-white">{blog.category}</Badge>
+                    <img 
+                      src={blog.image || "/placeholder.svg?height=200&width=400"} 
+                      alt={blog.title} 
+                      className="w-full h-48 object-cover" 
+                    />
+                    {blog.category && (
+                      <Badge className="absolute top-4 left-4 bg-navy text-white">
+                        {blog.category}
+                      </Badge>
+                    )}
                   </div>
 
                   <CardHeader className="space-y-3">
                     <div className="flex items-center space-x-4 text-sm text-gray-500">
                       <div className="flex items-center">
                         <Calendar className="h-4 w-4 mr-1" />
-                        {new Date(blog.createdOn).toLocaleDateString('en-GB')}
+                        {new Date(blog.createdOn).toLocaleDateString()}
                       </div>
                       <div className="flex items-center">
                         <User className="h-4 w-4 mr-1" />
@@ -207,7 +168,9 @@ export default function BlogsPage() {
                   </CardHeader>
 
                   <CardContent className="space-y-4">
-                    <p className="text-gray-600 line-clamp-3">{blog.excerpt}</p>
+                    <p className="text-gray-600 line-clamp-3">
+                      {blog.excerpt || blog.content.replace(/<[^>]*>/g, '').substring(0, 150) + '...'}
+                    </p>
 
                     <div className="flex flex-wrap gap-2">
                       {blog.tags.slice(0, 2).map((tag) => (
@@ -219,8 +182,11 @@ export default function BlogsPage() {
 
                     <div className="flex items-center justify-between pt-4 border-t">
                       <div className="flex items-center text-sm text-gray-500">
-                        <Clock className="h-4 w-4 mr-1" />5 min read
-                      </div>                      <Link href={`/blogs/${blog.slug}`}>                        <Button variant="ghost" className="text-navy hover:bg-orange hover:text-white transition-all duration-300 p-0">
+                        <Clock className="h-4 w-4 mr-1" />
+                        {Math.ceil(blog.content.split(' ').length / 200)} min read
+                      </div>
+                      <Link href={`/blogs/${blog.slug}`}>
+                        <Button variant="ghost" className="text-navy hover:text-orange p-0">
                           Read More
                           <ArrowRight className="ml-2 h-4 w-4" />
                         </Button>

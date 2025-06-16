@@ -1,98 +1,121 @@
 "use client"
 
+import { useEffect } from "react"
+import { useDispatch, useSelector } from "react-redux"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Calendar, User, Clock, Share2, BookmarkPlus, ArrowLeft } from "lucide-react"
+import { Calendar, User, Clock, Share2, BookmarkPlus, ArrowLeft, Loader2 } from "lucide-react"
 import Link from "next/link"
+import { AppDispatch } from "@/lib/redux/store"
+import {
+  fetchBlogBySlug,
+  fetchBlogs,
+  selectCurrentBlog,
+  selectBlogs,
+  selectBlogLoading,
+  selectBlogError,
+  clearCurrentBlog
+} from "@/lib/redux/features/blogSlice"
 
-// Mock data - replace with actual API call
-const blogPost = {
-  id: "1",
-  title: "Top 10 Universities for International Students in 2024",
-  slug: "top-universities-international-students-2024",
-  content: `
-    <p>Choosing the right university for your international education is one of the most important decisions you'll make. With thousands of institutions worldwide, it can be overwhelming to narrow down your options. This comprehensive guide highlights the top 10 universities that consistently rank high for international student satisfaction, academic excellence, and career prospects.</p>
+export default function BlogDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+  const dispatch = useDispatch<AppDispatch>()
+  const currentBlog = useSelector(selectCurrentBlog)
+  const allBlogs = useSelector(selectBlogs)
+  const loading = useSelector(selectBlogLoading)
+  const error = useSelector(selectBlogError)
 
-    <h2>1. Harvard University, USA</h2>
-    <p>Harvard University continues to be a top choice for international students seeking world-class education. With its prestigious reputation, extensive alumni network, and cutting-edge research facilities, Harvard offers unparalleled opportunities across various disciplines.</p>
+  useEffect(() => {
+    const loadBlog = async () => {
+      const resolvedParams = await params
+      dispatch(fetchBlogBySlug(resolvedParams.slug))
+      
+      // Also fetch all blogs if not already loaded for related posts
+      if (allBlogs.length === 0) {
+        dispatch(fetchBlogs())
+      }
+    }
 
-    <h3>Key Highlights:</h3>
-    <ul>
-      <li>Over 20,000 students from 100+ countries</li>
-      <li>Need-blind admissions for international students</li>
-      <li>Extensive financial aid programs</li>
-      <li>Strong career placement rates</li>
-    </ul>
+    loadBlog()
 
-    <h2>2. University of Oxford, UK</h2>
-    <p>The University of Oxford, with its rich history dating back to the 12th century, offers a unique collegiate system and tutorial-based learning approach that attracts students from around the globe.</p>
+    // Cleanup on unmount
+    return () => {
+      dispatch(clearCurrentBlog())
+    }
+  }, [dispatch, params, allBlogs.length])
 
-    <h3>Key Highlights:</h3>
-    <ul>
-      <li>Tutorial system providing personalized attention</li>
-      <li>38 colleges offering diverse communities</li>
-      <li>Strong research opportunities</li>
-      <li>Excellent graduate employment rates</li>
-    </ul>
+  // Get related posts (same category, excluding current post)
+  const relatedPosts = currentBlog
+    ? allBlogs
+        .filter(blog => 
+          blog.id !== currentBlog.id && 
+          blog.category === currentBlog.category && 
+          blog.status === 'published'
+        )
+        .slice(0, 2)
+    : []
 
-    <h2>3. Stanford University, USA</h2>
-    <p>Located in the heart of Silicon Valley, Stanford University is renowned for its innovation, entrepreneurship, and technology programs. The university's close ties to the tech industry provide unique opportunities for students.</p>
+  const calculateReadTime = (content: string) => {
+    const wordsPerMinute = 200
+    const wordCount = content.replace(/<[^>]*>/g, '').split(/\s+/).length
+    return Math.ceil(wordCount / wordsPerMinute)
+  }
 
-    <h2>4. University of Cambridge, UK</h2>
-    <p>Cambridge University's academic excellence and research contributions have made it a preferred destination for international students seeking rigorous academic challenges and intellectual growth.</p>
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="flex items-center space-x-2">
+          <Loader2 className="h-6 w-6 animate-spin text-navy" />
+          <span className="text-navy">Loading article...</span>
+        </div>
+      </div>
+    )
+  }
 
-    <h2>5. Massachusetts Institute of Technology (MIT), USA</h2>
-    <p>MIT's focus on science, technology, engineering, and mathematics makes it an ideal choice for students passionate about innovation and problem-solving.</p>
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-navy mb-2">Error Loading Article</h2>
+          <p className="text-gray-600 mb-4">{error}</p>
+          <Link href="/blogs">
+            <Button className="bg-orange hover:bg-orange/90">
+              Back to Blogs
+            </Button>
+          </Link>
+        </div>
+      </div>
+    )
+  }
 
-    <h2>Application Tips for International Students</h2>
-    <p>When applying to these prestigious institutions, consider the following:</p>
-    <ul>
-      <li>Start your application process early</li>
-      <li>Focus on academic excellence and standardized test scores</li>
-      <li>Demonstrate leadership and extracurricular involvement</li>
-      <li>Write compelling personal statements</li>
-      <li>Secure strong letters of recommendation</li>
-    </ul>
+  if (!currentBlog) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-navy mb-2">Article Not Found</h2>
+          <p className="text-gray-600 mb-4">The article you're looking for doesn't exist.</p>
+          <Link href="/blogs">
+            <Button className="bg-orange hover:bg-orange/90">
+              Back to Blogs
+            </Button>
+          </Link>
+        </div>
+      </div>
+    )
+  }
 
-    <h2>Conclusion</h2>
-    <p>These universities represent the pinnacle of higher education and offer exceptional opportunities for international students. While admission is competitive, the investment in your education at these institutions can provide lifelong benefits and open doors to global career opportunities.</p>
-  `,
-  author: "Sarah Johnson",
-  category: "Education",
-  tags: ["Universities", "Rankings", "International", "Study Abroad"],
-  excerpt:
-    "Discover the best universities worldwide that offer exceptional programs and support for international students. From Ivy League institutions to emerging global leaders.",
-  image: "/placeholder.svg?height=400&width=800",
-  createdOn: "2024-01-15T10:00:00Z",
-  updatedOn: "2024-01-15T10:00:00Z",
-  status: "published" as const,
-}
-
-const relatedPosts = [
-  {
-    id: "2",
-    title: "Student Visa Guide: Everything You Need to Know",
-    slug: "student-visa-guide-complete",
-    image: "/placeholder.svg?height=150&width=200",
-  },
-  {
-    id: "3",
-    title: "Scholarship Opportunities for Indian Students",
-    slug: "scholarships-indian-students-abroad",
-    image: "/placeholder.svg?height=150&width=200",
-  },
-]
-
-export default function BlogDetailPage({ params }: { params: { slug: string } }) {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
       <section className="relative">
         <div className="relative h-96 overflow-hidden">
-          <img src={blogPost.image || "/placeholder.svg"} alt={blogPost.title} className="w-full h-full object-cover" />
+          <img 
+            src={currentBlog.image || "/placeholder.svg?height=400&width=800"} 
+            alt={currentBlog.title} 
+            className="w-full h-full object-cover" 
+          />
           <div className="absolute inset-0 bg-navy/70"></div>
         </div>
 
@@ -109,21 +132,24 @@ export default function BlogDetailPage({ params }: { params: { slug: string } })
                 Back to Blogs
               </Link>
 
-              <Badge className="bg-orange text-white mb-4">{blogPost.category}</Badge>
+              {currentBlog.category && (
+                <Badge className="bg-orange text-white mb-4">{currentBlog.category}</Badge>
+              )}
 
-              <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">{blogPost.title}</h1>
+              <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">{currentBlog.title}</h1>
 
               <div className="flex flex-wrap items-center gap-6 text-sm text-gray-200">
                 <div className="flex items-center">
                   <User className="h-4 w-4 mr-2" />
-                  {blogPost.author}
+                  {currentBlog.author}
                 </div>
                 <div className="flex items-center">
                   <Calendar className="h-4 w-4 mr-2" />
-                  {new Date(blogPost.createdOn).toLocaleDateString()}
+                  {new Date(currentBlog.createdOn).toLocaleDateString()}
                 </div>
                 <div className="flex items-center">
-                  <Clock className="h-4 w-4 mr-2" />8 min read
+                  <Clock className="h-4 w-4 mr-2" />
+                  {calculateReadTime(currentBlog.content)} min read
                 </div>
               </div>
             </motion.div>
@@ -144,33 +170,37 @@ export default function BlogDetailPage({ params }: { params: { slug: string } })
               {/* Article Content */}
               <div
                 className="prose prose-lg max-w-none prose-headings:text-navy prose-h2:text-2xl prose-h3:text-xl prose-p:text-gray-600 prose-li:text-gray-600 prose-strong:text-navy"
-                dangerouslySetInnerHTML={{ __html: blogPost.content }}
+                dangerouslySetInnerHTML={{ __html: currentBlog.content }}
               />
 
               {/* Tags */}
-              <Separator className="my-8" />
-              <div className="flex flex-wrap gap-2 mb-6">
-                {blogPost.tags.map((tag) => (
-                  <Badge key={tag} variant="outline" className="text-navy border-navy">
-                    {tag}
-                  </Badge>
-                ))}
-              </div>
+              {currentBlog.tags.length > 0 && (
+                <>
+                  <Separator className="my-8" />
+                  <div className="flex flex-wrap gap-2 mb-6">
+                    {currentBlog.tags.map((tag) => (
+                      <Badge key={tag} variant="outline" className="text-navy border-navy">
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
+                </>
+              )}
 
               {/* Author Info */}
               <div className="flex items-center justify-between p-6 bg-gray-50 rounded-xl">
                 <div className="flex items-center space-x-4">
                   <Avatar className="h-12 w-12">
-                    <AvatarImage src="/placeholder.svg" alt={blogPost.author} />
+                    <AvatarImage src="/placeholder.svg" alt={currentBlog.author} />
                     <AvatarFallback>
-                      {blogPost.author
+                      {currentBlog.author
                         .split(" ")
                         .map((n) => n[0])
                         .join("")}
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <div className="font-semibold text-navy">{blogPost.author}</div>
+                    <div className="font-semibold text-navy">{currentBlog.author}</div>
                     <div className="text-sm text-gray-600">Education Consultant</div>
                   </div>
                 </div>
@@ -188,32 +218,34 @@ export default function BlogDetailPage({ params }: { params: { slug: string } })
             </motion.article>
 
             {/* Related Posts */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="bg-white rounded-2xl shadow-lg p-8"
-            >
-              <h3 className="text-2xl font-bold text-navy mb-6">Related Articles</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {relatedPosts.map((post) => (
-                  <Link key={post.id} href={`/blogs/${post.slug}`} className="group">
-                    <div className="flex space-x-4 p-4 rounded-xl hover:bg-gray-50 transition-colors">
-                      <img
-                        src={post.image || "/placeholder.svg"}
-                        alt={post.title}
-                        className="w-20 h-20 object-cover rounded-lg flex-shrink-0"
-                      />
-                      <div>
-                        <h4 className="font-semibold text-navy group-hover:text-orange transition-colors line-clamp-2">
-                          {post.title}
-                        </h4>
+            {relatedPosts.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="bg-white rounded-2xl shadow-lg p-8"
+              >
+                <h3 className="text-2xl font-bold text-navy mb-6">Related Articles</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {relatedPosts.map((post) => (
+                    <Link key={post.id} href={`/blogs/${post.slug}`} className="group">
+                      <div className="flex space-x-4 p-4 rounded-xl hover:bg-gray-50 transition-colors">
+                        <img
+                          src={post.image || "/placeholder.svg?height=150&width=200"}
+                          alt={post.title}
+                          className="w-20 h-20 object-cover rounded-lg flex-shrink-0"
+                        />
+                        <div>
+                          <h4 className="font-semibold text-navy group-hover:text-orange transition-colors line-clamp-2">
+                            {post.title}
+                          </h4>
+                        </div>
                       </div>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </motion.div>
+                    </Link>
+                  ))}
+                </div>
+              </motion.div>
+            )}
           </div>
 
           {/* Sidebar */}

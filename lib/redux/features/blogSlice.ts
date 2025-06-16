@@ -24,6 +24,12 @@ interface BlogState {
   loading: boolean;
   error: string | null;
   selectedBlog: Blog | null;
+  currentBlog: Blog | null;
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+  };
 }
 
 const initialState: BlogState = {
@@ -31,6 +37,12 @@ const initialState: BlogState = {
   loading: false,
   error: null,
   selectedBlog: null,
+  currentBlog: null,
+  pagination: {
+    page: 1,
+    limit: 6,
+    total: 0,
+  },
 };
 
 // 2. createAsyncThunk for fetching all blogs
@@ -86,6 +98,19 @@ export const deleteBlog = createAsyncThunk<string, string>(
   }
 );
 
+// Add fetchBlogBySlug thunk
+export const fetchBlogBySlug = createAsyncThunk<Blog, string>(
+  "blog/fetchBlogBySlug",
+  async (slug: string, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`/api/routes/blogs/${slug}`);
+      return response.data.data;
+    } catch (error: unknown) {
+      return rejectWithValue(getErrorMessage(error));
+    }
+  }
+);
+
 const blogSlice = createSlice({
   name: "blog",
   initialState,
@@ -94,64 +119,96 @@ const blogSlice = createSlice({
     clearSelectedBlog: (state) => {
       state.selectedBlog = null;
     },
+    clearCurrentBlog: (state) => {
+      state.currentBlog = null;
+    },
+    setPage: (state, action: PayloadAction<number>) => {
+      state.pagination.page = action.payload;
+    },
+    setTotal: (state, action: PayloadAction<number>) => {
+      state.pagination.total = action.payload;
+    },
   },
-  // 6. Use extraReducers to handle async thunk lifecycle
   extraReducers: (builder) => {
+    // Fetch all blogs
     builder
-      // Fetch Blogs
       .addCase(fetchBlogs.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchBlogs.fulfilled, (state, action: PayloadAction<Blog[]>) => {
-        state.blogs = action.payload;
+      .addCase(fetchBlogs.fulfilled, (state, action) => {
         state.loading = false;
+        state.blogs = action.payload;
+        state.error = null;
+        state.pagination.total = action.payload.length;
       })
       .addCase(fetchBlogs.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
-      })
+      });
 
-      // Create Blog
+    // Fetch blog by slug
+    builder
+      .addCase(fetchBlogBySlug.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchBlogBySlug.fulfilled, (state, action) => {
+        state.loading = false;
+        state.currentBlog = action.payload;
+        state.error = null;
+      })
+      .addCase(fetchBlogBySlug.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      });
+
+    // Create blog
+    builder
       .addCase(createBlog.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(createBlog.fulfilled, (state, action: PayloadAction<Blog>) => {
-        state.blogs.unshift(action.payload); // Add new blog to the beginning
+      .addCase(createBlog.fulfilled, (state, action) => {
         state.loading = false;
+        state.blogs.push(action.payload);
+        state.error = null;
+        state.pagination.total += 1;
       })
       .addCase(createBlog.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
-      })
+      });
 
-      // Update Blog
+    // Update blog
+    builder
       .addCase(updateBlog.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(updateBlog.fulfilled, (state, action: PayloadAction<Blog>) => {
-        const index = state.blogs.findIndex(blog => blog.id === action.payload.id);
-        if (index !== -1) {
-          state.blogs[index] = action.payload;
-        }
+      .addCase(updateBlog.fulfilled, (state, action) => {
         state.loading = false;
+        state.blogs = state.blogs.map((blog) =>
+          blog.id === action.payload.id ? action.payload : blog
+        );
+        state.error = null;
       })
       .addCase(updateBlog.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
-      })
+      });
 
-      // Delete Blog
+    // Delete blog
+    builder
       .addCase(deleteBlog.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(deleteBlog.fulfilled, (state, action: PayloadAction<string>) => {
-        // action.payload here is the blog ID
-        state.blogs = state.blogs.filter(blog => blog.id !== action.payload);
+      .addCase(deleteBlog.fulfilled, (state, action) => {
         state.loading = false;
+        state.blogs = state.blogs.filter((blog) => blog.id !== action.payload);
+        state.error = null;
+        state.pagination.total -= 1;
       })
       .addCase(deleteBlog.rejected, (state, action) => {
         state.loading = false;
@@ -160,12 +217,20 @@ const blogSlice = createSlice({
   },
 });
 
-export const { clearSelectedBlog } = blogSlice.actions;
+// Export actions
+export const {
+  clearSelectedBlog,
+  clearCurrentBlog,
+  setPage,
+  setTotal
+} = blogSlice.actions;
 
 // Selectors
 export const selectBlogs = (state: RootState) => state.blog.blogs;
 export const selectBlogLoading = (state: RootState) => state.blog.loading;
 export const selectBlogError = (state: RootState) => state.blog.error;
 export const selectSelectedBlog = (state: RootState) => state.blog.selectedBlog;
+export const selectCurrentBlog = (state: RootState) => state.blog.currentBlog;
+export const selectPagination = (state: RootState) => state.blog.pagination;
 
 export default blogSlice.reducer;
