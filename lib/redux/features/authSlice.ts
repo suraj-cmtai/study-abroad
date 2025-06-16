@@ -1,14 +1,12 @@
-import { createSlice, Dispatch } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { RootState } from "../store";
 
 interface User {
   id: string;
-  username: string;
+  name: string;
   email: string;
   role: string;
-  createdOn: string;
-  updatedOn: string;
 }
 
 interface AuthState {
@@ -18,7 +16,6 @@ interface AuthState {
   error: string | null;
 }
 
-
 const initialState: AuthState = {
   user: null,
   isAuthenticated: false,
@@ -26,65 +23,83 @@ const initialState: AuthState = {
   error: null,
 };
 
+export const signup = createAsyncThunk(
+  "auth/signup",
+  async ({ name, email, password }: { name: string; email: string; password: string }) => {
+    const response = await axios.post("/api/routes/auth", { name, email, password, action: "signup" });
+    return response.data;
+  }
+);
+
+export const login = createAsyncThunk(
+  "auth/login",
+  async ({ email, password }: { email: string; password: string }) => {
+    const response = await axios.post("/api/routes/auth", { email, password, action: "login" });
+    return response.data;
+  }
+);
+
+export const logout = createAsyncThunk(
+  "auth/logout",
+  async () => {
+    await axios.delete("/api/routes/auth");
+    return null;
+  }
+);
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
     setUser: (state, action) => {
       state.user = action.payload;
-      state.isAuthenticated = true;
-      state.isLoading = false;
+      state.isAuthenticated = !!action.payload;
       state.error = null;
     },
-    setIsAuthenticated: (state, action) => {
-      state.isAuthenticated = action.payload;
-    },
-    setIsLoading: (state, action) => {
-      state.isLoading = action.payload;
-    },
-    setError: (state, action) => {
-      state.error = action.payload;
+  },
+  extraReducers: (builder) => {
+    // Signup
+    builder.addCase(signup.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(signup.fulfilled, (state, action) => {
       state.isLoading = false;
-    },  
+      state.user = action.payload.data;
+      state.isAuthenticated = true;
+      state.error = null;
+    });
+    builder.addCase(signup.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error.message || "Signup failed";
+    });
+
+    // Login
+    builder.addCase(login.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(login.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.user = action.payload.data;
+      state.isAuthenticated = true;
+      state.error = null;
+    });
+    builder.addCase(login.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error.message || "Login failed";
+    });
+
+    // Logout
+    builder.addCase(logout.fulfilled, (state) => {
+      state.user = null;
+      state.isAuthenticated = false;
+      state.error = null;
+    });
   },
 });
 
-export const { setUser, setIsAuthenticated, setIsLoading, setError } = authSlice.actions;
-
-export const login = (user: User) => async (dispatch: Dispatch) => {
-  dispatch(setIsLoading(true));
-  try {
-    const response = await axios.post("/api/routes/auth", user);
-    if (response.status === 200) {
-      dispatch(setUser(response.data));
-    } else {
-      dispatch(setError(response.data.message));
-    }
-  } catch (error: unknown) {
-    const message = typeof error === "object" && error && "message" in error ? (error as { message?: string }).message : String(error);
-    dispatch(setError(message || "Unknown error"));
-  } finally {
-    dispatch(setIsLoading(false));
-  }
-};  
-
-export const logout = () => async (dispatch: Dispatch) => {
-  dispatch(setIsLoading(true));
-  try {
-    const response = await axios.post("/api/routes/auth");
-    if (response.status === 200) {
-      dispatch(setUser(null));
-      dispatch(setIsAuthenticated(false));
-    } else {
-      dispatch(setError(response.data.message));
-    }
-  } catch (error: unknown) {    
-    const message = typeof error === "object" && error && "message" in error ? (error as { message?: string }).message : String(error);
-    dispatch(setError(message || "Unknown error"));
-  } finally {
-    dispatch(setIsLoading(false));
-  }
-};
+export const { setUser } = authSlice.actions;
 
 export const selectUser = (state: RootState) => state.auth.user;
 export const selectIsAuthenticated = (state: RootState) => state.auth.isAuthenticated;

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import Link from "next/link"
 import { Menu } from "lucide-react"
@@ -22,15 +22,72 @@ const routes = [
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
+  const [mounted, setMounted] = useState(false)
 
-  if (typeof window !== "undefined") {
-    window.addEventListener("scroll", () => {
+  useEffect(() => {
+    setMounted(true)
+    
+    const handleScroll = () => {
       if (window.scrollY > 20) {
         setIsScrolled(true)
       } else {
         setIsScrolled(false)
       }
-    })
+    }
+
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
+
+  // Prevent hydration issues by not rendering motion components until mounted
+  if (!mounted) {
+    return (
+      <header className="fixed top-0 w-full z-50 bg-transparent transition-all duration-300">
+        <div className="container flex h-16 items-center justify-between px-4">
+          <Link href="/" className="flex items-center space-x-2">
+            <span className="text-xl font-bold">StudyAbroad</span>
+          </Link>
+
+          <nav className="hidden md:flex items-center space-x-6">
+            {routes.map((route) => (
+              <Link
+                key={route.href}
+                href={route.href}
+                className="text-sm font-medium transition-colors hover:text-primary"
+              >
+                {route.label}
+              </Link>
+            ))}
+            <Button>Get Started</Button>
+          </nav>
+
+          <Sheet>
+            <SheetTrigger asChild className="md:hidden">
+              <Button variant="ghost" size="icon">
+                <Menu className="h-6 w-6" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right">
+              <div className="flex flex-col h-full">
+                <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+                <nav className="flex flex-col space-y-4 mt-6">
+                  {routes.map((route) => (
+                    <Link
+                      key={route.href}
+                      href={route.href}
+                      className="text-sm font-medium transition-colors hover:text-primary"
+                    >
+                      {route.label}
+                    </Link>
+                  ))}
+                  <Button className="w-full">Get Started</Button>
+                </nav>
+              </div>
+            </SheetContent>
+          </Sheet>
+        </div>
+      </header>
+    )
   }
 
   return (
@@ -52,7 +109,6 @@ export function Header() {
           </motion.span>
         </Link>
 
-        {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-6">
           {routes.map((route) => (
             <motion.div
@@ -71,27 +127,28 @@ export function Header() {
           <Button>Get Started</Button>
         </nav>
 
-        {/* Mobile Navigation */}
         <Sheet>
-        <SheetTitle className="sr-only">menu</SheetTitle> 
           <SheetTrigger asChild className="md:hidden">
             <Button variant="ghost" size="icon">
               <Menu className="h-6 w-6" />
             </Button>
           </SheetTrigger>
           <SheetContent side="right">
-            <nav className="flex flex-col space-y-4 mt-6">
-              {routes.map((route) => (
-                <Link
-                  key={route.href}
-                  href={route.href}
-                  className="text-sm font-medium transition-colors hover:text-primary"
-                >
-                  {route.label}
-                </Link>
-              ))}
-              <Button className="w-full">Get Started</Button>
-            </nav>
+            <div className="flex flex-col h-full">
+              <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+              <nav className="flex flex-col space-y-4 mt-6">
+                {routes.map((route) => (
+                  <Link
+                    key={route.href}
+                    href={route.href}
+                    className="text-sm font-medium transition-colors hover:text-primary"
+                  >
+                    {route.label}
+                  </Link>
+                ))}
+                <Button className="w-full">Get Started</Button>
+              </nav>
+            </div>
           </SheetContent>
         </Sheet>
       </div>

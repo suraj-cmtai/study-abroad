@@ -28,9 +28,32 @@ export default function middleware(request: NextRequest) {
     }
   }
 
+  // Protect /login
+  if (pathname.startsWith("/login")) {
+    if (user && user.role === "admin") {
+      return NextResponse.redirect(new URL("/dashboard", request.url));
+    }
+    if (user && user.role === "user") {
+      return NextResponse.redirect(new URL("/profile", request.url));
+    }
+  }
+
+  // Protect /signup
+  if (pathname.startsWith("/signup")) {
+    if (user && user.role === "admin") {
+      return NextResponse.redirect(new URL("/dashboard", request.url));
+    }
+    if (user && user.role === "user") {
+      return NextResponse.redirect(new URL("/profile", request.url));
+    }
+  }
+
+  
+
+
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/profile/:path*", "/dashboard/:path*"]
+  matcher: ["/profile/:path*", "/dashboard/:path*", "/login/:path*", "/signup/:path*"],
 };

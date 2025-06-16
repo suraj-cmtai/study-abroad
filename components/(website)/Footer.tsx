@@ -1,133 +1,77 @@
-"use client"
-
-import { motion } from "framer-motion"
 import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import {
-  Facebook,
-  Twitter,
-  Instagram,
-  Linkedin,
-  Mail
-} from "lucide-react"
-
-const footerLinks = {
-  company: [
-    { label: "About", href: "/about" },
-    { label: "Careers", href: "/careers" },
-    { label: "Contact", href: "/contact" },
-  ],
-  resources: [
-    { label: "Blog", href: "/blog" },
-    { label: "Newsletter", href: "/newsletter" },
-    { label: "Events", href: "/events" },
-  ],
-  legal: [
-    { label: "Terms", href: "/terms" },
-    { label: "Privacy", href: "/privacy" },
-    { label: "Cookies", href: "/cookies" },
-  ],
-}
+import { Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin } from "lucide-react"
 
 export function Footer() {
   return (
-    <footer className="bg-background border-t">
-      <div className="container px-4 py-12 mx-auto">
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-4">
-          {/* Brand Section */}
+    <footer className="bg-navy text-white">
+      <div className="container mx-auto px-4 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          {/* Company Info */}
           <div className="space-y-4">
-            <Link href="/">
-              <motion.span 
-                whileHover={{ scale: 1.05 }}
-                className="text-xl font-bold"
-              >
-                StudyAbroad
-              </motion.span>
-            </Link>
-            <p className="text-sm text-muted-foreground max-w-xs">
-              Helping students achieve their dreams of studying abroad through expert guidance and support.
+            <h3 className="text-xl font-bold text-orange">Study Abroad</h3>
+            <p className="text-gray-300 text-sm">
+              Your gateway to global education. Discover world-class opportunities and transform your future.
             </p>
-          </div>
-
-          {/* Links Sections */}
-          <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:col-span-2">
-            <div>
-              <h3 className="text-sm font-semibold">Company</h3>
-              <ul className="mt-4 space-y-2">
-                {footerLinks.company.map((link) => (
-                  <li key={link.href}>
-                    <Link href={link.href} className="text-sm text-muted-foreground hover:text-primary">
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold">Resources</h3>
-              <ul className="mt-4 space-y-2">
-                {footerLinks.resources.map((link) => (
-                  <li key={link.href}>
-                    <Link href={link.href} className="text-sm text-muted-foreground hover:text-primary">
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold">Legal</h3>
-              <ul className="mt-4 space-y-2">
-                {footerLinks.legal.map((link) => (
-                  <li key={link.href}>
-                    <Link href={link.href} className="text-sm text-muted-foreground hover:text-primary">
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+            <div className="flex space-x-4">
+              <Facebook className="h-5 w-5 hover:text-orange cursor-pointer transition-colors" />
+              <Twitter className="h-5 w-5 hover:text-orange cursor-pointer transition-colors" />
+              <Instagram className="h-5 w-5 hover:text-orange cursor-pointer transition-colors" />
+              <Linkedin className="h-5 w-5 hover:text-orange cursor-pointer transition-colors" />
             </div>
           </div>
 
-          {/* Newsletter Section */}
+          {/* Quick Links */}
           <div className="space-y-4">
-            <h3 className="text-sm font-semibold">Subscribe to our newsletter</h3>
-            <div className="flex space-x-2">
-              <Input
-                type="email"
-                placeholder="Enter your email"
-                className="max-w-[200px]"
-              />
-              <Button>Subscribe</Button>
+            <h4 className="text-lg font-semibold">Quick Links</h4>
+            <div className="space-y-2">
+              <Link href="/courses" className="block text-gray-300 hover:text-orange transition-colors">
+                Courses
+              </Link>
+              <Link href="/blogs" className="block text-gray-300 hover:text-orange transition-colors">
+                Blogs
+              </Link>
+              <Link href="/gallery" className="block text-gray-300 hover:text-orange transition-colors">
+                Gallery
+              </Link>
+              <Link href="/test" className="block text-gray-300 hover:text-orange transition-colors">
+                Test
+              </Link>
             </div>
-            <div className="flex space-x-4 mt-4">
-              <motion.a whileHover={{ scale: 1.1 }} href="#" className="text-muted-foreground hover:text-primary">
-                <Facebook size={20} />
-              </motion.a>
-              <motion.a whileHover={{ scale: 1.1 }} href="#" className="text-muted-foreground hover:text-primary">
-                <Twitter size={20} />
-              </motion.a>
-              <motion.a whileHover={{ scale: 1.1 }} href="#" className="text-muted-foreground hover:text-primary">
-                <Instagram size={20} />
-              </motion.a>
-              <motion.a whileHover={{ scale: 1.1 }} href="#" className="text-muted-foreground hover:text-primary">
-                <Linkedin size={20} />
-              </motion.a>
+          </div>
+
+          {/* Services */}
+          <div className="space-y-4">
+            <h4 className="text-lg font-semibold">Services</h4>
+            <div className="space-y-2">
+              <p className="text-gray-300">Certificate Programs</p>
+              <p className="text-gray-300">Diploma Courses</p>
+              <p className="text-gray-300">Bachelor Degrees</p>
+              <p className="text-gray-300">Master Programs</p>
+            </div>
+          </div>
+
+          {/* Contact Info */}
+          <div className="space-y-4">
+            <h4 className="text-lg font-semibold">Contact Us</h4>
+            <div className="space-y-2">
+              <div className="flex items-center space-x-2">
+                <Mail className="h-4 w-4 text-orange" />
+                <span className="text-gray-300 text-sm">info@studyabroadind.com</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Phone className="h-4 w-4 text-orange" />
+                <span className="text-gray-300 text-sm">+91 12345 67890</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <MapPin className="h-4 w-4 text-orange" />
+                <span className="text-gray-300 text-sm">Mumbai, India</span>
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="mt-8 border-t pt-8 flex flex-col sm:flex-row justify-between items-center">
-          <p className="text-xs text-muted-foreground">
-            © 2025 StudyAbroad. All rights reserved.
-          </p>
-          <div className="flex items-center space-x-4 mt-4 sm:mt-0">
-            <Link href="/contact" className="text-xs text-muted-foreground hover:text-primary flex items-center">
-              <Mail className="h-4 w-4 mr-1" />
-              contact@studyabroad.com
-            </Link>
-          </div>
+        <div className="border-t border-gray-700 mt-8 pt-8 text-center">
+          <p className="text-gray-300 text-sm">© 2024 Study Abroad by ValueAdz. All rights reserved.</p>
         </div>
       </div>
     </footer>
