@@ -6,27 +6,49 @@ import { LogOut } from "lucide-react";
 
 const LogoutPage = () => {
   const router = useRouter();
-
   useEffect(() => {
-    // Remove user from localStorage
-    if (typeof window !== "undefined") {
-      localStorage.removeItem("user");
-      // Remove user cookie (set expiry in past)
-      document.cookie = "user=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    }
-    const timer = setTimeout(() => {
-      router.push("/");
-    }, 3000);
-    return () => clearTimeout(timer);
+    const handleLogout = async () => {
+      try {
+        // Call the server logout endpoint
+        const response = await fetch('/api/routes/auth', {
+          method: 'DELETE',
+          credentials: 'include',
+        });
+
+        if (!response.ok) {
+          throw new Error('Logout failed');
+        }
+
+        // Clear client-side storage
+        if (typeof window !== "undefined") {
+          localStorage.removeItem("user");
+        }
+
+        // Redirect after a brief delay
+        const timer = setTimeout(() => {
+          router.push("/");
+          router.refresh(); // Refresh to update navigation state
+        }, 2000);
+
+        return () => clearTimeout(timer);
+      } catch (error) {
+        console.error('Logout error:', error);
+        router.push("/");
+      }
+    };
+
+    handleLogout();
   }, [router]);
 
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-background/95">
-      <div className="w-full max-w-sm bg-card rounded-lg border shadow-sm p-8 flex flex-col items-center animate-in fade-in">
-        <LogOut className="w-16 h-16 text-foreground/80" />
-        <h2 className="text-xl font-semibold mt-4 text-foreground">Signing Out</h2>
-        <div className="text-muted-foreground text-sm mt-1">Redirecting to homepage...</div>
-        <div className="mt-6 w-8 h-8 border-2 border-foreground/10 border-t-foreground rounded-full animate-spin" />
+  return (    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="w-full max-w-sm bg-white rounded-xl border shadow-lg p-8 flex flex-col items-center">
+        <div className="bg-orange/10 p-4 rounded-full">
+          <LogOut className="w-12 h-12 text-orange" />
+        </div>
+        <h2 className="text-2xl font-bold mt-6 text-navy">Signing Out</h2>
+        <div className="text-gray-600 text-sm mt-2">Thanks for using Study Abroad</div>
+        <div className="text-gray-500 text-sm mt-1">Redirecting to homepage...</div>
+        <div className="mt-6 w-8 h-8 border-2 border-orange/20 border-t-orange rounded-full animate-spin" />
       </div>
     </div>
   );
