@@ -1,12 +1,22 @@
-
 import { NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import BlogService from "@/app/api/services/blogServices";
 import consoleManager from "@/app/api/utils/consoleManager";
 
+type RouteContext = {
+    params: Promise<{
+        slug: string;
+    }>;
+};
+
 // Get blog by slug
-export async function GET(req: Request, { params }: { params: { slug: string } }) {
+export async function GET(
+    req: Request,
+    context: RouteContext
+): Promise<Response> {
     try {
-        const { slug } = params;
+        // Await the params promise in Next.js 15
+        const { slug } = await context.params;
         const blog = await BlogService.getBlogBySlug(slug);
         
         if (!blog) {
@@ -26,7 +36,7 @@ export async function GET(req: Request, { params }: { params: { slug: string } }
             errorMessage: '',
         }, { status: 200 });
     } catch (error: any) {
-        consoleManager.error('Error in GET /api/blogs/[slug]:', error);
+        consoleManager.error('Error in GET /api/blogs/slug/[slug]:', error);
         return NextResponse.json({
             statusCode: 500,
             errorCode: 'INTERNAL_ERROR',

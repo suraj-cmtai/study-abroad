@@ -1,7 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { ArrowLeft } from "lucide-react"
+import { ArrowLeft, Newspaper } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 
@@ -21,11 +21,7 @@ export default function NotFound() {
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 0.2, duration: 0.5 }}
             >
-              <img
-                src="/file.svg"
-                alt="Blog not found"
-                className="w-32 h-32 mx-auto opacity-75"
-              />
+              <Newspaper className="w-32 h-32 mx-auto opacity-60" />
             </motion.div>
           </div>
           

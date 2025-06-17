@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Clock, Users, Star, BookOpen, Award, Globe, ArrowRight } from "lucide-react"
+import { useEffect } from "react"
 
 // Mock data - replace with actual API call
 const courseDetails = {
@@ -56,6 +57,16 @@ const careerOpportunities = [
 ]
 
 export default function CourseDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  useEffect(() => {
+    // Simulate fetching course details based on ID
+    const fetchCourseDetails = async () => {
+      const resolvedParams = await params;
+      const courseId = resolvedParams.id;
+      // Fetch course details from API or database
+    };
+    fetchCourseDetails();
+  }, [params]);
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
