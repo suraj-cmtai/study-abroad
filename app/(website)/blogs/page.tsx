@@ -29,8 +29,16 @@ export default function BlogsPage() {
   // Filter only published blogs
   const publishedBlogs = blogs.filter(blog => blog.status === 'published')
   
-  // Get unique categories from published blogs
-  const categories = [...new Set(publishedBlogs.map((blog) => blog.category).filter((category): category is string => category !== null))]
+  // Get unique categories from published blogs, filtering out null, undefined, and empty strings
+  const categories = [...new Set(
+    publishedBlogs
+      .map((blog) => blog.category)
+      .filter((category): category is string => 
+        category !== null && 
+        category !== undefined && 
+        category.trim() !== ""
+      )
+  )]
 
   const filteredBlogs = publishedBlogs.filter((blog) => {
     const matchesSearch =
@@ -143,7 +151,7 @@ export default function BlogsPage() {
                       alt={blog.title} 
                       className="w-full h-48 object-cover" 
                     />
-                    {blog.category && (
+                    {blog.category && blog.category.trim() !== "" && (
                       <Badge className="absolute top-4 left-4 bg-navy text-white">
                         {blog.category}
                       </Badge>
