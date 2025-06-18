@@ -1,16 +1,15 @@
+// ROOT LAYOUT (layout.tsx)
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { ReduxProvider } from "@/lib/redux/provider";
-import { Inter } from "next/font/google"
-
 
 export const metadata: Metadata = {
   title: "Study Abroad",
   description: "Study Abroad app",
 };
 
-const inter = Inter({ subsets: ["latin"] })
+const inter = Inter({ subsets: ["latin"] });
 
 export default function RootLayout({
   children,
@@ -18,10 +17,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={inter.className}
-      >
+    <html lang="en" className="scroll-smooth">
+      <body className={`${inter.className} antialiased` }>
         <ReduxProvider>{children}</ReduxProvider>
       </body>
     </html>

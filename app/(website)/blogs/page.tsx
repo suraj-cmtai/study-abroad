@@ -99,7 +99,7 @@ export default function BlogsPage() {
       {/* Filters Section */}
       <section className="py-8 bg-white border-b">
         <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row gap-4 items-center">
+          <div className="flex flex-col md:flex-row gap-4 items-center justify-center">
             <div className="relative flex-1 max-w-md">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <Input

@@ -44,7 +44,7 @@ export function HeroSection() {
             <Button
               size="lg"
               variant="outline"
-              className="border-white text-white hover:bg-white hover:text-navy px-8 py-4 text-lg"
+              className="border-white text-navy hover:bg-white hover:text-navy px-8 py-4 text-lg"
             >
               <Play className="mr-2 h-5 w-5" />
               Watch Video

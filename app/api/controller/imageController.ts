@@ -7,7 +7,7 @@ const UploadImage = async (file: any, width: number, height: number) => {
     const buffer = Buffer.from(arrayBuffer); // Convert to Buffer
 
     const bucket = adminStorage.bucket();
-    const filePath = `stall-craft/${Date.now()}_${file.name}`; // Generate unique file path
+    const filePath = `images/${Date.now()}_${file.name}`; // Generate unique file path
     const firebaseFile = bucket.file(filePath);
 
     // Convert width & height to numbers

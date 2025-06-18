@@ -1,3 +1,4 @@
+// WEBSITE LAYOUT (app/(website)/layout.tsx)
 import type React from "react"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
@@ -18,10 +19,10 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <>
-        <Navigation />
-        <main className="min-h-screen">{children}</main>
-        <Footer />
-    </>
+    <div className="w-full max-w-7xl mx-auto">
+      <Navigation />
+      <main className="min-h-screen">{children}</main>
+      <Footer />
+    </div>
   )
 }
