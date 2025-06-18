@@ -16,7 +16,6 @@ import { fetchBlogs, selectBlogs, selectBlogLoading, selectBlogError } from "@/l
 export default function BlogsPage() {
   const dispatch = useDispatch<AppDispatch>()
   const blogs = useSelector(selectBlogs)
-  const loading = useSelector(selectBlogLoading)
   const error = useSelector(selectBlogError)
   
   const [searchTerm, setSearchTerm] = useState("")
