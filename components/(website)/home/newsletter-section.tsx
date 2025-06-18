@@ -32,13 +32,13 @@ export function NewsletterSection() {
   }
 
   return (
-    <section className="py-20 bg-gradient-to-r from-navy to-blue-900 text-white relative overflow-hidden">
+    <section className="w-full py-20 bg-gradient-to-r from-navy to-blue-900 text-white relative overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute inset-0 bg-[url('/placeholder.svg?height=100&width=100')] bg-repeat"></div>
       </div>
 
-      <div className="container mx-auto px-4 relative z-10">
+      <div className="w-full max-w-7xl mx-auto px-4 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}

@@ -49,8 +49,8 @@ const featuredCourses = [
 
 export function CoursesPreview() {
   return (
-    <section className="py-20 bg-gray-50">
-      <div className="container mx-auto px-4">
+    <section className="w-full py-20 bg-gray-50">
+      <div className="w-full max-w-7xl mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}

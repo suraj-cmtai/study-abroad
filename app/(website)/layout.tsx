@@ -19,10 +19,10 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="w-full max-w-7xl mx-auto">
+    <>
       <Navigation />
       <main className="min-h-screen">{children}</main>
       <Footer />
-    </div>
+    </>
   )
 }

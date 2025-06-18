@@ -29,8 +29,8 @@ const features = [
 
 export function AboutSection() {
   return (
-    <section className="py-20 bg-gray-50">
-      <div className="container mx-auto px-4">
+    <section className="w-full py-20 bg-gray-50">
+      <div className="w-full max-w-7xl mx-auto px-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Content */}
           <motion.div

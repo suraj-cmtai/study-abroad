@@ -3,6 +3,7 @@
 import { motion } from "framer-motion"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { GraduationCap, BookOpen, Award, Trophy } from "lucide-react"
+import { SectionContainer } from "@/components/ui/section-container"
 
 const courseTypes = [
   {
@@ -37,8 +38,7 @@ const courseTypes = [
 
 export function CourseTypesSection() {
   return (
-    <section className="py-20 bg-white">
-      <div className="container mx-auto px-4">
+    <SectionContainer background="white" className="py-20">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -81,7 +81,6 @@ export function CourseTypesSection() {
             </motion.div>
           ))}
         </div>
-      </div>
-    </section>
+      </SectionContainer>
   )
 }
