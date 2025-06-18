@@ -8,14 +8,14 @@ export default function Loading() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <section className="relative">
+      <section className="w-full relative">
         <div className="relative h-96">
           <div className="w-full h-full bg-gray-200 animate-pulse" />
           <div className="absolute inset-0 bg-navy/70" />
         </div>
 
         <div className="absolute inset-0 flex items-center">
-          <div className="container mx-auto px-4">
+          <div className="w-full max-w-4xl mx-auto px-4">
             <div className="text-white max-w-4xl space-y-6">
               <div className="flex items-center gap-3">
                 <div className="h-6 w-24 bg-white/20 rounded-full animate-pulse" />

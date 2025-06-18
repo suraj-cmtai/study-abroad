@@ -107,7 +107,7 @@ export default function BlogDetailPage({ params }: { params: Promise<{ slug: str
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <section className="relative">
+      <section className="w-full relative">
         <div className="relative h-96 overflow-hidden">
           <img 
             src={currentBlog.image || "/placeholder.svg?height=400&width=800"} 
@@ -118,7 +118,7 @@ export default function BlogDetailPage({ params }: { params: Promise<{ slug: str
         </div>
 
         <div className="absolute inset-0 flex items-center">
-          <div className="container mx-auto px-4">
+          <div className="w-full max-w-7xl mx-auto px-4">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
