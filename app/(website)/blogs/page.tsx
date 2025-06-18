@@ -22,7 +22,15 @@ export default function BlogsPage() {
   const [selectedCategory, setSelectedCategory] = useState("all")
 
   useEffect(() => {
-    dispatch(fetchBlogs())
+    const fetchData = async () => {
+      try {
+        dispatch(fetchBlogs())
+      } catch (error) {
+        console.error("Error fetching blogs:", error)
+      }
+    }
+
+    fetchData()
   }, [dispatch])
 
   // Filter only published blogs
