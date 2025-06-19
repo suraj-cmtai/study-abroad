@@ -34,12 +34,13 @@ class GalleryService {
         return this.galleries;
     }
 
-    // Add a new gallery with createdOn timestamp
+    // Add a new gallery with createdOn timestamp   
     static async addGallery(galleryData: any) {
         try {
             const timestamp = admin.firestore.FieldValue.serverTimestamp();
             const newGalleryRef = await db.collection("galleries").add({
                 ...galleryData,
+                status: galleryData.status || 'active',
                 createdOn: timestamp,
             });
 

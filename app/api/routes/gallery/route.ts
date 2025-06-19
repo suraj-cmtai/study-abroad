@@ -29,28 +29,31 @@ export async function GET(req: Request) {
 }
 
 // Add a new package (POST)
-export async function POST(req: Request) {
-    try {
+export async function POST(req: Request) {    try {
         const formData = await req.formData();
         const title = formData.get("title");
         const file = formData.get("image");
+        const category = formData.get("category");
+        const description = formData.get("description");
+        const status = formData.get("status") || "active";
 
         if (!title || !file) {
             return NextResponse.json({
                 statusCode: 400,
                 errorCode: "BAD_REQUEST",
-                errorMessage: "Title, and image are required",
+                errorMessage: "Title and image are required",
             }, { status: 400 });
         }
 
         // Upload image to Firebase Storage (800x600 for galleries)
         const imageUrl = await UploadImage(file, 800, 600);
-        consoleManager.log("✅ Gallery image uploaded:", imageUrl);
-
-        // Save gallery data in Firestore
+        consoleManager.log("✅ Gallery image uploaded:", imageUrl);        // Save gallery data in Firestore
         const newGallery = await GalleryService.addGallery({
             title,
             image: imageUrl,
+            category,
+            description,
+            status,
         });
 
         consoleManager.log("✅ Gallery created successfully:", newGallery);

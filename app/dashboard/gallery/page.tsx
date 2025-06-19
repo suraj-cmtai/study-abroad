@@ -1,11 +1,13 @@
 "use client";
 
-import React, { useState, useMemo, useRef } from "react";
+import React, { useState, useMemo, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog";
-import { Loader2, Plus, Edit, Trash2, Search, Image as ImageIcon, ZoomIn } from "lucide-react";
+import { Loader2, Plus, Edit, Trash2, Search, Image as ImageIcon, ZoomIn, ChevronLeft, ChevronRight, X } from "lucide-react";
 import { toast } from "sonner";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Image from "next/image";
@@ -15,117 +17,247 @@ import { fetchGallery, selectGallery, selectError, selectIsLoading, GalleryItem,
 import { AppDispatch } from "@/lib/redux/store";
 
 export default function GalleryPage() {
-
   const dispatch = useDispatch<AppDispatch>();
   const galleryImages = useSelector(selectGallery);
   const error = useSelector(selectError);
   const isLoading = useSelector(selectIsLoading);
 
+  useEffect(() => {
+    dispatch(fetchGallery());
+  }, [dispatch]);
+
+  // Show error toast when error occurs
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+    }
+  }, [error]);
+
   const [search, setSearch] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [localLoading, setLocalLoading] = useState(false); // Renamed from 'loading' to avoid confusion
   const [modalOpen, setModalOpen] = useState(false);
+
+  // Fixed FormState type definition
+  type FormState = {
+    title: string;
+    image: string;
+    category: string;
+    description: string;
+    status: 'active' | 'inactive';
+    id?: string;
+    createdOn?: string;
+    updatedOn?: string;
+  };
+
   const [editImage, setEditImage] = useState<GalleryItem | null>(null);
-  const [form, setForm] = useState({ title: "", image: "" });
+  const [form, setForm] = useState<FormState>({ 
+    title: "", 
+    image: "", 
+    category: "",
+    description: "",
+    status: "active"
+  });
   const [deleteImage, setDeleteImage] = useState<GalleryItem | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
+
+  // Filter function
+  const filterGalleryItems = (items: GalleryItem[], searchTerm: string) => {
+    if (!searchTerm.trim()) return items;
+    
+    return items.filter((img) =>
+      img.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (img.category && img.category.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (img.description && img.description.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
+  };
 
   // Filtered images
-  const filteredImages = useMemo(
-    () =>
-      (Array.isArray(galleryImages) ? galleryImages : []).filter(
-        (img) =>
-          img.title.toLowerCase().includes(search.toLowerCase())
-      ),
-    [galleryImages, search]
-  );
+  const filteredImages = useMemo(() => {
+    return filterGalleryItems(Array.isArray(galleryImages) ? galleryImages : [], search);
+  }, [galleryImages, search]);
 
   // Handlers
   const openAddModal = () => {
     setEditImage(null);
-    setForm({ title: "", image: "" });
+    setForm({ 
+      title: "", 
+      image: "", 
+      category: "",
+      description: "",
+      status: "active"
+    });
     setImageFile(null);
     setImagePreview(null);
     setModalOpen(true);
   };
 
   const openEditModal = (img: GalleryItem) => {
-    setEditImage(img);
-    setForm({ title: img.title, image: img.image });
-    setImageFile(null);
-    setImagePreview(img.image || null);
-    setModalOpen(true);
-  };
+  setEditImage(img);
+  setForm({ 
+    title: img.title, 
+    image: img.image,  // Make sure this is set
+    category: img.category || "",
+    description: img.description || "",
+    status: img.status || "active"
+  });
+  setImageFile(null);
+  // Use existing image URL for preview
+  setImagePreview(img.image || null);
+  setModalOpen(true);
+};
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (!deleteImage) return;
   
-    setLoading(true);
-    setTimeout(() => {
-      dispatch(deleteGallery(deleteImage.id));
-      setLoading(false);
+    setLocalLoading(true);
+    try {
+      await dispatch(deleteGallery(deleteImage.id))
+      toast.success("Image deleted successfully!");
       setDeleteImage(null);
-      toast.success("Image deleted!");
-    }, 800);
+    } catch (error) {
+      toast.error("Failed to delete image");
+    } finally {
+      setLocalLoading(false);
+    }
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        toast.error("Please select a valid image file");
+        return;
+      }
+      
+      // Validate file size (e.g., max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error("Image size should be less than 5MB");
+        return;
+      }
+      
       setImageFile(file);
+      
+      // Clean up previous blob URL if it exists
+      if (imagePreview && imagePreview.startsWith('blob:')) {
+        URL.revokeObjectURL(imagePreview);
+      }
+      
       setImagePreview(URL.createObjectURL(file));
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setTimeout(() => {
+    
+    // Validation
+    if (!form.title.trim()) {
+      toast.error("Title is required");
+      return;
+    }
+    
+    // For new images, require image file
+    if (!editImage && !imageFile) {
+      toast.error("Image is required for new gallery item");
+      return;
+    }
+    
+    setLocalLoading(true);
+    try {
       const formData = new FormData();
-      formData.append("title", form.title);
+      formData.append("title", form.title.trim());
+      formData.append("category", form.category.trim());
+      formData.append("description", form.description.trim());
+      formData.append("status", form.status);
+      
+      // Only append image if a new file is selected
       if (imageFile) {
         formData.append("image", imageFile);
-      } else if (form.image) {
-        formData.append("image", form.image);
       }
-      formData.append("createdOn", new Date().toISOString());
-      formData.append("updatedOn", new Date().toISOString());
+      else if (editImage && editImage.image) {
+        formData.append("image", editImage.image);
+      }
+
       if (editImage) {
-        dispatch(updateGallery(formData, editImage.id));
-        toast.success("Image updated!");
+        // Pass the editImage.id to the updateGallery action
+        await dispatch(updateGallery( formData, editImage.id ));
+        toast.success("Image updated successfully!");
       } else {
-        dispatch(addGallery(formData));
-        toast.success("Image added!");
+        await dispatch(addGallery(formData));
+        toast.success("Image added successfully!");
       }
+      
+      // Reset form and close modal
       setModalOpen(false);
-      setLoading(false);
+      setForm({ 
+        title: "", 
+        image: "", 
+        category: "",
+        description: "",
+        status: "active"
+      });
       setImageFile(null);
       setImagePreview(null);
-    }, 1000);
+      setEditImage(null);
+      
+      // Clear file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+      
+    } catch (error) {
+      const errorMessage = editImage ? "Failed to update image" : "Failed to add image";
+      toast.error(errorMessage);
+    } finally {
+      setLocalLoading(false);
+    }
   };
+
+  // Cleanup image preview URL on unmount
+  useEffect(() => {
+    return () => {
+      if (imagePreview && imagePreview.startsWith('blob:')) {
+        URL.revokeObjectURL(imagePreview);
+      }
+    };
+  }, [imagePreview]);
+
+  // Reset lightbox index when filtered images change
+  useEffect(() => {
+    if (lightboxIndex >= filteredImages.length && filteredImages.length > 0) {
+      setLightboxIndex(0);
+    }
+  }, [filteredImages.length, lightboxIndex]);
 
   return (
     <div className="container max-w-7xl mx-auto p-6 space-y-8">
-      {/* Header Section */}      <motion.div 
+      {/* Header Section */}
+      <motion.div
         layout
         className="relative rounded-xl bg-gradient-to-r from-black/10 to-transparent p-6 border shadow-sm"
       >
-        <motion.div 
+        <motion.div
           className="flex flex-col sm:flex-row items-center justify-between gap-4"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
           <div className="space-y-1">
-            <h2 className="text-2xl font-bold tracking-tight" style={{ fontFamily: 'var(--font-main)' }}>
+            <h2
+              className="text-2xl font-bold tracking-tight"
+              style={{ fontFamily: "var(--font-main)" }}
+            >
               Gallery Management
             </h2>
           </div>
-          
+
           <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
             <div className="relative w-full sm:w-[300px]">
-              <motion.div 
+              <motion.div
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
@@ -138,14 +270,13 @@ export default function GalleryPage() {
               </motion.div>
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             </div>
-            
-            <motion.div
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >              <Button 
-                onClick={openAddModal} 
+
+            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+              <Button
+                onClick={openAddModal}
                 size="lg"
                 className="gap-2 bg-black/90 hover:bg-black text-white shadow-sm transition-all duration-200 hover:shadow-md w-full sm:w-auto"
+                disabled={isLoading}
               >
                 <Plus className="w-4 h-4" /> Add Image
               </Button>
@@ -155,13 +286,13 @@ export default function GalleryPage() {
       </motion.div>
 
       {/* Gallery Grid with Loading State */}
-      <motion.div 
+      <motion.div
         layout
         className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
       >
         <AnimatePresence mode="popLayout">
-          {loading ? (
-            // Loading skeleton
+          {isLoading && galleryImages.length === 0 ? (
+            // Loading skeleton - only show when there are no images
             [...Array(8)].map((_, i) => (
               <motion.div
                 key={`skeleton-${i}`}
@@ -183,9 +314,9 @@ export default function GalleryPage() {
             ))
           ) : filteredImages.length === 0 ? (
             // Empty state
-            <motion.div 
-              initial={{ opacity: 0 }} 
-              animate={{ opacity: 1 }} 
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               className="col-span-full flex flex-col items-center justify-center py-16 px-4"
             >
@@ -196,9 +327,13 @@ export default function GalleryPage() {
               >
                 <ImageIcon className="w-16 h-16 text-gray-300 mb-4" />
               </motion.div>
-              <h3 className="text-xl font-semibold text-gray-700 mb-2">No images found</h3>
+              <h3 className="text-xl font-semibold text-gray-700 mb-2">
+                No images found
+              </h3>
               <p className="text-gray-500 text-center max-w-md">
-                {search ? "Try adjusting your search query" : "Add some images to get started"}
+                {search
+                  ? "Try adjusting your search query"
+                  : "Add some images to get started"}
               </p>
             </motion.div>
           ) : (
@@ -214,23 +349,28 @@ export default function GalleryPage() {
                   type: "spring",
                   stiffness: 300,
                   damping: 30,
-                  delay: index * 0.05
+                  delay: index * 0.05,
                 }}
                 className="group relative bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300"
               >
                 {/* Image container with hover effects */}
-                <motion.div 
-                  className="relative aspect-[4/3] bg-gray-50"
+                <motion.div
+                  className="relative aspect-[4/3] bg-gray-50 cursor-pointer"
                   whileHover={{ scale: 1.05 }}
                   transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                  onClick={() => {
+                    setLightboxOpen(true);
+                    setLightboxIndex(index);
+                  }}
                 >
                   {img.image ? (
                     <>
-                      <Image 
-                        src={img.image} 
-                        alt={img.title} 
-                        fill 
+                      <Image
+                        src={img.image}
+                        alt={img.title}
+                        fill
                         className="object-cover transition-transform duration-300"
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
                       />
                       <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
                         <ZoomIn className="w-8 h-8 text-white" />
@@ -241,18 +381,47 @@ export default function GalleryPage() {
                       <ImageIcon className="w-16 h-16 text-gray-300" />
                     </div>
                   )}
+
+                  {/* Status indicator */}
+                  <div className="absolute top-2 right-2">
+                    <Badge
+                      variant={
+                        img.status === "active" ? "default" : "secondary"
+                      }
+                      className={cn(
+                        "text-xs",
+                        img.status === "active"
+                          ? "bg-green-100 text-green-800"
+                          : "bg-gray-100 text-gray-800"
+                      )}
+                    >
+                      {img.status}
+                    </Badge>
+                  </div>
                 </motion.div>
 
                 {/* Card content */}
-                <motion.div 
+                <motion.div
                   className="p-4"
                   initial={false}
                   animate={{ opacity: 1 }}
                   transition={{ delay: index * 0.05 + 0.1 }}
                 >
-                  <h3 className="font-semibold text-lg mb-2 truncate">
+                  <h3
+                    className="font-semibold text-lg mb-1 truncate"
+                    title={img.title}
+                  >
                     {img.title}
                   </h3>
+
+                  {img.category && (
+                    <p
+                      className="text-sm text-gray-500 mb-3 truncate"
+                      title={img.category}
+                    >
+                      {img.category}
+                    </p>
+                  )}
 
                   <div className="flex gap-2">
                     <Button
@@ -260,6 +429,7 @@ export default function GalleryPage() {
                       variant="ghost"
                       onClick={() => openEditModal(img)}
                       className="flex-1 hover:bg-gray-50"
+                      disabled={isLoading}
                     >
                       <Edit className="w-4 h-4 mr-2" />
                       Edit
@@ -268,7 +438,7 @@ export default function GalleryPage() {
                       size="sm"
                       variant="ghost"
                       onClick={() => setDeleteImage(img)}
-                      disabled={loading}
+                      disabled={isLoading || localLoading}
                       className="flex-1 text-red-600 hover:bg-red-50 hover:text-red-700"
                     >
                       <Trash2 className="w-4 h-4 mr-2" />
@@ -284,9 +454,9 @@ export default function GalleryPage() {
 
       {/* Add/Edit Modal */}
       <Dialog open={modalOpen} onOpenChange={setModalOpen}>
-        <DialogContent className="sm:max-w-md">
-          <motion.form 
-            onSubmit={handleSubmit} 
+        <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
+          <motion.form
+            onSubmit={handleSubmit}
             className="space-y-6"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -305,30 +475,84 @@ export default function GalleryPage() {
               className="space-y-4"
             >
               <div className="space-y-2">
-                <label className="text-sm font-medium">Title</label>
+                <label className="text-sm font-medium">Title *</label>
                 <Input
                   placeholder="Enter image title"
                   value={form.title}
-                  onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, title: e.target.value }))
+                  }
                   required
-                  className="w-full transition-all duration-200 focus:ring-2 focus:ring-black/20"
+                  className="w-full"
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium">Image</label>
+                <label className="text-sm font-medium">Category</label>
+                <Input
+                  placeholder="Enter category"
+                  value={form.category}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, category: e.target.value }))
+                  }
+                  className="w-full"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Description</label>
+                <Textarea
+                  placeholder="Enter description"
+                  value={form.description}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, description: e.target.value }))
+                  }
+                  className="min-h-[100px] w-full"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Status</label>
+                <Badge
+                  variant={form.status === "active" ? "default" : "secondary"}
+                  className={cn(
+                    "cursor-pointer select-none",
+                    form.status === "active"
+                      ? "bg-green-100 text-green-800"
+                      : "bg-gray-100 text-gray-800"
+                  )}
+                  onClick={() =>
+                    setForm((f) => ({
+                      ...f,
+                      status: f.status === "active" ? "inactive" : "active",
+                    }))
+                  }
+                >
+                  {form.status}
+                </Badge>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium">
+                  Image {!editImage && "*"}
+                  {editImage && (
+                    <span className="text-xs text-gray-500 ml-2">
+                      (Leave empty to keep current image)
+                    </span>
+                  )}
+                </label>
                 <AnimatePresence mode="wait">
-                  {imagePreview && (
+                  {(imagePreview || (editImage && editImage.image)) && (
                     <motion.div
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.8 }}
                       className="relative rounded-lg overflow-hidden group"
                     >
-                      <img 
-                        src={imagePreview} 
-                        alt="Preview" 
-                        className="w-full h-48 object-cover transition-transform duration-200 group-hover:scale-105" 
+                      <img
+                        src={imagePreview || editImage?.image || ""}
+                        alt="Preview"
+                        className="w-full h-48 object-cover transition-transform duration-200 group-hover:scale-105"
                       />
                       <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
                         <ZoomIn className="w-8 h-8 text-white" />
@@ -342,24 +566,36 @@ export default function GalleryPage() {
                   accept="image/*"
                   ref={fileInputRef}
                   onChange={handleImageChange}
-                  className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4                           file:rounded-full file:border-0 file:text-sm file:font-semibold
-                           file:bg-black/10 file:text-black hover:file:bg-black/20 
-                           focus:outline-none focus:ring-2 focus:ring-black/20 rounded-lg"
+                  className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-black/10 file:text-black hover:file:bg-black/20 focus:outline-none focus:ring-2 focus:ring-black/20 rounded-lg"
                 />
+                {editImage && !imageFile && (
+                  <p className="text-xs text-gray-500 mt-1">
+                    Current image: {editImage.image.split("/").pop()}
+                  </p>
+                )}
+                <p className="text-xs text-gray-500">
+                  Max file size: 5MB. Accepted formats: JPG, PNG, GIF, WebP
+                </p>
               </div>
             </motion.div>
 
             <DialogFooter>
-              <Button 
-                type="submit" 
-                disabled={loading}
+              <Button
+                type="submit"
+                disabled={localLoading || isLoading}
                 className="bg-black/90 hover:bg-black text-white gap-2"
               >
-                {loading && <Loader2 className="w-4 h-4 animate-spin" />}
+                {(localLoading || isLoading) && (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                )}
                 {editImage ? "Update Image" : "Add Image"}
               </Button>
               <DialogClose asChild>
-                <Button type="button" variant="ghost">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  disabled={localLoading || isLoading}
+                >
                   Cancel
                 </Button>
               </DialogClose>
@@ -369,7 +605,10 @@ export default function GalleryPage() {
       </Dialog>
 
       {/* Delete Confirmation Modal */}
-      <Dialog open={!!deleteImage} onOpenChange={(open) => !open && setDeleteImage(null)}>
+      <Dialog
+        open={!!deleteImage}
+        onOpenChange={(open) => !open && setDeleteImage(null)}
+      >
         <DialogContent className="sm:max-w-md">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
@@ -404,10 +643,10 @@ export default function GalleryPage() {
               <Button
                 variant="destructive"
                 onClick={handleDelete}
-                disabled={loading}
+                disabled={localLoading || isLoading}
                 className="w-full sm:w-auto gap-2 bg-red-600 hover:bg-red-700"
               >
-                {loading ? (
+                {localLoading || isLoading ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
                 ) : (
                   <Trash2 className="w-4 h-4" />
@@ -415,10 +654,10 @@ export default function GalleryPage() {
                 Delete Image
               </Button>
               <DialogClose asChild>
-                <Button 
-                  type="button" 
-                  variant="ghost" 
-                  disabled={loading}
+                <Button
+                  type="button"
+                  variant="ghost"
+                  disabled={localLoading || isLoading}
                   className="w-full sm:w-auto"
                 >
                   Cancel
@@ -426,6 +665,94 @@ export default function GalleryPage() {
               </DialogClose>
             </DialogFooter>
           </motion.div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Lightbox Modal */}
+      <Dialog open={lightboxOpen} onOpenChange={setLightboxOpen}>
+        <DialogContent className="max-w-5xl p-0 bg-black/95">
+          <DialogHeader className="hidden text-white">
+            <DialogTitle className="text-2xl font-bold">
+              {filteredImages[lightboxIndex]?.title || "Image Viewer"}
+            </DialogTitle>
+            {filteredImages[lightboxIndex]?.category && (
+              <p className="text-sm text-gray-300 mt-1">
+                {filteredImages[lightboxIndex].category}
+              </p>
+            )}
+          </DialogHeader>
+          <div className="relative h-[90vh]">
+            {/* Close button */}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute right-4 top-4 z-10 text-white hover:bg-white/20"
+              onClick={() => setLightboxOpen(false)}
+            >
+              <X className="h-6 w-6" />
+            </Button>
+
+            {/* Main image */}
+            {filteredImages[lightboxIndex] && (
+              <div className="relative h-full w-full flex items-center justify-center">
+                <Image
+                  src={filteredImages[lightboxIndex].image}
+                  alt={filteredImages[lightboxIndex].title}
+                  fill
+                  className="object-contain"
+                  priority
+                  sizes="90vw"
+                />
+                <div className="absolute bottom-4 left-0 right-0 text-center text-white">
+                  <h3 className="text-xl font-medium">
+                    {filteredImages[lightboxIndex].title}
+                  </h3>
+                  {filteredImages[lightboxIndex].category && (
+                    <p className="text-sm text-gray-300 mt-1">
+                      {filteredImages[lightboxIndex].category}
+                    </p>
+                  )}
+                  <p className="text-xs text-gray-400 mt-2">
+                    {lightboxIndex + 1} of {filteredImages.length}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Navigation buttons - only show if more than 1 image */}
+            {filteredImages.length > 1 && (
+              <>
+                <div className="absolute top-1/2 -translate-y-1/2 left-4">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() =>
+                      setLightboxIndex((i) =>
+                        i > 0 ? i - 1 : filteredImages.length - 1
+                      )
+                    }
+                    className="text-white hover:bg-white/20"
+                  >
+                    <ChevronLeft className="h-8 w-8" />
+                  </Button>
+                </div>
+                <div className="absolute top-1/2 -translate-y-1/2 right-4">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() =>
+                      setLightboxIndex((i) =>
+                        i < filteredImages.length - 1 ? i + 1 : 0
+                      )
+                    }
+                    className="text-white hover:bg-white/20"
+                  >
+                    <ChevronRight className="h-8 w-8" />
+                  </Button>
+                </div>
+              </>
+            )}
+          </div>
         </DialogContent>
       </Dialog>
     </div>

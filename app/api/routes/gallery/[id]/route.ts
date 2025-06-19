@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import GalleryService from "../../../services/galleryServices";
 import consoleManager from "../../../utils/consoleManager";
+import { UploadImage } from "@/app/api/controller/imageController";
 
 export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
@@ -25,11 +26,37 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
 }
 
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
-    const { id } = await params;
-    const { title, image } = await req.json();
+    const { id } = await params;    const formData = await req.formData();
+    const title = formData.get("title");
+    const image = formData.get("image");
+    const category = formData.get("category");
+    const description = formData.get("description");
+    const status = formData.get("status");
+
+    if (!title || !image) {
+        return NextResponse.json({
+            statusCode: 400,
+            errorCode: "BAD_REQUEST",
+            errorMessage: "Title and image are required",
+        }, { status: 400 });
+    }
+     let imageUrlLink = "";
+
+if (image instanceof File) {
+    imageUrlLink = await UploadImage(image, 800, 600) as string; // Upload image to Firebase Storage (800x600 for galleries)
+    consoleManager.log("✅ Gallery image uploaded:", imageUrlLink);
+} else {
+    imageUrlLink = image as string; // If image is not a File, assume it's a URL
+}
 
     try {
-        const updatedGallery = await GalleryService.updateGallery(id, { title, image });
+        const updatedGallery = await GalleryService.updateGallery(id, {
+            title,
+            image: imageUrlLink,
+            category,
+            description,
+            status
+        });
         return NextResponse.json({
             statusCode: 200,
             message: "Gallery updated successfully",
