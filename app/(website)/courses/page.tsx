@@ -133,7 +133,7 @@ export default function CoursesPage() {
 
       {/* Filters Section */}
       <section className="py-8 bg-white border-b">
-        <div className="container mx-auto px-4">
+        <div className="w-full max-w-7xl mx-auto px-4">
           <div className="flex flex-col md:flex-row gap-4 items-center">
             <div className="relative flex-1 max-w-md">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
@@ -180,7 +180,7 @@ export default function CoursesPage() {
 
       {/* Courses Grid */}
       <section className="py-12">
-        <div className="container mx-auto px-4">
+        <div className="w-full max-w-7xl mx-auto px-4">
           <div className="mb-8">
             <p className="text-gray-600">
               Showing {filteredCourses.length} of {allCourses.length} courses
