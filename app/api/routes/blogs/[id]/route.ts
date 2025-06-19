@@ -94,7 +94,8 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
         const excerpt = formData.get("excerpt");
         const status = formData.get("status");
         const customSlug = formData.get("slug");
-        const file = formData.get("image");
+        const imageUrl = formData.get("image");
+        const file = formData.get("imageFile");
         const removeImage = formData.get("removeImage"); // Flag to remove existing image
 
         let updateData: any = {};
@@ -156,6 +157,13 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
             const newImageUrl = await ReplaceImage(file, existingBlog.image || '', 1200, 800);
             updateData.image = newImageUrl;
             consoleManager.log("Blog image replaced:", newImageUrl);
+        }
+        else if (imageUrl && typeof imageUrl === "string" && imageUrl.trim()) {
+            // Use provided image URL
+            updateData.image = imageUrl.trim();
+        } else {
+            // Keep existing image if no new image provided
+            updateData.image = existingBlog.image;
         }
 
         // Check if there's anything to update

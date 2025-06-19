@@ -147,7 +147,7 @@ export default function BlogsPage() {
     if (newBlogForm.excerpt.trim()) formData.append("excerpt", newBlogForm.excerpt);
     if (newBlogForm.image) formData.append("image", newBlogForm.image);
     if (newBlogForm.imageFile) {
-      formData.append("image", newBlogForm.imageFile);
+      formData.append("imageFile", newBlogForm.imageFile);
     }
     
     dispatch(createBlog(formData))
@@ -198,7 +198,7 @@ export default function BlogsPage() {
     if (editBlogForm.image) formData.append("image", editBlogForm.image);
 
     if (editBlogForm.imageFile) {
-      formData.append("image", editBlogForm.imageFile);
+      formData.append("imageFile", editBlogForm.imageFile);
     }
     if (editBlogForm.removeImage) {
       formData.append("removeImage", "true");

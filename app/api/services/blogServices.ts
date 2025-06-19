@@ -84,11 +84,12 @@ class BlogService {
     } else {
       consoleManager.log("Returning cached blogs. No Firestore read.");
     }
+    console.log(this.blogs)
     return this.blogs;
   }
 
   // Get all published blogs (Uses cache)
-  static async getAllPublishedBlogs(forceRefresh = false) {
+  static async getAllPublishedBlogs(forceRefresh = true) {
     if (forceRefresh || !this.isInitialized) {
       consoleManager.log("Force refreshing published blogs from Firestore...");
       const snapshot = await db
