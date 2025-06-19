@@ -68,7 +68,7 @@ export default function CourseDetailPage({ params }: { params: Promise<{ id: str
   }, [params]);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="w-full min-h-screen bg-gray-50">
       {/* Hero Section */}
       <section className="relative">
         <div className="relative h-96 overflow-hidden">
@@ -81,7 +81,7 @@ export default function CourseDetailPage({ params }: { params: Promise<{ id: str
         </div>
 
         <div className="absolute inset-0 flex items-center">
-          <div className="container mx-auto px-4">
+          <div className="w-ful max-w-7xl mx-auto px-4">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -110,7 +110,7 @@ export default function CourseDetailPage({ params }: { params: Promise<{ id: str
         </div>
       </section>
 
-      <div className="container mx-auto px-4 py-12">
+      <div className="w-full max-w-7xl mx-auto px-4 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
