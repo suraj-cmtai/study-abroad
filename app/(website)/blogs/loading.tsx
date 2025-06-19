@@ -5,20 +5,10 @@ import { Badge } from "@/components/ui/badge"
 export default function Loading() {
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero Section Skeleton */}
-      <section className="bg-navy w-full text-white py-20">
-        <div className="w-full max-w-7xl mx-auto px-4">
-          <div className="text-center space-y-4">
-            <div className="h-12 w-3/4 mx-auto bg-white/20 rounded-lg animate-pulse" />
-            <div className="h-6 w-1/2 mx-auto bg-white/20 rounded-lg animate-pulse" />
-          </div>
-        </div>
-      </section>
-
       {/* Filters Section Skeleton */}
       <section className="py-8 bg-white border-b">
         <div className="w-full max-w-7xl mx-auto px-4">
-          <div className="flex flex-col md:flex-row gap-4 items-center">
+          <div className="flex flex-col md:flex-row gap-4 items-center justify-center">
             <div className="h-10 w-full md:w-72 bg-gray-200 rounded animate-pulse" />
             <div className="h-10 w-40 bg-gray-200 rounded animate-pulse" />
           </div>

@@ -21,6 +21,7 @@ interface Blog {
 
 interface BlogState {
   blogs: Blog[];
+  publishedBlogs: Blog[]; // Separate state for published blogs
   loading: boolean;
   error: string | null;
   selectedBlog: Blog | null;
@@ -30,10 +31,12 @@ interface BlogState {
     limit: number;
     total: number;
   };
+  hasFetched: boolean; // Track if blogs have been fetched
 }
 
 const initialState: BlogState = {
   blogs: [],
+  publishedBlogs: [],
   loading: false,
   error: null,
   selectedBlog: null,
@@ -43,7 +46,10 @@ const initialState: BlogState = {
     limit: 6,
     total: 0,
   },
+  hasFetched: false,
 };
+
+
 
 // 2. createAsyncThunk for fetching all blogs
 export const fetchBlogs = createAsyncThunk<Blog[]>(
@@ -98,12 +104,25 @@ export const deleteBlog = createAsyncThunk<string, string>(
   }
 );
 
-// Add fetchBlogBySlug thunk
+// 6. Add fetchBlogBySlug thunk
 export const fetchBlogBySlug = createAsyncThunk<Blog, string>(
   "blog/fetchBlogBySlug",
   async (slug: string, { rejectWithValue }) => {
     try {
       const response = await axios.get(`/api/routes/blogs/${slug}`);
+      return response.data.data;
+    } catch (error: unknown) {
+      return rejectWithValue(getErrorMessage(error));
+    }
+  }
+);
+
+// 7. fetch all published blogs
+export const fetchPublishedBlogs = createAsyncThunk<Blog[]>(
+  "blog/fetchPublishedBlogs",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get("/api/routes/blogs/published");
       return response.data.data;
     } catch (error: unknown) {
       return rejectWithValue(getErrorMessage(error));
@@ -157,10 +176,30 @@ const blogSlice = createSlice({
         state.loading = false;
         state.currentBlog = action.payload;
         state.error = null;
+        state.hasFetched = true;  
       })
       .addCase(fetchBlogBySlug.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
+        state.hasFetched = true;
+      });
+
+    // Fetch published blogs
+    builder
+      .addCase(fetchPublishedBlogs.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchPublishedBlogs.fulfilled, (state, action) => {
+        state.loading = false;
+        state.publishedBlogs = action.payload;
+        state.error = null;
+        state.hasFetched = true;
+      })
+      .addCase(fetchPublishedBlogs.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+        state.hasFetched = true;
       });
 
     // Create blog
@@ -227,10 +266,12 @@ export const {
 
 // Selectors
 export const selectBlogs = (state: RootState) => state.blog.blogs;
+export const selectPublishedBlogs = (state: RootState) => state.blog.publishedBlogs;
 export const selectBlogLoading = (state: RootState) => state.blog.loading;
 export const selectBlogError = (state: RootState) => state.blog.error;
 export const selectSelectedBlog = (state: RootState) => state.blog.selectedBlog;
 export const selectCurrentBlog = (state: RootState) => state.blog.currentBlog;
 export const selectPagination = (state: RootState) => state.blog.pagination;
+export const selectHasFetchedBlogs = (state: RootState) => state.blog.hasFetched;
 
 export default blogSlice.reducer;

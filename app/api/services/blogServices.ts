@@ -87,6 +87,25 @@ class BlogService {
     return this.blogs;
   }
 
+  // Get all published blogs (Uses cache)
+  static async getAllPublishedBlogs(forceRefresh = false) {
+    if (forceRefresh || !this.isInitialized) {
+      consoleManager.log("Force refreshing published blogs from Firestore...");
+      const snapshot = await db
+        .collection("blogs")
+        .where("status", "==", "published")
+        .orderBy("createdOn", "desc")
+        .get();
+      this.blogs = snapshot.docs.map((doc: any) => {
+        return this.convertToType(doc.id, doc.data());
+      });
+    } else {
+      consoleManager.log("Returning cached published blogs. No Firestore read.");
+    }
+    return this.blogs;
+  }
+
+
   // Add a new blog
   static async addBlog(blogData: Omit<Blog, 'id' | 'createdOn' | 'updatedOn'>) {
     try {
