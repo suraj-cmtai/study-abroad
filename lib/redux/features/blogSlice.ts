@@ -31,7 +31,8 @@ interface BlogState {
     limit: number;
     total: number;
   };
-  hasFetched: boolean; // Track if blogs have been fetched
+  hasFetched: boolean; 
+  hasFetchedBlogBySlug: boolean;
 }
 
 const initialState: BlogState = {
@@ -47,6 +48,7 @@ const initialState: BlogState = {
     total: 0,
   },
   hasFetched: false,
+  hasFetchedBlogBySlug: false,
 };
 
 
@@ -109,7 +111,7 @@ export const fetchBlogBySlug = createAsyncThunk<Blog, string>(
   "blog/fetchBlogBySlug",
   async (slug: string, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`/api/routes/blogs/${slug}`);
+      const response = await axios.get(`/api/routes/blogs/slug/${slug}`);
       return response.data.data;
     } catch (error: unknown) {
       return rejectWithValue(getErrorMessage(error));
@@ -176,12 +178,13 @@ const blogSlice = createSlice({
         state.loading = false;
         state.currentBlog = action.payload;
         state.error = null;
-        state.hasFetched = true;  
+        state.hasFetchedBlogBySlug = true;
       })
       .addCase(fetchBlogBySlug.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
-        state.hasFetched = true;
+        state.currentBlog = null;
+        state.hasFetchedBlogBySlug = true;
       });
 
     // Fetch published blogs
@@ -273,5 +276,6 @@ export const selectSelectedBlog = (state: RootState) => state.blog.selectedBlog;
 export const selectCurrentBlog = (state: RootState) => state.blog.currentBlog;
 export const selectPagination = (state: RootState) => state.blog.pagination;
 export const selectHasFetchedBlogs = (state: RootState) => state.blog.hasFetched;
+export const selectHasFetchedBlogBySlug = (state: RootState) => state.blog.hasFetchedBlogBySlug;
 
 export default blogSlice.reducer;

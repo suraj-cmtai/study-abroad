@@ -192,11 +192,6 @@ class BlogService {
   // Get blog by slug
   static async getBlogBySlug(slug: string) {
     try {
-      const blog = this.blogs.find((blog) => blog.slug === slug);
-      if (blog) {
-        consoleManager.log(`Blog found in cache by slug:`, slug);
-        return blog;
-      }
 
       const snapshot = await db
         .collection("blogs")

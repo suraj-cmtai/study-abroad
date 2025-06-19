@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect } from "react"
+import { use, useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
@@ -18,14 +18,17 @@ import {
   selectBlogs,
   selectBlogLoading,
   selectBlogError,
-  clearCurrentBlog
+  clearCurrentBlog,
+  selectHasFetchedBlogBySlug
 } from "@/lib/redux/features/blogSlice"
+import Loading from "./loading"
+import NotFound from "./not-found"
 
 export default function BlogDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const dispatch = useDispatch<AppDispatch>()
   const currentBlog = useSelector(selectCurrentBlog)
   const allBlogs = useSelector(selectBlogs)
-  const loading = useSelector(selectBlogLoading)
+  const hasFetchedBlogBySlug = useSelector(selectHasFetchedBlogBySlug)
   const error = useSelector(selectBlogError)
 
   useEffect(() => {
@@ -57,6 +60,7 @@ export default function BlogDetailPage({ params }: { params: Promise<{ slug: str
         )
         .slice(0, 2)
     : []
+
   const calculateReadTime = (content: string) => {
     const wordsPerMinute = 200
     const wordCount = content.replace(/<[^>]*>/g, '').split(/\s+/).length
@@ -64,10 +68,10 @@ export default function BlogDetailPage({ params }: { params: Promise<{ slug: str
   }
 
   // Show loading.tsx while loading
-  if (loading) return null
+  if (!hasFetchedBlogBySlug) return <Loading />
 
-  // Handle blog not found error
-  if (error?.includes("Blog not found") || !currentBlog) {
+  // // Handle blog not found error
+  if (error?.includes("Blog not found")) {
     return notFound()
   }
 
@@ -87,22 +91,18 @@ export default function BlogDetailPage({ params }: { params: Promise<{ slug: str
       </div>
     )
   }
-
+ // If currentBlog is still null at this point, show loading
   if (!currentBlog) {
+    return <Loading />
+  }
+
+  if (hasFetchedBlogBySlug && !currentBlog && error) {
+   
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-navy mb-2">Article Not Found</h2>
-          <p className="text-gray-600 mb-4">The article you're looking for doesn't exist.</p>
-          <Link href="/blogs">
-            <Button className="bg-orange hover:bg-orange/90">
-              Back to Blogs
-            </Button>
-          </Link>
-        </div>
-      </div>
+      <NotFound />
     )
   }
+ 
 
   return (
     <div className="min-h-screen bg-gray-50">
