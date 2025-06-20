@@ -1,4 +1,4 @@
-import { createSlice, Dispatch } from "@reduxjs/toolkit";
+import { createSlice, Dispatch, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import { RootState } from "../store";
 
@@ -16,14 +16,18 @@ export interface GalleryItem {
 
 interface GalleryState {
   gallery: GalleryItem[];
+  activeGallery?: GalleryItem[]; // Optional, can be used for active galleries
   isLoading: boolean;
+  hasFetched: boolean;
   error: string | null;
   selectedGallery: GalleryItem | null;
 }
 
 const initialState: GalleryState = {
   gallery: [],
+  activeGallery: [], // Initialize as an empty array
   isLoading: false,
+  hasFetched: false,
   error: null,
   selectedGallery: null,
 };
@@ -53,6 +57,7 @@ const gallerySlice = createSlice({
     clearGallery: (state) => {
       state.gallery = [];
     },
+
     // New reducers for local state updates
     addGalleryItem: (state, action) => {
       state.gallery.unshift(action.payload); // Add to beginning of array
@@ -80,6 +85,24 @@ const gallerySlice = createSlice({
       state.isLoading = false;
       state.error = null;
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchActiveGallery.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchActiveGallery.fulfilled, (state, action: PayloadAction<GalleryItem[]>) => {
+        state.activeGallery = action.payload;
+        state.isLoading = false;
+        state.hasFetched = true;
+        state.error = null;
+      })
+      .addCase(fetchActiveGallery.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+        state.hasFetched = true;
+      });
   },
 });
 
@@ -125,6 +148,23 @@ export const fetchGalleryById = (id: string) => async (dispatch: Dispatch) => {
     dispatch(setError(message || "Unknown error"));
   }
 };
+
+export const fetchActiveGallery = createAsyncThunk<GalleryItem[], void>(
+  "gallery/fetchActiveGallery",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get("/api/routes/gallery/active");
+      if (response.status === 200) {
+        return response.data.data;
+      } else {
+        return rejectWithValue(response.data.message);
+      }
+    } catch (error: unknown) {
+      const message = typeof error === "object" && error && "message" in error ? (error as { message?: string }).message : String(error);
+      return rejectWithValue(message || "Unknown error");
+    }
+  }
+);
 
 export const addGallery = (gallery: FormData) => async (dispatch: Dispatch) => {
   dispatch(setIsLoading(true));
@@ -185,6 +225,9 @@ export const deleteGallery = (id: string) => async (dispatch: Dispatch) => {
 export const selectGallery = (state: RootState) => state.gallery.gallery;
 export const selectSelectedGallery = (state: RootState) => state.gallery.selectedGallery;
 export const selectIsLoading = (state: RootState) => state.gallery.isLoading;
+export const selectHasFetched = (state: RootState) => state.gallery.hasFetched; 
 export const selectError = (state: RootState) => state.gallery.error;
+
+export const selectActiveGalleryList = (state: RootState) => state.gallery.activeGallery || []; // Return empty array if undefined
 
 export default gallerySlice.reducer;

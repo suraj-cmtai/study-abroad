@@ -1,105 +1,33 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Dialog, DialogContent } from "@/components/ui/dialog"
-import { Search, X, ChevronLeft, ChevronRight, Calendar, Eye } from "lucide-react"
-
-// Mock data - replace with actual API call
-const galleryItems = [
-  {
-    id: "1",
-    title: "Campus Life at Oxford University",
-    image: "/placeholder.svg?height=400&width=600",
-    category: "Campus Life",
-    createdOn: "2024-01-15T10:00:00Z",
-    updatedOn: "2024-01-15T10:00:00Z",
-    description: "Students enjoying the beautiful campus grounds at Oxford University during spring semester.",
-  },
-  {
-    id: "2",
-    title: "Student Graduation Ceremony",
-    image: "/placeholder.svg?height=600&width=400",
-    category: "Graduation",
-    createdOn: "2024-01-12T14:30:00Z",
-    updatedOn: "2024-01-12T14:30:00Z",
-    description: "Proud graduates celebrating their achievements at the annual graduation ceremony.",
-  },
-  {
-    id: "3",
-    title: "International Student Orientation",
-    image: "/placeholder.svg?height=300&width=500",
-    category: "Events",
-    createdOn: "2024-01-10T09:15:00Z",
-    updatedOn: "2024-01-10T09:15:00Z",
-    description: "Welcome orientation session for new international students from around the world.",
-  },
-  {
-    id: "4",
-    title: "Study Group Session",
-    image: "/placeholder.svg?height=500&width=400",
-    category: "Academic",
-    createdOn: "2024-01-08T16:45:00Z",
-    updatedOn: "2024-01-08T16:45:00Z",
-    description: "Students collaborating in a study group session at the university library.",
-  },
-  {
-    id: "5",
-    title: "Science Laboratory",
-    image: "/placeholder.svg?height=400&width=600",
-    category: "Academic",
-    createdOn: "2024-01-05T11:20:00Z",
-    updatedOn: "2024-01-05T11:20:00Z",
-    description: "Advanced research being conducted in the state-of-the-art science laboratory.",
-  },
-  {
-    id: "6",
-    title: "Cultural Festival",
-    image: "/placeholder.svg?height=500&width=600",
-    category: "Events",
-    createdOn: "2024-01-03T13:30:00Z",
-    updatedOn: "2024-01-03T13:30:00Z",
-    description: "Annual cultural festival showcasing diverse traditions from international students.",
-  },
-  {
-    id: "7",
-    title: "Sports Tournament",
-    image: "/placeholder.svg?height=400&width=500",
-    category: "Sports",
-    createdOn: "2024-01-01T10:00:00Z",
-    updatedOn: "2024-01-01T10:00:00Z",
-    description: "Inter-university sports tournament with participants from multiple countries.",
-  },
-  {
-    id: "8",
-    title: "Library Study Area",
-    image: "/placeholder.svg?height=350&width=550",
-    category: "Campus Life",
-    createdOn: "2023-12-28T15:45:00Z",
-    updatedOn: "2023-12-28T15:45:00Z",
-    description: "Modern library facilities providing quiet study spaces for students.",
-  },
-  {
-    id: "9",
-    title: "Research Conference",
-    image: "/placeholder.svg?height=450&width=600",
-    category: "Academic",
-    createdOn: "2023-12-25T09:30:00Z",
-    updatedOn: "2023-12-25T09:30:00Z",
-    description: "Annual research conference featuring presentations from graduate students.",
-  },
-]
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
+import { Search, X, ChevronLeft, ChevronRight, Calendar, Eye, AlertCircle, RefreshCw } from "lucide-react"
+import { useDispatch, useSelector } from "react-redux"
+import { AppDispatch } from "@/lib/redux/store"
+import { fetchActiveGallery, selectActiveGalleryList, selectIsLoading, selectHasFetched, selectError } from "@/lib/redux/features/gallerySlice"
+import Loading from "./loading"
 
 export default function GalleryPage() {
+  const dispatch = useDispatch<AppDispatch>()
+  const galleryItems = useSelector(selectActiveGalleryList)
+  const isLoading = useSelector(selectIsLoading)
+  const hasFetched = useSelector(selectHasFetched)
+  const error = useSelector(selectError)
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("all")
-  const [selectedImage, setSelectedImage] = useState<(typeof galleryItems)[0] | null>(null)
+  const [selectedImage, setSelectedImage] = useState<any>(null)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
+
+  useEffect(() => {
+    dispatch(fetchActiveGallery())
+  }, [dispatch])
 
   const categories = [...new Set(galleryItems.map((item) => item.category))]
 
@@ -108,11 +36,10 @@ export default function GalleryPage() {
       item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.description.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesCategory = selectedCategory === "all" || item.category === selectedCategory
-
     return matchesSearch && matchesCategory
   })
 
-  const openLightbox = (item: (typeof galleryItems)[0]) => {
+  const openLightbox = (item: any) => {
     setSelectedImage(item)
     setCurrentImageIndex(filteredItems.findIndex((i) => i.id === item.id))
   }
@@ -136,6 +63,45 @@ export default function GalleryPage() {
       Sports: "bg-red-100 text-red-800",
     }
     return colors[category as keyof typeof colors] || "bg-gray-100 text-gray-800"
+  }
+
+  if (!hasFetched || isLoading) {
+    return <Loading />
+  }
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+        <div className="max-w-md w-full">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="bg-white rounded-lg shadow-lg p-8 text-center"
+          >
+            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <AlertCircle className="h-8 w-8 text-red-600" />
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Something went wrong</h2>
+            <p className="text-gray-600 mb-6">
+              We couldn't load the gallery images. Please try again.
+            </p>
+            <div className="text-sm text-gray-500 bg-gray-50 rounded-md p-3 mb-6">
+              <strong>Error:</strong> {error}
+            </div>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Button 
+                variant="outline"
+                onClick={() => window.location.reload()}
+                className="border-navy text-navy hover:bg-navy hover:text-white"
+              >
+                <RefreshCw className="h-4 w-4" />
+                Refresh Page
+              </Button>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -228,7 +194,7 @@ export default function GalleryPage() {
                     <p className="text-sm text-gray-600 line-clamp-2 mb-3">{item.description}</p>
                     <div className="flex items-center text-xs text-gray-500">
                       <Calendar className="h-3 w-3 mr-1" />
-                      {new Date(item.createdOn).toLocaleDateString()}
+                      {new Date(item.createdOn).toLocaleDateString('en-US')}
                     </div>
                   </CardContent>
                 </Card>
@@ -247,6 +213,7 @@ export default function GalleryPage() {
       {/* Lightbox Modal */}
       <Dialog open={!!selectedImage} onOpenChange={() => setSelectedImage(null)}>
         <DialogContent className="max-w-4xl w-full p-0 bg-black">
+          <DialogTitle hidden>All Image Model</DialogTitle>
           <AnimatePresence mode="wait">
             {selectedImage && (
               <motion.div

@@ -20,6 +20,25 @@ class GalleryService {
 
         this.isInitialized = true;
     }
+    private static convertTimestamp(timestamp: any): Date {
+        if (timestamp && timestamp._seconds) {
+          return new Date(timestamp._seconds * 1000);
+        }
+        return timestamp instanceof Date ? timestamp : new Date(timestamp);
+      }
+
+      private static convertToType(id: string, data: any): any {
+        return {
+            id,
+            title: data.title || "",
+            image: data.image || "",
+            category: data.category || "",
+            description: data.description || "",
+            status: data.status || "active",
+            createdOn: this.convertTimestamp(data.createdOn),
+            updatedOn: this.convertTimestamp(data.updatedOn),
+        }
+    }
 
     // Get all galleries (Uses cache unless forceRefresh is true)
     static async getAllGalleries(forceRefresh = false) {
@@ -119,6 +138,22 @@ class GalleryService {
             consoleManager.error("Error deleting gallery:", error);
             throw new Error("Failed to delete gallery");
         }
+    }
+
+    // Get all active galleries (Uses cache)
+    static async getAllActiveGalleries(forceRefresh = true) {
+        if (forceRefresh || !this.isInitialized) {
+            consoleManager.log("Force refreshing active galleries from Firestore...");
+            const snapshot = await db
+                .collection("galleries")
+                .where("status", "==", "active")
+                .orderBy("createdOn", "desc")
+                .get();
+            this.galleries = snapshot.docs.map((doc: any) => {return this.convertToType(doc.id, doc.data())});
+        } else {
+            consoleManager.log("Returning cached active galleries. No Firestore read.");
+        }
+        return this.galleries;
     }
 }
 
