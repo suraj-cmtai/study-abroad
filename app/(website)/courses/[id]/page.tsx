@@ -6,7 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Clock, Users, Star, BookOpen, Award, Globe, ArrowRight } from "lucide-react"
-import Link from "next/link"
 import { useDispatch, useSelector } from "react-redux"
 import { AppDispatch } from "@/lib/redux/store"
 import {
@@ -19,6 +18,8 @@ import {
 import Loading from "./loading"
 import { useParams } from "next/navigation"
 import { useEffect } from "react"
+import NotFound from "./not-found"
+import Link from "next/link"
 
 export default function CourseDetailPage() {
   const params = useParams();
@@ -36,15 +37,7 @@ export default function CourseDetailPage() {
 
   if (!hasFetched || loading) return <Loading />;
   if (error) return (
-    <div className="w-full min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="text-center">
-        <h2 className="text-2xl font-bold text-destructive mb-4">Course Not Found</h2>
-        <p className="text-gray-600 mb-6">{error}</p>
-        <Link href="/courses">
-          <Button>Back to Courses</Button>
-        </Link>
-      </div>
-    </div>
+    <NotFound />
   );
   if (!course) return null;
 
@@ -208,13 +201,18 @@ export default function CourseDetailPage() {
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <Button className="w-full bg-orange hover:bg-orange/90 text-white py-3">
-                    Enroll Now
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                  <Button variant="outline" className="w-full border-navy text-navy hover:bg-navy hover:text-white">
-                    Download Brochure
-                  </Button>
+                  <Link href={`/contact?course=${encodeURIComponent(course.title)}`} className="w-full">
+                    <Button className="w-full bg-orange hover:bg-orange/90 text-white py-3">
+                      Enroll Now
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  </Link>
+                  <Separator />
+                  <Link href={`/contact?course=${encodeURIComponent(course.title)}`} className="w-full">
+                    <Button variant="outline" className="w-full border-navy text-navy hover:bg-navy hover:text-white">
+                      Download Brochure
+                    </Button>
+                  </Link>
                   <Separator />
                   <div className="space-y-3 text-sm">
                     <div className="flex justify-between">
@@ -251,9 +249,11 @@ export default function CourseDetailPage() {
                   <p className="text-sm text-gray-600">
                     Have questions about this course? Our counselors are here to help.
                   </p>
-                  <Button variant="outline" className="w-full">
-                    Contact Counselor
-                  </Button>
+                  <Link href={`/contact?course=${encodeURIComponent(course.title)}`}>
+                    <Button variant="outline" className="w-full">
+                      Contact Counselor
+                    </Button>
+                  </Link>
                 </CardContent>
               </Card>
             </motion.div>
