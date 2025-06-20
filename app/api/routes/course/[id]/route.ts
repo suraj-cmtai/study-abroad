@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { UploadImage } from "../../../controller/imageController";
+import { ReplaceImage, UploadImage } from "../../../controller/imageController";
 import CourseService, { CourseLevel, CourseStatus } from "../../../services/courseServices";
 import consoleManager from "../../../utils/consoleManager";
 
@@ -61,7 +61,9 @@ export async function PUT(
         const price = formData.get("price");
         const status = formData.get("status");
         const file = formData.get("image");
-
+        const learningHours = formData.get("learningHours");
+        const modeOfDelivery = formData.get("modeOfDelivery");
+        const modeOfAssessment = formData.get("modeOfAssessment");
         // Validate course exists
         const existingCourse = await CourseService.getCourseById(id);
         if (!existingCourse) {
@@ -76,7 +78,7 @@ export async function PUT(
         
         // Upload new image if provided
         if (file && file instanceof File) {
-            const uploadedUrl = await UploadImage(file, 1200, 800);
+            const uploadedUrl = await ReplaceImage(file, existingCourse.image as string, 1200, 800);
             imageUrl = uploadedUrl as string;
             consoleManager.log("Course image updated:", imageUrl);
         }
@@ -92,7 +94,9 @@ export async function PUT(
         if (price) courseData.price = Number(price);
         if (status) courseData.status = status.toString();
         if (imageUrl) courseData.image = imageUrl;
-        
+        if (learningHours) courseData.learningHours = learningHours.toString();
+        if (modeOfDelivery) courseData.modeOfDelivery = modeOfDelivery.toString();
+        if (modeOfAssessment) courseData.modeOfAssessment = modeOfAssessment.toString();
         // Preserve createdAt and update updatedAt
         courseData.createdAt = existingCourse.createdAt; // Keep original creation date
         courseData.updatedAt = new Date(); // Set current date/time for update

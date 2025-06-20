@@ -26,6 +26,9 @@ interface Course {
   instructor: string;
   enrollmentCount: number;
   image: string | null;
+  learningHours: string;
+  modeOfDelivery: string;
+  modeOfAssessment: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -86,6 +89,9 @@ class CourseService {
       instructor: data.instructor || "",
       enrollmentCount: Number(data.enrollmentCount || 0),
       image: data.image || null,
+      learningHours: data.learningHours || "",
+      modeOfDelivery: data.modeOfDelivery || "",
+      modeOfAssessment: data.modeOfAssessment || "",
       createdAt: this.convertTimestamp(data.createdAt),
       updatedAt: this.convertTimestamp(data.updatedAt),
     };
@@ -112,7 +118,7 @@ class CourseService {
   }
 
   // Get all courses
-  static async getAllCourses(forceRefresh = false) {
+  static async getAllCourses(forceRefresh = true) {
     if (forceRefresh || !this.isInitialized) {
       consoleManager.log("Force refreshing courses from Firestore...");
       const snapshot = await db

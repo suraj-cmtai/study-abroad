@@ -457,7 +457,7 @@ export default function GalleryPage() {
         <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
           <motion.form
             onSubmit={handleSubmit}
-            className="space-y-6"
+            className="space-y-6 w-full max-w-md mx-auto"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ type: "spring", duration: 0.5 }}
@@ -570,7 +570,7 @@ export default function GalleryPage() {
                 />
                 {editImage && !imageFile && (
                   <p className="text-xs text-gray-500 mt-1">
-                    Current image: {editImage.image.split("/").pop()}
+                    Current image: {editImage.image.split("/").pop()?.slice(0, 10)}...
                   </p>
                 )}
                 <p className="text-xs text-gray-500">

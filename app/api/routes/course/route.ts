@@ -61,6 +61,9 @@ export async function POST(req: Request) {
         const price = formData.get("price");
         const status = formData.get("status") || "draft";
         const file = formData.get("image");
+        const learningHours = formData.get("learningHours");
+        const modeOfDelivery = formData.get("modeOfDelivery");
+        const modeOfAssessment = formData.get("modeOfAssessment");
 
         // Validate required fields
         if (!title || !description || !instructor || !duration || !level || !price) {
@@ -99,6 +102,9 @@ export async function POST(req: Request) {
             status: (status?.toString() || CourseStatus.DRAFT) as CourseStatus,
             image: imageUrl as string | null,
             enrollmentCount: 0, // Initialize with 0 enrollments
+            learningHours: learningHours?.toString() || "",
+            modeOfDelivery: modeOfDelivery?.toString() || "",
+            modeOfAssessment: modeOfAssessment?.toString() || "",
         };
 
         const newCourse = await CourseService.addCourse(courseData);
