@@ -287,6 +287,24 @@ class CourseService {
       course.instructor.toLowerCase().includes(searchTerm)
     );
   }
+
+  // Get all active courses (Uses cache)
+  static async getAllActiveCourses(forceRefresh = true) {
+    if (forceRefresh || !this.isInitialized) {
+      consoleManager.log("Force refreshing active courses from Firestore...");
+      const snapshot = await db
+        .collection("courses")
+        .where("status", "==", "active")
+        .orderBy("createdAt", "desc")
+        .get();
+      this.courses = snapshot.docs.map((doc: any) => {
+        return this.convertToType(doc.id, doc.data());
+      });
+    } else {
+      consoleManager.log("Returning cached active courses. No Firestore read.");
+    }
+    return this.courses;
+  }
 }
 
 export default CourseService;

@@ -68,7 +68,7 @@ interface Course {
   duration: string;
   level: 'Beginner' | 'Intermediate' | 'Advanced';
   price: number;
-  status: 'Active' | 'Draft' | 'Archived';
+  status: 'active' | 'draft' | 'archived';
   description: string;
   instructor: string;
   enrollmentCount: number;
@@ -89,7 +89,7 @@ interface CourseFormState {
   duration: string;
   level: 'Beginner' | 'Intermediate' | 'Advanced';
   price: number;
-  status: 'Active' | 'Draft' | 'Archived';
+  status: 'active' | 'draft' | 'archived';
   description: string;
   instructor: string;
   enrollmentCount: number;
@@ -110,7 +110,7 @@ const initialFormState: CourseFormState = {
   duration: "",
   level: "Beginner",
   price: 0,
-  status: "Draft",
+  status: "draft",
   description: "",
   instructor: "",
   enrollmentCount: 0,
@@ -212,15 +212,15 @@ export default function CoursesPage() {
     setIsSubmitting(true)
 
     try {
-      const formData = new FormData()
+    const formData = new FormData()
       formData.append("title", newCourseForm.title.trim())
       formData.append("description", newCourseForm.description.trim())
       formData.append("instructor", newCourseForm.instructor.trim())
       formData.append("category", newCourseForm.category.trim())
       formData.append("duration", newCourseForm.duration.trim())
-      formData.append("level", newCourseForm.level)
+    formData.append("level", newCourseForm.level)
       formData.append("price", Math.max(0, newCourseForm.price).toString())
-      formData.append("status", newCourseForm.status)
+    formData.append("status", newCourseForm.status)
       formData.append("enrollmentCount", Math.max(0, newCourseForm.enrollmentCount).toString())
       formData.append("learningHours", newCourseForm.learningHours.trim())
       formData.append("modeOfDelivery", newCourseForm.modeOfDelivery)
@@ -229,14 +229,14 @@ export default function CoursesPage() {
       formData.append("prerequisites", newCourseForm.prerequisites.split(',').map(s => s.trim()).filter(Boolean).join(','))
       formData.append("careerOpportunities", newCourseForm.careerOpportunities.split(',').map(s => s.trim()).filter(Boolean).join(','))
       
-      if (newCourseForm.imageFile) {
-        formData.append("image", newCourseForm.imageFile)
-      }
+    if (newCourseForm.imageFile) {
+      formData.append("image", newCourseForm.imageFile)
+    }
 
       await dispatch(createCourse(formData)).unwrap()
       resetCreateForm()
-      setIsCreateDialogOpen(false)
-      toast.success("Course created successfully!")
+        setIsCreateDialogOpen(false)
+        toast.success("Course created successfully!")
     } catch (err: any) {
       toast.error(err?.message || err || "Failed to create course")
     } finally {
@@ -297,15 +297,15 @@ export default function CoursesPage() {
     setIsSubmitting(true)
 
     try {
-      const formData = new FormData()
+    const formData = new FormData()
       formData.append("title", editCourseForm.title.trim())
       formData.append("description", editCourseForm.description.trim())
       formData.append("instructor", editCourseForm.instructor.trim())
       formData.append("category", editCourseForm.category.trim())
       formData.append("duration", editCourseForm.duration.trim())
-      formData.append("level", editCourseForm.level)
+    formData.append("level", editCourseForm.level)
       formData.append("price", Math.max(0, editCourseForm.price).toString())
-      formData.append("status", editCourseForm.status)
+    formData.append("status", editCourseForm.status)
       formData.append("enrollmentCount", Math.max(0, editCourseForm.enrollmentCount).toString())
       formData.append("learningHours", editCourseForm.learningHours.trim())
       formData.append("modeOfDelivery", editCourseForm.modeOfDelivery)
@@ -313,18 +313,18 @@ export default function CoursesPage() {
       formData.append("modules", editCourseForm.modules.split(',').map(s => s.trim()).filter(Boolean).join(','))
       formData.append("prerequisites", editCourseForm.prerequisites.split(',').map(s => s.trim()).filter(Boolean).join(','))
       formData.append("careerOpportunities", editCourseForm.careerOpportunities.split(',').map(s => s.trim()).filter(Boolean).join(','))
-      
-      if (editCourseForm.imageFile) {
-        formData.append("image", editCourseForm.imageFile)
-      }
-      if (editCourseForm.removeImage) {
-        formData.append("removeImage", "true")
-      }
+
+    if (editCourseForm.imageFile) {
+      formData.append("image", editCourseForm.imageFile)
+    }
+    if (editCourseForm.removeImage) {
+      formData.append("removeImage", "true")
+    }
 
       await dispatch(updateCourse({ id: selectedCourseId, data: formData })).unwrap()
-      setIsEditDialogOpen(false)
+        setIsEditDialogOpen(false)
       resetEditForm()
-      toast.success("Course updated successfully!")
+        toast.success("Course updated successfully!")
     } catch (err: any) {
       toast.error(err?.message || err || "Failed to update course")
     } finally {
@@ -473,15 +473,15 @@ export default function CoursesPage() {
           <Label htmlFor="status">Status</Label>
           <Select
             value={formState.status}
-            onValueChange={(value: 'Active' | 'Draft' | 'Archived') =>
+            onValueChange={(value: 'active' | 'draft' | 'archived') =>
               setFormState({ ...formState, status: value })
             }
           >
             <SelectTrigger><SelectValue /></SelectTrigger>
             <SelectContent>
-              <SelectItem value="Active">Active</SelectItem>
-              <SelectItem value="Draft">Draft</SelectItem>
-              <SelectItem value="Archived">Archived</SelectItem>
+              <SelectItem value="active">Active</SelectItem>
+              <SelectItem value="draft">Draft</SelectItem>
+              <SelectItem value="archived">Archived</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -499,9 +499,9 @@ export default function CoursesPage() {
             placeholder="0"
           />
         </div>
-        <div className="grid gap-2">
+      <div className="grid gap-2">
           <Label htmlFor="learningHours">Learning Hours</Label>
-          <Input
+        <Input
             id="learningHours"
             value={formState.learningHours}
             onChange={(e) => setFormState({ ...formState, learningHours: e.target.value })}
@@ -530,7 +530,7 @@ export default function CoursesPage() {
             </SelectContent>
           </Select>
         </div>
-        <div className="grid gap-2">
+      <div className="grid gap-2">
           <Label htmlFor="modeOfAssessment">Mode of Assessment</Label>
           <Input
             id="modeOfAssessment"
@@ -554,17 +554,17 @@ export default function CoursesPage() {
               className="w-full h-40 object-cover rounded-md border"
             />
             {!formState.imageFile && (
-              <div className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  id="removeImage"
-                  checked={formState.removeImage}
-                  onChange={(e) => setFormState({ ...formState, removeImage: e.target.checked })}
-                />
-                <Label htmlFor="removeImage" className="text-sm font-medium">
-                  Remove this image on save
-                </Label>
-              </div>
+            <div className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                id="removeImage"
+                checked={formState.removeImage}
+                onChange={(e) => setFormState({ ...formState, removeImage: e.target.checked })}
+              />
+              <Label htmlFor="removeImage" className="text-sm font-medium">
+                Remove this image on save
+              </Label>
+            </div>
             )}
           </div>
         )}
@@ -757,8 +757,8 @@ export default function CoursesPage() {
                       />
                     ) : null}
                     <div className={`h-12 w-16 bg-muted rounded flex items-center justify-center ${course.image ? 'hidden' : ''}`}>
-                      <ImageIcon className="h-6 w-6 text-muted-foreground" />
-                    </div>
+                        <ImageIcon className="h-6 w-6 text-muted-foreground" />
+                      </div>
                   </TableCell>
                   <TableCell className="font-medium max-w-[200px] truncate" title={course.title}>
                     {course.title}
@@ -770,9 +770,9 @@ export default function CoursesPage() {
                     <Badge
                       variant="outline"
                       className={`${
-                        course.status === 'Active'
+                        course.status === 'active'
                           ? 'bg-green-100 text-green-800 border-green-300'
-                          : course.status === 'Draft'
+                          : course.status === 'draft'
                           ? 'bg-yellow-100 text-yellow-800 border-yellow-300'
                           : 'bg-gray-100 text-gray-800 border-gray-300'
                       }`}

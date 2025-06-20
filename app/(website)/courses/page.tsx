@@ -12,8 +12,8 @@ import Link from "next/link"
 import { useDispatch, useSelector } from "react-redux"
 import { AppDispatch } from "@/lib/redux/store"
 import {
-  fetchCourses,
-  selectCourses,
+  fetchActiveCourses,
+  selectActiveCoursesList,
   selectCourseLoading,
   selectCourseError,
   selectCourseHasFetched,
@@ -22,7 +22,7 @@ import Loading from "./loading"
 
 export default function CoursesPage() {
   const dispatch = useDispatch<AppDispatch>()
-  const courses = useSelector(selectCourses)
+  const courses = useSelector(selectActiveCoursesList)
   const isLoading = useSelector(selectCourseLoading)
   const error = useSelector(selectCourseError)
   const hasFetched = useSelector(selectCourseHasFetched)
@@ -31,7 +31,7 @@ export default function CoursesPage() {
   const [selectedLevel, setSelectedLevel] = useState("all")
 
   useEffect(() => {
-    dispatch(fetchCourses())
+    dispatch(fetchActiveCourses())
   }, [dispatch])
 
   // Get unique categories and levels from real data
@@ -132,70 +132,70 @@ export default function CoursesPage() {
             </p>
           </div>
 
-          
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredCourses.map((course, index) => (
-                <motion.div
-                  key={course.id}
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                >
-                  <Card className="h-full card-hover overflow-hidden">
-                    <div className="relative">
-                      <img
-                        src={course.image || "/placeholder.svg"}
-                        alt={course.title}
-                        className="w-full h-48 object-cover"
-                      />
-                      <Badge className="absolute top-4 left-4 bg-orange text-white">{course.level}</Badge>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredCourses.map((course, index) => (
+              <motion.div
+                key={course.id}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+              >
+                <Card className="h-full card-hover overflow-hidden">
+                  <div className="relative">
+                    <img
+                      src={course.image || "/placeholder.svg"}
+                      alt={course.title}
+                      className="w-full h-48 object-cover"
+                    />
+                    <Badge className="absolute top-4 left-4 bg-orange text-white">{course.level}</Badge>
+                  </div>
+
+                  <CardHeader>
+                    <div className="flex items-center justify-between mb-2">
+                      <Badge variant="outline" className="text-navy border-navy">
+                        {course.category}
+                      </Badge>
+                      <div className="flex items-center text-sm text-gray-500">
+                        <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 mr-1" />
+                        4.8
+                      </div>
+                    </div>
+                    <CardTitle className="text-xl text-navy line-clamp-2">{course.title}</CardTitle>
+                  </CardHeader>
+
+                  <CardContent className="space-y-4">
+                    <p className="text-gray-600 text-sm line-clamp-2">{course.description}</p>
+
+                    <div className="flex items-center justify-between text-sm text-gray-500">
+                      <div className="flex items-center">
+                        <Clock className="h-4 w-4 mr-1" />
+                        {course.duration}
+                      </div>
+                      <div className="flex items-center">
+                        <Users className="h-4 w-4 mr-1" />
+                        {course.enrollmentCount} enrolled
+                      </div>
                     </div>
 
-                    <CardHeader>
-                      <div className="flex items-center justify-between mb-2">
-                        <Badge variant="outline" className="text-navy border-navy">
-                          {course.category}
-                        </Badge>
-                        <div className="flex items-center text-sm text-gray-500">
-                          <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 mr-1" />
-                          4.8
-                        </div>
-                      </div>
-                      <CardTitle className="text-xl text-navy line-clamp-2">{course.title}</CardTitle>
-                    </CardHeader>
-
-                    <CardContent className="space-y-4">
-                      <p className="text-gray-600 text-sm line-clamp-2">{course.description}</p>
-
-                      <div className="flex items-center justify-between text-sm text-gray-500">
-                        <div className="flex items-center">
-                          <Clock className="h-4 w-4 mr-1" />
-                          {course.duration}
-                        </div>
-                        <div className="flex items-center">
-                          <Users className="h-4 w-4 mr-1" />
-                          {course.enrollmentCount} enrolled
-                        </div>
-                      </div>
-
-                      <div className="flex items-center justify-between pt-4 border-t">
-                        <div>
+                    <div className="flex items-center justify-between pt-4 border-t">
+                      <div>
                           <div className="text-2xl font-bold text-navy">${course.price?.toLocaleString?.() ?? course.price}</div>
-                          <div className="text-sm text-gray-500">Total Program</div>
-                        </div>
-                        <Link href={`/courses/${course.id}`}>
-                          <Button className="bg-navy hover:bg-navy/90">
-                            Learn More
-                            <ArrowRight className="ml-2 h-4 w-4" />
-                          </Button>
-                        </Link>
+                        <div className="text-sm text-gray-500">Total Program</div>
                       </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
-          
+                      <Link href={`/courses/${course.id}`}>
+                        <Button className="bg-navy hover:bg-navy/90">
+                          Learn More
+                          <ArrowRight className="ml-2 h-4 w-4" />
+                        </Button>
+                      </Link>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+
 
           {hasFetched && !isLoading && !error && filteredCourses.length === 0 && (
             <div className="text-center py-12">

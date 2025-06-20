@@ -11,7 +11,7 @@ interface Course {
   duration: string;
   level: 'Beginner' | 'Intermediate' | 'Advanced';
   price: number;
-  status: 'Active' | 'Draft' | 'Archived';
+  status: 'active' | 'draft' | 'archived';  
   description: string;
   instructor: string;
   enrollmentCount: number;
@@ -130,6 +130,19 @@ export const deleteCourse = createAsyncThunk<string, string>(
   }
 );
 
+// Fetch all active courses
+export const fetchActiveCourses = createAsyncThunk<Course[]>(
+  "course/fetchActiveCourses",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get("/api/routes/course/active");
+      return response.data.data;
+    } catch (error: unknown) {
+      return rejectWithValue(getErrorMessage(error));
+    }
+  }
+);
+
 const courseSlice = createSlice({
   name: "course",
   initialState,
@@ -239,6 +252,22 @@ const courseSlice = createSlice({
       .addCase(deleteCourse.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
+      })
+
+      // Fetch active Courses
+      .addCase(fetchActiveCourses.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchActiveCourses.fulfilled, (state, action: PayloadAction<Course[]>) => {
+        state.courses = action.payload;
+        state.loading = false;
+        state.hasFetched = true;
+      })
+      .addCase(fetchActiveCourses.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+        state.hasFetched = true;
       });
   },
 });
@@ -290,7 +319,7 @@ export const selectFilteredCourses = (state: RootState) => {
 };
 
 export const selectActiveCourses = (state: RootState) => {
-  return state.course.courses.filter(course => course.status === 'Active');
+  return state.course.courses.filter(course => course.status === 'active');
 };
 
 export const selectCoursesByCategory = (state: RootState) => {
@@ -314,5 +343,8 @@ export const selectCoursesByLevel = (state: RootState) => {
     return acc;
   }, {} as Record<string, Course[]>);
 };
+
+// Selector for active courses list
+export const selectActiveCoursesList = (state: RootState) => state.course.courses.filter(course => course.status === 'active');
 
 export default courseSlice.reducer;
