@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -22,6 +22,14 @@ import {
   Globe,
   HeadphonesIcon,
 } from "lucide-react"
+import { useDispatch, useSelector } from "react-redux"
+import { AppDispatch } from "@/lib/redux/store"
+import {
+  createContact,
+  selectContactLoading,
+  selectContactError,
+} from "@/lib/redux/features/contactSlice"
+import { useSearchParams } from "next/navigation"
 
 interface ContactForm {
   name: string
@@ -70,41 +78,57 @@ const subjects = [
 ]
 
 export default function ContactPage() {
-  const [formData, setFormData] = useState<ContactForm>({
+  const dispatch = useDispatch<AppDispatch>()
+  const loading = useSelector(selectContactLoading)
+  const error = useSelector(selectContactError)
+  const searchParams = useSearchParams()
+  const courseParam = searchParams.get("course")
+
+  const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
-    subject: "",
-    message: "",
+    subject: courseParam ? "Course Information" : "",
+    message: courseParam ? `I am interested in the course: ${courseParam}` : "",
   })
-  const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
+
+  useEffect(() => {
+    if (courseParam) {
+      setFormData((prev) => ({
+        ...prev,
+        subject: "Course Information",
+        message: `I am interested in the course: ${courseParam}`,
+      }))
+    }
+  }, [courseParam])
 
   const handleInputChange = (field: keyof ContactForm, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setIsSubmitting(true)
-
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-
-    setIsSubmitted(true)
-    setIsSubmitting(false)
-
-    // Reset form after success message
-    setTimeout(() => {
-      setIsSubmitted(false)
+    const data = new FormData()
+    data.append("name", formData.name)
+    data.append("email", formData.email)
+    data.append("phone", formData.phone)
+    data.append("subject", formData.subject)
+    data.append("message", formData.message)
+    try {
+      await dispatch(createContact(data)).unwrap()
+      setIsSubmitted(true)
       setFormData({
         name: "",
         email: "",
         phone: "",
-        subject: "",
-        message: "",
+        subject: courseParam ? "Course Information" : "",
+        message: courseParam ? `I am interested in the course: ${courseParam}` : "",
       })
-    }, 3000)
+      setTimeout(() => setIsSubmitted(false), 4000)
+    } catch (err) {
+      // error handled by redux
+    }
   }
 
   return (
@@ -142,6 +166,9 @@ export default function ContactPage() {
                   <p className="text-gray-600">Fill out the form below and we'll get back to you within 24 hours.</p>
                 </CardHeader>
                 <CardContent>
+                  {error && (
+                    <div className="mb-4 text-destructive text-center font-medium">{error}</div>
+                  )}
                   {!isSubmitted ? (
                     <form onSubmit={handleSubmit} className="space-y-6">
                       {/* Name Field */}
@@ -229,10 +256,10 @@ export default function ContactPage() {
                       {/* Submit Button */}
                       <Button
                         type="submit"
-                        disabled={isSubmitting}
+                        disabled={loading}
                         className="w-full bg-orange hover:bg-orange/90 text-white py-3 text-lg"
                       >
-                        {isSubmitting ? (
+                        {loading ? (
                           "Sending Message..."
                         ) : (
                           <>
