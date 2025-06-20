@@ -8,27 +8,35 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
 import { Mail, CheckCircle, ArrowRight } from "lucide-react"
+import { useDispatch, useSelector } from "react-redux"
+import { AppDispatch } from "@/lib/redux/store"
+import {
+  createSubscriber,
+  selectSubscriberLoading,
+  selectSubscriberError,
+} from "@/lib/redux/features/subscriberSlice"
 
 export function NewsletterSection() {
   const [email, setEmail] = useState("")
   const [isSubscribed, setIsSubscribed] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
+  const dispatch = useDispatch<AppDispatch>()
+  const loading = useSelector(selectSubscriberLoading)
+  const error = useSelector(selectSubscriberError)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!email) return
-
-    setIsLoading(true)
-
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-
-    setIsSubscribed(true)
-    setIsLoading(false)
-    setEmail("")
-
-    // Reset success message after 3 seconds
-    setTimeout(() => setIsSubscribed(false), 3000)
+    const data = new FormData()
+    data.append("email", email)
+    data.append("source", "newsletter-section")
+    try {
+      await dispatch(createSubscriber(data)).unwrap()
+      setIsSubscribed(true)
+      setEmail("")
+      setTimeout(() => setIsSubscribed(false), 3000)
+    } catch (err) {
+      // error handled by redux
+    }
   }
 
   return (
@@ -72,10 +80,10 @@ export function NewsletterSection() {
                     />
                     <Button
                       type="submit"
-                      disabled={isLoading}
+                      disabled={loading}
                       className="bg-orange hover:bg-orange/90 text-white px-8 py-3 whitespace-nowrap"
                     >
-                      {isLoading ? (
+                      {loading ? (
                         "Subscribing..."
                       ) : (
                         <>
@@ -85,6 +93,7 @@ export function NewsletterSection() {
                       )}
                     </Button>
                   </div>
+                  {error && <div className="text-red-400 text-sm text-left">{error}</div>}
                   <p className="text-sm text-gray-300">
                     Join 10,000+ students who trust us for their study abroad journey. Unsubscribe anytime.
                   </p>

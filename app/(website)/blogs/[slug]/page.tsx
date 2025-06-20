@@ -1,13 +1,13 @@
 "use client"
 
-import { use, useEffect } from "react"
+import { use, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Calendar, User, Clock, Share2, BookmarkPlus, ArrowLeft } from "lucide-react"
+import { Calendar, User, Clock, Share2, BookmarkPlus, ArrowLeft, CheckCircle } from "lucide-react"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { AppDispatch } from "@/lib/redux/store"
@@ -21,6 +21,11 @@ import {
   clearCurrentBlog,
   selectHasFetchedBlogBySlug
 } from "@/lib/redux/features/blogSlice"
+import {
+  createSubscriber,
+  selectSubscriberLoading,
+  selectSubscriberError,
+} from "@/lib/redux/features/subscriberSlice"
 import Loading from "./loading"
 import NotFound from "./not-found"
 
@@ -30,6 +35,10 @@ export default function BlogDetailPage({ params }: { params: Promise<{ slug: str
   const allBlogs = useSelector(selectBlogs)
   const hasFetchedBlogBySlug = useSelector(selectHasFetchedBlogBySlug)
   const error = useSelector(selectBlogError)
+  const [subscriberEmail, setSubscriberEmail] = useState("")
+  const [isSubscribed, setIsSubscribed] = useState(false)
+  const subscriberLoading = useSelector(selectSubscriberLoading)
+  const subscriberError = useSelector(selectSubscriberError)
 
   useEffect(() => {
     const loadBlog = async () => {
@@ -65,6 +74,22 @@ export default function BlogDetailPage({ params }: { params: Promise<{ slug: str
     const wordsPerMinute = 200
     const wordCount = content.replace(/<[^>]*>/g, '').split(/\s+/).length
     return Math.ceil(wordCount / wordsPerMinute)
+  }
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!subscriberEmail) return
+    const data = new FormData()
+    data.append("email", subscriberEmail)
+    data.append("source", "blog-sidebar")
+    try {
+      await dispatch(createSubscriber(data)).unwrap()
+      setIsSubscribed(true)
+      setSubscriberEmail("")
+      setTimeout(() => setIsSubscribed(false), 3000)
+    } catch (err) {
+      // error handled by redux
+    }
   }
 
   // Show loading.tsx while loading
@@ -259,14 +284,28 @@ export default function BlogDetailPage({ params }: { params: Promise<{ slug: str
               <p className="text-gray-600 text-sm mb-4">
                 Get the latest study abroad insights delivered to your inbox.
               </p>
-              <div className="space-y-3">
-                <input
-                  type="email"
-                  placeholder="Enter your email"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange"
-                />
-                <Button className="w-full bg-orange hover:bg-orange/90">Subscribe</Button>
-              </div>
+              {!isSubscribed ? (
+                <form onSubmit={handleSubscribe} className="space-y-3">
+                  <input
+                    type="email"
+                    placeholder="Enter your email"
+                    value={subscriberEmail}
+                    onChange={(e) => setSubscriberEmail(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange"
+                    required
+                  />
+                  <Button type="submit" className="w-full bg-orange hover:bg-orange/90" disabled={subscriberLoading}>
+                    {subscriberLoading ? "Subscribing..." : "Subscribe"}
+                  </Button>
+                  {subscriberError && <div className="text-red-500 text-sm">{subscriberError}</div>}
+                </form>
+              ) : (
+                <div className="text-center py-4">
+                  <CheckCircle className="h-10 w-10 text-green-500 mx-auto mb-2" />
+                  <div className="font-semibold text-navy mb-1">Successfully Subscribed!</div>
+                  <div className="text-gray-500 text-sm">Thank you for subscribing. You'll receive our latest updates soon.</div>
+                </div>
+              )}
             </motion.div>
 
             {/* Popular Tags */}
