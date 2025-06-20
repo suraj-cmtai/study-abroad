@@ -27,6 +27,7 @@ interface Course {
 interface CourseState {
   courses: Course[];
   loading: boolean;
+  hasFetched: boolean;
   error: string | null;
   selectedCourse: Course | null;
   filters: {
@@ -41,6 +42,7 @@ interface CourseState {
 const initialState: CourseState = {
   courses: [],
   loading: false,
+  hasFetched: false,
   error: null,
   selectedCourse: null,
   filters: {
@@ -159,10 +161,12 @@ const courseSlice = createSlice({
       .addCase(fetchCourses.fulfilled, (state, action: PayloadAction<Course[]>) => {
         state.courses = action.payload;
         state.loading = false;
+        state.hasFetched = true;
       })
       .addCase(fetchCourses.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
+        state.hasFetched = true;
       })
 
       // Fetch Course by ID
@@ -173,10 +177,12 @@ const courseSlice = createSlice({
       .addCase(fetchCourseById.fulfilled, (state, action: PayloadAction<Course>) => {
         state.selectedCourse = action.payload;
         state.loading = false;
+        state.hasFetched = true;
       })
       .addCase(fetchCourseById.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
+        state.hasFetched = true;
       })
 
       // Create Course
@@ -250,6 +256,7 @@ export const selectCourseError = (state: RootState) => state.course.error;
 export const selectSelectedCourse = (state: RootState) => state.course.selectedCourse;
 export const selectSearchQuery = (state: RootState) => state.course.searchQuery;
 export const selectFilters = (state: RootState) => state.course.filters;
+export const selectCourseHasFetched = (state: RootState) => state.course.hasFetched;
 
 // Advanced selectors with filtering and searching
 export const selectFilteredCourses = (state: RootState) => {
