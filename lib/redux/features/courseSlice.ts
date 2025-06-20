@@ -22,6 +22,9 @@ interface Course {
   learningHours?: string;
   modeOfDelivery?: 'Online' | 'On-campus' | 'Hybrid' | 'Self-paced';
   modeOfAssessment?: string;
+  modules?: string[];
+  prerequisites?: string[];
+  careerOpportunities?: string[];
 }
 
 interface CourseState {

@@ -64,6 +64,9 @@ export async function PUT(
         const learningHours = formData.get("learningHours");
         const modeOfDelivery = formData.get("modeOfDelivery");
         const modeOfAssessment = formData.get("modeOfAssessment");
+        const modules = formData.get("modules");
+        const prerequisites = formData.get("prerequisites");
+        const careerOpportunities = formData.get("careerOpportunities");
         // Validate course exists
         const existingCourse = await CourseService.getCourseById(id);
         if (!existingCourse) {
@@ -97,6 +100,9 @@ export async function PUT(
         if (learningHours) courseData.learningHours = learningHours.toString();
         if (modeOfDelivery) courseData.modeOfDelivery = modeOfDelivery.toString();
         if (modeOfAssessment) courseData.modeOfAssessment = modeOfAssessment.toString();
+        if (modules) courseData.modules = modules.toString().split(',');
+        if (prerequisites) courseData.prerequisites = prerequisites.toString().split(',');
+        if (careerOpportunities) courseData.careerOpportunities = careerOpportunities.toString().split(',');
         // Preserve createdAt and update updatedAt
         courseData.createdAt = existingCourse.createdAt; // Keep original creation date
         courseData.updatedAt = new Date(); // Set current date/time for update

@@ -64,6 +64,9 @@ export async function POST(req: Request) {
         const learningHours = formData.get("learningHours");
         const modeOfDelivery = formData.get("modeOfDelivery");
         const modeOfAssessment = formData.get("modeOfAssessment");
+        const modules = formData.get("modules");
+        const prerequisites = formData.get("prerequisites");
+        const careerOpportunities = formData.get("careerOpportunities");
 
         // Validate required fields
         if (!title || !description || !instructor || !duration || !level || !price) {
@@ -105,7 +108,10 @@ export async function POST(req: Request) {
             learningHours: learningHours?.toString() || "",
             modeOfDelivery: modeOfDelivery?.toString() || "",
             modeOfAssessment: modeOfAssessment?.toString() || "",
-        };
+            modules: modules?.toString().split(',') || [],
+            prerequisites: prerequisites?.toString().split(',') || [],
+            careerOpportunities: careerOpportunities?.toString().split(',') || [],
+            };
 
         const newCourse = await CourseService.addCourse(courseData);
 

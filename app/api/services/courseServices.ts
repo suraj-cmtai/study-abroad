@@ -31,6 +31,9 @@ interface Course {
   modeOfAssessment: string;
   createdAt: Date;
   updatedAt: Date;
+  modules?: string[];
+  prerequisites?: string[];
+  careerOpportunities?: string[];
 }
 
 // Course Services
@@ -94,6 +97,9 @@ class CourseService {
       modeOfAssessment: data.modeOfAssessment || "",
       createdAt: this.convertTimestamp(data.createdAt),
       updatedAt: this.convertTimestamp(data.updatedAt),
+      modules: data.modules || [],
+      prerequisites: data.prerequisites || [],
+      careerOpportunities: data.careerOpportunities || [],
     };
   }
 
