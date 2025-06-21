@@ -356,6 +356,11 @@ export default function GalleryPage() {
                 {/* Image container with hover effects */}
                 <motion.div
                   className="relative aspect-[4/3] bg-gray-50 cursor-pointer"
+                  style={{
+                    backgroundImage: `url('/placeholder.svg')`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                  }}
                   whileHover={{ scale: 1.05 }}
                   transition={{ type: "spring", stiffness: 300, damping: 30 }}
                   onClick={() => {
@@ -547,12 +552,18 @@ export default function GalleryPage() {
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.8 }}
-                      className="relative rounded-lg overflow-hidden group"
+                      className="relative rounded-lg overflow-hidden group h-48"
+                      style={{
+                        backgroundImage: `url('/placeholder.svg')`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                      }}
                     >
-                      <img
+                      <Image
                         src={imagePreview || editImage?.image || ""}
                         alt="Preview"
-                        className="w-full h-48 object-cover transition-transform duration-200 group-hover:scale-105"
+                        fill
+                        className="object-cover transition-transform duration-200 group-hover:scale-105"
                       />
                       <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
                         <ZoomIn className="w-8 h-8 text-white" />
@@ -694,7 +705,15 @@ export default function GalleryPage() {
 
             {/* Main image */}
             {filteredImages[lightboxIndex] && (
-              <div className="relative h-full w-full flex items-center justify-center">
+              <div
+                className="relative h-full w-full flex items-center justify-center"
+                style={{
+                  backgroundImage: `url('/placeholder.svg')`,
+                  backgroundSize: "contain",
+                  backgroundRepeat: "no-repeat",
+                  backgroundPosition: "center",
+                }}
+              >
                 <Image
                   src={filteredImages[lightboxIndex].image}
                   alt={filteredImages[lightboxIndex].title}

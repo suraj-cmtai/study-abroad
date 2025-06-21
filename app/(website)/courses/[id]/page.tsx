@@ -1,6 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -45,11 +46,20 @@ export default function CourseDetailPage() {
     <div className="w-full min-h-screen bg-gray-50">
       {/* Hero Section */}
       <section className="relative">
-        <div className="relative h-96 overflow-hidden">
-          <img
+        <div
+          className="relative h-96 overflow-hidden"
+          style={{
+            backgroundImage: `url('/placeholder.svg')`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        >
+          <Image
             src={course.image || "/placeholder.svg"}
             alt={course.title}
-            className="w-full h-full object-cover"
+            fill
+            className="object-cover"
+            priority
           />
           <div className="absolute inset-0 bg-navy/70"></div>
         </div>

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
+import Image from "next/image"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -178,11 +179,20 @@ export default function GalleryPage() {
                 onClick={() => openLightbox(item)}
               >
                 <Card className="overflow-hidden card-hover">
-                  <div className="relative">
-                    <img
+                  <div
+                    className="relative h-64"
+                    style={{
+                      backgroundImage: `url('/placeholder.svg')`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                    }}
+                  >
+                    <Image
                       src={item.image || "/placeholder.svg"}
                       alt={item.title}
+                      fill
                       className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw, 25vw"
                     />
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300 flex items-center justify-center">
                       <Eye className="h-8 w-8 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" />

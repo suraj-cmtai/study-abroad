@@ -3,6 +3,7 @@
 import { use, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { motion } from "framer-motion"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
@@ -133,11 +134,20 @@ export default function BlogDetailPage({ params }: { params: Promise<{ slug: str
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
       <section className="w-full relative">
-        <div className="relative h-96 overflow-hidden">
-          <img 
+        <div
+          className="relative h-96 overflow-hidden"
+          style={{
+            backgroundImage: `url('/placeholder.svg')`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        >
+          <Image
             src={currentBlog.image || "/placeholder.svg?height=400&width=800"} 
             alt={currentBlog.title} 
-            className="w-full h-full object-cover" 
+            fill
+            className="object-cover"
+            priority
           />
           <div className="absolute inset-0 bg-navy/70"></div>
         </div>
@@ -253,11 +263,21 @@ export default function BlogDetailPage({ params }: { params: Promise<{ slug: str
                   {relatedPosts.map((post) => (
                     <Link key={post.id} href={`/blogs/${post.slug}`} className="group">
                       <div className="flex space-x-4 p-4 rounded-xl hover:bg-gray-50 transition-colors">
-                        <img
-                          src={post.image || "/placeholder.svg?height=150&width=200"}
-                          alt={post.title}
-                          className="w-20 h-20 object-cover rounded-lg flex-shrink-0"
-                        />
+                        <div
+                          className="relative w-20 h-20 rounded-lg flex-shrink-0 overflow-hidden"
+                          style={{
+                            backgroundImage: `url('/placeholder.svg')`,
+                            backgroundSize: "cover",
+                            backgroundPosition: "center",
+                          }}
+                        >
+                          <Image
+                            src={post.image || "/placeholder.svg?height=150&width=200"}
+                            alt={post.title}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
                         <div>
                           <h4 className="font-semibold text-navy group-hover:text-orange transition-colors line-clamp-2">
                             {post.title}

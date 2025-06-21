@@ -23,6 +23,7 @@ import {
   selectBlogError
 } from "@/lib/redux/features/blogSlice"
 import { AppDispatch } from "@/lib/redux/store"
+import Image from "next/image"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -354,11 +355,21 @@ export default function BlogsPage() {
           {formState.existingImageUrl && !formState.imageFile && (
             <div className="my-2 space-y-2">
               <p className="text-sm text-muted-foreground">Current image:</p>
-              <img 
-                src={formState.existingImageUrl} 
-                alt="Current" 
-                className="w-full h-40 object-cover rounded-md border" 
-              />
+              <div
+                className="relative w-full h-40"
+                style={{
+                  backgroundImage: `url('/placeholder.svg')`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                }}
+              >
+                <Image
+                  src={formState.existingImageUrl} 
+                  alt="Current" 
+                  fill
+                  className="object-cover rounded-md border" 
+                />
+              </div>
               <div className="flex items-center space-x-2">
                 <Checkbox 
                   id="removeImage" 
@@ -469,13 +480,27 @@ export default function BlogsPage() {
               filteredBlogs.map((blog) => (
                 <TableRow key={blog.id}>
                   <TableCell>
-                    {blog.image ? (
-                      <img src={blog.image} alt={blog.title} className="h-12 w-16 object-cover rounded" />
-                    ) : (
-                      <div className="h-12 w-16 bg-muted rounded flex items-center justify-center">
-                        <ImageIcon className="h-6 w-6 text-muted-foreground" />
-                      </div>
-                    )}
+                    <div
+                      className="relative w-16 h-12 rounded overflow-hidden"
+                      style={{
+                        backgroundImage: `url('/placeholder.svg')`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                      }}
+                    >
+                      {blog.image ? (
+                        <Image
+                          src={blog.image}
+                          alt={blog.title}
+                          fill
+                          className="object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-muted flex items-center justify-center">
+                          <ImageIcon className="h-6 w-6 text-muted-foreground" />
+                        </div>
+                      )}
+                    </div>
                   </TableCell>
                   <TableCell className="font-medium max-w-[250px] truncate" title={blog.title}>
                     {blog.title}

@@ -2,6 +2,7 @@
 
 import { useEffect } from "react"
 import { motion } from "framer-motion"
+import Image from "next/image"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -110,11 +111,20 @@ export function CoursesPreview() {
                 viewport={{ once: true }}
               >
                 <Card className="h-full card-hover overflow-hidden">
-                  <div className="relative">
-                    <img
+                  <div
+                    className="relative h-48"
+                    style={{
+                      backgroundImage: `url('/placeholder.svg')`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                    }}
+                  >
+                    <Image
                       src={course.image || "/placeholder.svg"}
                       alt={course.title}
-                      className="w-full h-48 object-cover"
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
                     <Badge className="absolute top-4 left-4 bg-orange text-white">{course.level}</Badge>
                   </div>

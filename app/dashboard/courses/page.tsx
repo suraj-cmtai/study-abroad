@@ -23,6 +23,7 @@ import {
   selectCourseError
 } from "@/lib/redux/features/courseSlice"
 import { AppDispatch } from "@/lib/redux/store"
+import Image from "next/image"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -548,11 +549,26 @@ export default function CoursesPage() {
             <p className="text-sm text-muted-foreground">
               {formState.imageFile ? 'New image preview:' : 'Current image:'}
             </p>
-            <img
-              src={formState.image}
-              alt="Course preview"
-              className="w-full h-40 object-cover rounded-md border"
-            />
+            <div
+              className="relative w-full h-40"
+              style={{
+                backgroundImage: `url('/placeholder.svg')`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
+            >
+              <Image
+                src={formState.image}
+                alt="Course preview"
+                fill
+                className="object-cover rounded-md border"
+                onError={(e) => {
+                  // Fallback to placeholder if image fails to load
+                  e.currentTarget.style.display = 'none'
+                  e.currentTarget.parentElement?.nextElementSibling?.classList.remove('hidden')
+                }}
+              />
+            </div>
             {!formState.imageFile && (
             <div className="flex items-center space-x-2">
               <input
@@ -744,21 +760,31 @@ export default function CoursesPage() {
                   className="group"
                 >
                   <TableCell>
-                    {course.image ? (
-                      <img
-                        src={course.image}
-                        alt={course.title}
-                        className="h-12 w-16 object-cover rounded"
-                        onError={(e) => {
-                          // Fallback to placeholder if image fails to load
-                          e.currentTarget.style.display = 'none'
-                          e.currentTarget.nextElementSibling?.classList.remove('hidden')
-                        }}
-                      />
-                    ) : null}
-                    <div className={`h-12 w-16 bg-muted rounded flex items-center justify-center ${course.image ? 'hidden' : ''}`}>
-                        <ImageIcon className="h-6 w-6 text-muted-foreground" />
-                      </div>
+                    <div
+                      className="relative w-16 h-12"
+                      style={{
+                        backgroundImage: `url('/placeholder.svg')`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                      }}
+                    >
+                      {course.image ? (
+                        <Image
+                          src={course.image}
+                          alt={course.title}
+                          fill
+                          className="object-cover rounded"
+                          onError={(e) => {
+                            // Fallback to placeholder if image fails to load
+                            e.currentTarget.style.display = 'none'
+                            e.currentTarget.parentElement?.nextElementSibling?.classList.remove('hidden')
+                          }}
+                        />
+                      ) : null}
+                      <div className={`w-full h-full bg-muted rounded flex items-center justify-center ${course.image ? 'hidden' : ''}`}>
+                          <ImageIcon className="h-6 w-6 text-muted-foreground" />
+                        </div>
+                    </div>
                   </TableCell>
                   <TableCell className="font-medium max-w-[200px] truncate" title={course.title}>
                     {course.title}

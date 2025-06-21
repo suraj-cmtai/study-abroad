@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
@@ -113,15 +114,22 @@ export function GalleryPreview() {
                 whileInView={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className={`relative overflow-hidden rounded-2xl shadow-lg card-hover cursor-pointer ${
-                  index === 1 ? "md:row-span-2" : ""
+                className={`relative overflow-hidden rounded-2xl shadow-lg card-hover cursor-pointer h-64 ${
+                  index === 1 ? "md:row-span-2 md:h-full" : ""
                 }`}
+                style={{
+                  backgroundImage: `url('/placeholder.svg')`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                }}
                 onClick={() => openLightbox(image)}
               >
-                <img
+                <Image
                   src={image.image || "/placeholder.svg"}
                   alt={image.title}
-                  className="w-full h-full object-cover min-h-[250px]"
+                  fill
+                  className="object-cover"
+                  sizes="(min-width: 768px) 50vw, 100vw"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300">
                   <div className="absolute bottom-4 left-4 right-4">

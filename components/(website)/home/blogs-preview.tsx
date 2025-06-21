@@ -1,6 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
+import Image from "next/image"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -73,8 +74,21 @@ export function BlogsPreview() {
                 viewport={{ once: true }}
               >
                 <Card className="h-full card-hover overflow-hidden">
-                  <div className="relative">
-                    <img src={blog.image || "/placeholder.svg"} alt={blog.title} className="w-full h-48 object-cover" />
+                  <div
+                    className="relative h-48"
+                    style={{
+                      backgroundImage: `url('/placeholder.svg')`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                    }}
+                  >
+                    <Image
+                      src={blog.image || "/placeholder.svg"}
+                      alt={blog.title}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    />
                     <Badge className="absolute top-4 left-4 bg-navy text-white">{blog.category}</Badge>
                   </div>
 
