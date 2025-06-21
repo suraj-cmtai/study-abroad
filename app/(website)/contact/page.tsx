@@ -43,25 +43,25 @@ const contactInfo = [
   {
     icon: MapPin,
     title: "Visit Our Office",
-    details: ["123 Education Street", "Mumbai, Maharashtra 400001", "India"],
+    details: ["Suite 807, 8th Floor, Building 91,Bhandari House, Nehru Place, New Delhi 110019"],
     color: "text-blue-600",
   },
   {
     icon: Phone,
     title: "Call Us",
-    details: ["+91 98765 43210", "+91 98765 43211", "Mon-Fri: 9AM-6PM IST"],
+    details: ["+91 981-892-9900", "+91 977-397-6221", "Sun-Sat: 10AM-7:30PM IST"],
     color: "text-green-600",
   },
   {
     icon: Mail,
     title: "Email Us",
-    details: ["info@studyabroadind.com", "support@studyabroadind.com", "admissions@studyabroadind.com"],
+    details: ["info@studyabroadind.com"],
     color: "text-orange",
   },
   {
     icon: Clock,
     title: "Business Hours",
-    details: ["Monday - Friday: 9:00 AM - 6:00 PM", "Saturday: 10:00 AM - 4:00 PM", "Sunday: Closed"],
+    details: ["Sunday - Saturday: 10:00 AM - 7:30 PM"],
     color: "text-purple-600",
   },
 ]
@@ -146,7 +146,8 @@ export default function ContactPage() {
               Get in <span className="text-orange">Touch</span>
             </h1>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              Have questions about studying abroad? Our expert counselors are here to help you every step of the way.
+              Have questions about studying abroad? Our expert counselors are
+              here to help you every step of the way.
             </p>
           </motion.div>
         </div>
@@ -168,11 +169,16 @@ export default function ContactPage() {
                     <MessageSquare className="h-6 w-6 mr-3 text-orange" />
                     Send us a Message
                   </CardTitle>
-                  <p className="text-gray-600">Fill out the form below and we'll get back to you within 24 hours.</p>
+                  <p className="text-gray-600">
+                    Fill out the form below and we'll get back to you within 24
+                    hours.
+                  </p>
                 </CardHeader>
                 <CardContent>
                   {error && (
-                    <div className="mb-4 text-destructive text-center font-medium">{error}</div>
+                    <div className="mb-4 text-destructive text-center font-medium">
+                      {error}
+                    </div>
                   )}
                   {!isSubmitted ? (
                     <form onSubmit={handleSubmit} className="space-y-6">
@@ -186,7 +192,9 @@ export default function ContactPage() {
                           type="text"
                           placeholder="Enter your full name"
                           value={formData.name}
-                          onChange={(e) => handleInputChange("name", e.target.value)}
+                          onChange={(e) =>
+                            handleInputChange("name", e.target.value)
+                          }
                           className="border-gray-300 focus:border-orange focus:ring-orange"
                           required
                         />
@@ -195,7 +203,10 @@ export default function ContactPage() {
                       {/* Email and Phone Row */}
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <Label htmlFor="email" className="text-navy font-medium">
+                          <Label
+                            htmlFor="email"
+                            className="text-navy font-medium"
+                          >
                             Email Address *
                           </Label>
                           <Input
@@ -203,13 +214,18 @@ export default function ContactPage() {
                             type="email"
                             placeholder="Enter your email"
                             value={formData.email}
-                            onChange={(e) => handleInputChange("email", e.target.value)}
+                            onChange={(e) =>
+                              handleInputChange("email", e.target.value)
+                            }
                             className="border-gray-300 focus:border-orange focus:ring-orange"
                             required
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="phone" className="text-navy font-medium">
+                          <Label
+                            htmlFor="phone"
+                            className="text-navy font-medium"
+                          >
                             Phone Number *
                           </Label>
                           <Input
@@ -217,7 +233,9 @@ export default function ContactPage() {
                             type="tel"
                             placeholder="Enter your phone number"
                             value={formData.phone}
-                            onChange={(e) => handleInputChange("phone", e.target.value)}
+                            onChange={(e) =>
+                              handleInputChange("phone", e.target.value)
+                            }
                             className="border-gray-300 focus:border-orange focus:ring-orange"
                             required
                           />
@@ -226,10 +244,18 @@ export default function ContactPage() {
 
                       {/* Subject Field */}
                       <div className="space-y-2">
-                        <Label htmlFor="subject" className="text-navy font-medium">
+                        <Label
+                          htmlFor="subject"
+                          className="text-navy font-medium"
+                        >
                           Subject *
                         </Label>
-                        <Select value={formData.subject} onValueChange={(value) => handleInputChange("subject", value)}>
+                        <Select
+                          value={formData.subject}
+                          onValueChange={(value) =>
+                            handleInputChange("subject", value)
+                          }
+                        >
                           <SelectTrigger className="border-gray-300 focus:border-orange focus:ring-orange">
                             <SelectValue placeholder="Select a subject" />
                           </SelectTrigger>
@@ -245,14 +271,19 @@ export default function ContactPage() {
 
                       {/* Message Field */}
                       <div className="space-y-2">
-                        <Label htmlFor="message" className="text-navy font-medium">
+                        <Label
+                          htmlFor="message"
+                          className="text-navy font-medium"
+                        >
                           Message *
                         </Label>
                         <Textarea
                           id="message"
                           placeholder="Tell us about your study abroad goals and how we can help you..."
                           value={formData.message}
-                          onChange={(e) => handleInputChange("message", e.target.value)}
+                          onChange={(e) =>
+                            handleInputChange("message", e.target.value)
+                          }
                           className="border-gray-300 focus:border-orange focus:ring-orange min-h-[120px]"
                           required
                         />
@@ -281,13 +312,19 @@ export default function ContactPage() {
                       className="text-center py-12"
                     >
                       <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
-                      <h3 className="text-2xl font-bold text-navy mb-2">Message Sent Successfully!</h3>
+                      <h3 className="text-2xl font-bold text-navy mb-2">
+                        Message Sent Successfully!
+                      </h3>
                       <p className="text-gray-600 mb-4">
-                        Thank you for contacting us. Our team will get back to you within 24 hours.
+                        Thank you for contacting us. Our team will get back to
+                        you within 24 hours.
                       </p>
                       <p className="text-sm text-gray-500">
                         You can also reach us directly at{" "}
-                        <a href="mailto:info@studyabroadind.com" className="text-orange hover:underline">
+                        <a
+                          href="mailto:info@studyabroadind.com"
+                          className="text-orange hover:underline"
+                        >
                           info@studyabroadind.com
                         </a>
                       </p>
@@ -311,16 +348,36 @@ export default function ContactPage() {
                 <Card className="card-hover">
                   <CardContent className="p-6">
                     <div className="flex items-start space-x-4">
-                      <div className={`p-3 rounded-full bg-gray-100 ${info.color}`}>
+                      <div
+                        className={`p-3 rounded-full bg-gray-100 ${info.color}`}
+                      >
                         <info.icon className="h-6 w-6" />
                       </div>
                       <div>
-                        <h3 className="font-semibold text-navy mb-2">{info.title}</h3>
-                        {info.details.map((detail, idx) => (
-                          <p key={idx} className="text-gray-600 text-sm">
-                            {detail}
-                          </p>
-                        ))}
+                        <h3 className="font-semibold text-navy mb-2">
+                          {info.title}
+                        </h3>
+                        {info.details.map((detail, idx) => {
+                          if (info.icon === Mail && detail.includes("@")) {
+                            return (
+                              <a key={idx} href={`mailto:${detail}`} target="_blank" className="block text-sm text-gray-600 hover:text-orange transition-colors">
+                                {detail}
+                              </a>
+                            );
+                          }
+                          if (info.icon === Phone && detail.startsWith("+")) {
+                            return (
+                              <a key={idx} href={`tel:${detail.replace(/[- ]/g, "")}`} target="_blank" className="block text-sm text-gray-600 hover:text-orange transition-colors">
+                                {detail}
+                              </a>
+                            );
+                          }
+                          return (
+                            <p key={idx} className="text-gray-600 text-sm">
+                              {detail}
+                            </p>
+                          );
+                        })}
                       </div>
                     </div>
                   </CardContent>
@@ -329,14 +386,16 @@ export default function ContactPage() {
             ))}
 
             {/* Quick Actions */}
-            <motion.div
+            {/* <motion.div
               initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
             >
               <Card className="bg-gradient-to-br from-navy to-blue-900 text-white">
                 <CardContent className="p-6">
-                  <h3 className="font-bold text-xl mb-4">Need Immediate Help?</h3>
+                  <h3 className="font-bold text-xl mb-4">
+                    Need Immediate Help?
+                  </h3>
                   <div className="space-y-3">
                     <Button className="w-full bg-orange hover:bg-orange/90 justify-start">
                       <Phone className="h-4 w-4 mr-3" />
@@ -359,10 +418,10 @@ export default function ContactPage() {
                   </div>
                 </CardContent>
               </Card>
-            </motion.div>
+            </motion.div> */}
 
             {/* FAQ Link */}
-            <motion.div
+            {/* <motion.div
               initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.5 }}
@@ -370,16 +429,22 @@ export default function ContactPage() {
               <Card>
                 <CardContent className="p-6 text-center">
                   <Globe className="h-12 w-12 text-orange mx-auto mb-3" />
-                  <h4 className="font-semibold text-navy mb-2">Frequently Asked Questions</h4>
+                  <h4 className="font-semibold text-navy mb-2">
+                    Frequently Asked Questions
+                  </h4>
                   <p className="text-sm text-gray-600 mb-4">
-                    Find quick answers to common questions about studying abroad.
+                    Find quick answers to common questions about studying
+                    abroad.
                   </p>
-                  <Button variant="outline" className="border-navy text-navy hover:bg-navy hover:text-white">
+                  <Button
+                    variant="outline"
+                    className="border-navy text-navy hover:bg-navy hover:text-white"
+                  >
                     View FAQ
                   </Button>
                 </CardContent>
               </Card>
-            </motion.div>
+            </motion.div> */}
           </div>
         </div>
 
@@ -392,17 +457,22 @@ export default function ContactPage() {
         >
           <Card className="overflow-hidden">
             <CardContent className="p-0">
-              <div className="bg-gray-200 h-64 flex items-center justify-center">
-                <div className="text-center text-gray-600">
-                  <MapPin className="h-12 w-12 mx-auto mb-2" />
-                  <p className="font-medium">Interactive Map</p>
-                  <p className="text-sm">123 Education Street, Mumbai, Maharashtra</p>
-                </div>
+              <div className="relative w-full h-64">
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3504.62164634621!2d77.24580388885497!3d28.551090000000016!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390ce3bbb01984e1%3A0x9ec3ec938b4ba853!2sLeverage%20Edu%20-%20Study%20Abroad%20Consultant%20in%20Nehru%20Place%2C%20New%20Delhi!5e0!3m2!1sen!2sin!4v1750497828940!5m2!1sen!2sin"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  className="absolute top-0 left-0 w-full h-full"
+                />
               </div>
             </CardContent>
           </Card>
         </motion.div>
       </div>
     </div>
-  )
+  );
 }

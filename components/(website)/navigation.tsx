@@ -1,16 +1,17 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Link from "next/link"
-import { Menu, GraduationCap } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { 
-  Sheet, 
-  SheetContent, 
+import { useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { Menu } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetContent,
   SheetTrigger,
   SheetTitle,
   SheetDescription,
-} from "@/components/ui/sheet"
+} from "@/components/ui/sheet";
 
 const navItems = [
   { name: "Home", href: "/" },
@@ -19,24 +20,28 @@ const navItems = [
   { name: "Gallery", href: "/gallery" },
   { name: "Contact", href: "/contact" },
   { name: "Login", href: "/login" },
-]
+];
 
 export function Navigation() {
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
       <div className="w-full max-w-7xl mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2">
-            <div className="flex items-center space-x-2">
-              <GraduationCap className="h-8 w-8 text-navy" />
-              <div className="flex flex-col">
-                <span className="text-xl font-bold text-navy">STUDY</span>
-                <span className="text-sm font-medium text-orange -mt-1">ABROAD</span>
-              </div>
-            </div>
+          <Link
+            href="/"
+            className="flex items-center h-full max-h-full overflow-hidden"
+          >
+            <Image
+              src="/avatar.png"
+              alt="Study Abroad Logo"
+              width={160}
+              height={40}
+              priority
+              className="h-auto max-h-12 w-auto object-contain"
+            />
           </Link>
 
           {/* Desktop Navigation */}
@@ -59,20 +64,29 @@ export function Navigation() {
                 <Menu className="h-6 w-6" />
               </Button>
             </SheetTrigger>
-            <SheetContent 
-              side="right" 
+            <SheetContent
+              side="right"
               className="w-[300px] sm:w-[400px] border-l border-gray-100 p-0"
             >
               {/* Logo and Header */}
               <div className="px-6 py-6 border-b border-gray-100">
-                <div className="flex items-center space-x-2">
-                  <GraduationCap className="h-8 w-8 text-navy" />
-                  <div className="flex flex-col">
-                    <span className="text-xl font-bold text-navy">STUDY</span>
-                    <span className="text-sm font-medium text-orange -mt-1">ABROAD</span>
-                  </div>
-                </div>
-                <SheetTitle className="text-navy mt-6 text-xl hidden">Navigation Menu</SheetTitle>
+                <Link
+                  href="/"
+                  className="flex items-center h-full max-h-full overflow-hidden"
+                >
+                  <Image
+                    src="/avatar.png"
+                    alt="Study Abroad Logo"
+                    width={160}
+                    height={40}
+                    priority
+                    className="h-auto max-h-12 w-auto object-contain"
+                  />
+                </Link>
+
+                <SheetTitle className="text-navy mt-6 text-xl hidden">
+                  Navigation Menu
+                </SheetTitle>
                 <SheetDescription className="text-gray-600 mt-2 hidden">
                   Explore our services and resources
                 </SheetDescription>
@@ -96,9 +110,9 @@ export function Navigation() {
 
               {/* Bottom CTA */}
               <div className="absolute bottom-0 left-0 right-0 p-6 border-t border-gray-100 bg-gray-50/50 backdrop-blur-sm">
-                <Button 
+                <Button
                   className="w-full bg-orange hover:bg-orange/90 text-white font-medium py-6"
-                  onClick={() => window.location.href = '/login'}
+                  onClick={() => (window.location.href = "/login")}
                 >
                   Get Started
                 </Button>
@@ -108,5 +122,5 @@ export function Navigation() {
         </div>
       </div>
     </nav>
-  )
+  );
 }

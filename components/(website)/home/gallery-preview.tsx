@@ -90,7 +90,8 @@ export function GalleryPreview() {
             Student <span className="text-orange">Gallery</span>
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Take a glimpse into the vibrant student life and memorable moments from our study abroad programs.
+            Take a glimpse into the vibrant student life and memorable moments
+            from our study abroad programs.
           </p>
         </motion.div>
 
@@ -133,7 +134,9 @@ export function GalleryPreview() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300">
                   <div className="absolute bottom-4 left-4 right-4">
-                    <h3 className="text-white font-semibold text-lg">{image.title}</h3>
+                    <h3 className="text-white font-semibold text-lg">
+                      {image.title}
+                    </h3>
                   </div>
                 </div>
               </motion.div>
@@ -144,7 +147,9 @@ export function GalleryPreview() {
         {/* No Images State */}
         {hasFetched && !isLoading && !error && featuredImages.length === 0 && (
           <div className="text-center py-8 text-gray-500">
-            <p className="text-lg font-semibold">No gallery images available at the moment.</p>
+            <p className="text-lg font-semibold">
+              No gallery images available at the moment.
+            </p>
           </div>
         )}
 
@@ -156,7 +161,10 @@ export function GalleryPreview() {
           className="text-center"
         >
           <Link href="/gallery">
-            <Button size="lg" className="bg-orange hover:bg-orange/90 text-white px-8">
+            <Button
+              size="lg"
+              className="bg-orange hover:bg-orange/90 text-white px-8"
+            >
               View Full Gallery
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
@@ -165,8 +173,11 @@ export function GalleryPreview() {
       </div>
 
       {/* Lightbox Modal */}
-      <Dialog open={!!selectedImage} onOpenChange={() => setSelectedImage(null)}>
-        <DialogContent className="max-w-5xl w-full p-0 bg-black/95 border-0">
+      <Dialog
+        open={!!selectedImage}
+        onOpenChange={() => setSelectedImage(null)}
+      >
+        <DialogContent className="max-w-5xl w-full p-0 bg-black/95 border-0" showCloseButton={false}>
           <DialogTitle className="hidden">
             {selectedImage?.title || "Gallery Image Preview"}
           </DialogTitle>
@@ -183,8 +194,8 @@ export function GalleryPreview() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="absolute top-4 right-4 z-20 text-white rounded-full hover:bg-white/20 hover:text-white"
-                  onClick={() => setSelectedImage(null)}
+                  className="absolute right-4 top-4 z-10 text-white hover:bg-white/20"
+                  onClick={() => setSelectedImage(false)}
                 >
                   <X className="h-6 w-6" />
                 </Button>
@@ -239,7 +250,9 @@ export function GalleryPreview() {
                 <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/70 to-transparent text-center text-white">
                   <h3 className="text-xl font-medium">{selectedImage.title}</h3>
                   {selectedImage.category && (
-                    <p className="text-sm text-gray-300 mt-1">{selectedImage.category}</p>
+                    <p className="text-sm text-gray-300 mt-1">
+                      {selectedImage.category}
+                    </p>
                   )}
                   {featuredImages.length > 1 && (
                     <p className="text-xs text-gray-400 mt-2">
@@ -253,5 +266,5 @@ export function GalleryPreview() {
         </DialogContent>
       </Dialog>
     </section>
-  )
+  );
 }

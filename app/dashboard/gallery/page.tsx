@@ -681,7 +681,7 @@ export default function GalleryPage() {
 
       {/* Lightbox Modal */}
       <Dialog open={lightboxOpen} onOpenChange={setLightboxOpen}>
-        <DialogContent className="max-w-5xl p-0 bg-black/95">
+        <DialogContent className="max-w-5xl p-0 bg-black/95" showCloseButton={false}>
           <DialogHeader className="hidden text-white">
             <DialogTitle className="text-2xl font-bold">
               {filteredImages[lightboxIndex]?.title || "Image Viewer"}

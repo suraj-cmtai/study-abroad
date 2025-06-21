@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin } from "lucide-react"
+import { Facebook, Youtube, Instagram, Linkedin, Mail, Phone, MapPin } from "lucide-react"
 
 export function Footer() {
   return (
@@ -13,10 +13,18 @@ export function Footer() {
               Your gateway to global education. Discover world-class opportunities and transform your future.
             </p>
             <div className="flex space-x-4">
-              <Facebook className="h-5 w-5 hover:text-orange cursor-pointer transition-colors" />
-              <Twitter className="h-5 w-5 hover:text-orange cursor-pointer transition-colors" />
-              <Instagram className="h-5 w-5 hover:text-orange cursor-pointer transition-colors" />
-              <Linkedin className="h-5 w-5 hover:text-orange cursor-pointer transition-colors" />
+              <a href="https://www.facebook.com/profile.php?id=100089471234070" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                <Facebook className="h-5 w-5 hover:text-orange cursor-pointer transition-colors" />
+              </a>
+              <a href="https://www.youtube.com/@ValueadzGlobal123" target="_blank" rel="noopener noreferrer" aria-label="Youtube">
+                <Youtube className="h-5 w-5 hover:text-orange cursor-pointer transition-colors" />
+              </a>
+              <a href="https://www.instagram.com/study_abroadind/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                <Instagram className="h-5 w-5 hover:text-orange cursor-pointer transition-colors" />
+              </a>
+              <a href="https://www.linkedin.com/in/study-abroadind-65b796231/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+                <Linkedin className="h-5 w-5 hover:text-orange cursor-pointer transition-colors" />
+              </a>
             </div>
           </div>
 
@@ -56,15 +64,15 @@ export function Footer() {
             <div className="space-y-2">
               <div className="flex items-center space-x-2">
                 <Mail className="h-4 w-4 text-orange" />
-                <span className="text-gray-300 text-sm">info@studyabroadind.com</span>
+                <a href="mailto:Info@studyabroadind.com" className="text-gray-300 text-sm hover:text-orange transition-colors">Info@studyabroadind.com</a>
               </div>
               <div className="flex items-center space-x-2">
                 <Phone className="h-4 w-4 text-orange" />
-                <span className="text-gray-300 text-sm">+91 12345 67890</span>
+                <a href="tel:+919818929900" className="text-gray-300 text-sm hover:text-orange transition-colors">+91-981-892-9900</a>
               </div>
-              <div className="flex items-center space-x-2">
-                <MapPin className="h-4 w-4 text-orange" />
-                <span className="text-gray-300 text-sm">Mumbai, India</span>
+              <div className="flex items-start space-x-2">
+                <MapPin className="h-4 w-4 text-orange mt-1 flex-shrink-0" />
+                <span className="text-gray-300 text-sm">Suite 807, 8th Floor, Building 91, Bhandari House, Nehru Place, New Delhi 110019</span>
               </div>
             </div>
           </div>
