@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, PayloadAction, createSelector } from "@reduxjs/toolkit";
 import axios from "axios";
 import { RootState } from "../store";
 import { getErrorMessage } from "@/lib/utils";
@@ -29,6 +29,7 @@ interface Course {
 
 interface CourseState {
   courses: Course[];
+  activeCourses: Course[]; // Separate state for active courses
   loading: boolean;
   hasFetched: boolean;
   error: string | null;
@@ -44,6 +45,7 @@ interface CourseState {
 
 const initialState: CourseState = {
   courses: [],
+  activeCourses: [], // Initialize as empty array
   loading: false,
   hasFetched: false,
   error: null,
@@ -260,7 +262,7 @@ const courseSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchActiveCourses.fulfilled, (state, action: PayloadAction<Course[]>) => {
-        state.courses = action.payload;
+        state.activeCourses = action.payload;
         state.loading = false;
         state.hasFetched = true;
       })
@@ -283,6 +285,7 @@ export const {
 
 // Selectors
 export const selectCourses = (state: RootState) => state.course.courses;
+export const selectActiveCourses = (state: RootState) => state.course.activeCourses;
 export const selectCourseLoading = (state: RootState) => state.course.loading;
 export const selectCourseError = (state: RootState) => state.course.error;
 export const selectSelectedCourse = (state: RootState) => state.course.selectedCourse;
@@ -318,9 +321,7 @@ export const selectFilteredCourses = (state: RootState) => {
   });
 };
 
-export const selectActiveCourses = (state: RootState) => {
-  return state.course.courses.filter(course => course.status === 'active');
-};
+export const selectActiveCoursesList = (state: RootState) => state.course.activeCourses;
 
 export const selectCoursesByCategory = (state: RootState) => {
   const courses = state.course.courses;
@@ -343,8 +344,5 @@ export const selectCoursesByLevel = (state: RootState) => {
     return acc;
   }, {} as Record<string, Course[]>);
 };
-
-// Selector for active courses list
-export const selectActiveCoursesList = (state: RootState) => state.course.courses.filter(course => course.status === 'active');
 
 export default courseSlice.reducer;

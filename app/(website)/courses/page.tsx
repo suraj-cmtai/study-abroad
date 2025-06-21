@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { AppDispatch } from "@/lib/redux/store"
 import {
   fetchActiveCourses,
-  selectActiveCoursesList,
+  selectActiveCourses,
   selectCourseLoading,
   selectCourseError,
   selectCourseHasFetched,
@@ -23,7 +23,7 @@ import Loading from "./loading"
 
 export default function CoursesPage() {
   const dispatch = useDispatch<AppDispatch>()
-  const courses = useSelector(selectActiveCoursesList)
+  const courses = useSelector(selectActiveCourses)
   const isLoading = useSelector(selectCourseLoading)
   const error = useSelector(selectCourseError)
   const hasFetched = useSelector(selectCourseHasFetched)
