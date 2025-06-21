@@ -768,10 +768,10 @@ export default function CoursesPage() {
                         backgroundPosition: "center",
                       }}
                     >
-                      {course.image ? (
+                    {course.image ? (
                         <Image
-                          src={course.image}
-                          alt={course.title}
+                        src={course.image}
+                        alt={course.title}
                           fill
                           className="object-cover rounded"
                           onError={(e) => {
@@ -782,8 +782,8 @@ export default function CoursesPage() {
                         />
                       ) : null}
                       <div className={`w-full h-full bg-muted rounded flex items-center justify-center ${course.image ? 'hidden' : ''}`}>
-                          <ImageIcon className="h-6 w-6 text-muted-foreground" />
-                        </div>
+                        <ImageIcon className="h-6 w-6 text-muted-foreground" />
+                      </div>
                     </div>
                   </TableCell>
                   <TableCell className="font-medium max-w-[200px] truncate" title={course.title}>

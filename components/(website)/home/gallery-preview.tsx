@@ -166,23 +166,24 @@ export function GalleryPreview() {
 
       {/* Lightbox Modal */}
       <Dialog open={!!selectedImage} onOpenChange={() => setSelectedImage(null)}>
-        <DialogContent showCloseButton={false} className="max-w-4xl w-full p-0 bg-black">
-          <DialogTitle hidden>Gallery Image Preview</DialogTitle>
-          <AnimatePresence mode="wait">
+        <DialogContent className="max-w-5xl w-full p-0 bg-black/95 border-0">
+          <DialogTitle className="hidden">
+            {selectedImage?.title || "Gallery Image Preview"}
+          </DialogTitle>
+          <AnimatePresence>
             {selectedImage && (
               <motion.div
-                key={selectedImage.id}
-                initial={{ opacity: 0, scale: 0.9 }}
+                initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.3 }}
-                className="relative"
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+                className="relative h-[90vh]"
               >
                 {/* Close Button */}
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="absolute top-4 right-4 z-10 text-white hover:bg-white/20"
+                  className="absolute top-4 right-4 z-20 text-white rounded-full hover:bg-white/20 hover:text-white"
                   onClick={() => setSelectedImage(null)}
                 >
                   <X className="h-6 w-6" />
@@ -191,28 +192,32 @@ export function GalleryPreview() {
                 {/* Navigation Buttons */}
                 {featuredImages.length > 1 && (
                   <>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10 text-white hover:bg-white/20"
-                      onClick={() => navigateImage("prev")}
-                    >
-                      <ChevronLeft className="h-8 w-8" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="absolute right-4 top-1/2 transform -translate-y-1/2 z-10 text-white hover:bg-white/20"
-                      onClick={() => navigateImage("next")}
-                    >
-                      <ChevronRight className="h-8 w-8" />
-                    </Button>
+                    <div className="absolute top-1/2 -translate-y-1/2 left-4 z-20">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => navigateImage("prev")}
+                        className="text-white rounded-full hover:bg-white/20 hover:text-white"
+                      >
+                        <ChevronLeft className="h-8 w-8" />
+                      </Button>
+                    </div>
+                    <div className="absolute top-1/2 -translate-y-1/2 right-4 z-20">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => navigateImage("next")}
+                        className="text-white rounded-full hover:bg-white/20 hover:text-white"
+                      >
+                        <ChevronRight className="h-8 w-8" />
+                      </Button>
+                    </div>
                   </>
                 )}
 
                 {/* Image */}
                 <div
-                  className="relative h-[80vh]"
+                  className="relative h-full w-full flex items-center justify-center"
                   style={{
                     backgroundImage: `url('/placeholder.svg')`,
                     backgroundSize: "contain",
@@ -226,29 +231,21 @@ export function GalleryPreview() {
                     fill
                     className="object-contain"
                     sizes="90vw"
+                    priority
                   />
                 </div>
 
                 {/* Image Info */}
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6 text-white">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <h3 className="text-xl font-bold mb-2">{selectedImage.title}</h3>
-                      <p className="text-gray-300 mb-2">{selectedImage.description}</p>
-                      <div className="flex items-center gap-4 text-sm">
-                        <Badge className={getCategoryColor(selectedImage.category)}>{selectedImage.category}</Badge>
-                        <span className="flex items-center">
-                          <Calendar className="h-4 w-4 mr-1" />
-                          {new Date(selectedImage.createdOn).toLocaleDateString()}
-                        </span>
-                      </div>
-                    </div>
-                    {featuredImages.length > 1 && (
-                      <div className="text-sm text-gray-300">
-                        {currentImageIndex + 1} / {featuredImages.length}
-                      </div>
-                    )}
-                  </div>
+                <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/70 to-transparent text-center text-white">
+                  <h3 className="text-xl font-medium">{selectedImage.title}</h3>
+                  {selectedImage.category && (
+                    <p className="text-sm text-gray-300 mt-1">{selectedImage.category}</p>
+                  )}
+                  {featuredImages.length > 1 && (
+                    <p className="text-xs text-gray-400 mt-2">
+                      {currentImageIndex + 1} of {featuredImages.length}
+                    </p>
+                  )}
                 </div>
               </motion.div>
             )}
