@@ -26,8 +26,10 @@ export default function GalleryPage() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
   useEffect(() => {
-    dispatch(fetchActiveGallery())
-  }, [dispatch])
+    if (!hasFetched) {
+      dispatch(fetchActiveGallery())
+    }
+  }, [dispatch, hasFetched])
 
   const categories = [...new Set(galleryItems.map((item) => item.category))]
 
@@ -212,7 +214,7 @@ export default function GalleryPage() {
 
       {/* Lightbox Modal */}
       <Dialog open={!!selectedImage} onOpenChange={() => setSelectedImage(null)}>
-        <DialogContent className="max-w-4xl w-full p-0 bg-black">
+        <DialogContent showCloseButton={false} className="max-w-4xl w-full p-0 bg-black">
           <DialogTitle hidden>All Image Model</DialogTitle>
           <AnimatePresence mode="wait">
             {selectedImage && (

@@ -31,8 +31,10 @@ export default function CoursesPage() {
   const [selectedLevel, setSelectedLevel] = useState("all")
 
   useEffect(() => {
-    dispatch(fetchActiveCourses())
-  }, [dispatch])
+    if (!hasFetched) {
+      dispatch(fetchActiveCourses())
+    }
+  }, [dispatch, hasFetched])
 
   // Get unique categories and levels from real data
   const categories = [...new Set(courses.map((course) => course.category))]

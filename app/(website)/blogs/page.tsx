@@ -24,8 +24,10 @@ export default function BlogsPage() {
   const [selectedCategory, setSelectedCategory] = useState("all")
 
   useEffect(() => {
-    dispatch(fetchPublishedBlogs())
-  }, [dispatch])
+    if (!hasFetched) {
+      dispatch(fetchPublishedBlogs())
+    }
+  }, [dispatch, hasFetched])
 
   // Filter only published blogs
   // const publishedBlogs = blogs.filter(blog => blog.status === 'published')
