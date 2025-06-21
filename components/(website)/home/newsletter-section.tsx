@@ -23,16 +23,6 @@ export function NewsletterSection() {
   const loading = useSelector(selectSubscriberLoading)
   const error = useSelector(selectSubscriberError)
 
-  const containerRef = useRef(null)
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"],
-  })
-
-  const contentY = useTransform(scrollYProgress, [0, 1], ["0%", "-10%"])
-  const floating1Y = useTransform(scrollYProgress, [0, 1], ["0%", "30%"])
-  const floating2Y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"])
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!email) return
@@ -49,26 +39,58 @@ export function NewsletterSection() {
     }
   }
 
+  const floatingAnimation = (duration: number, delay = 0) => ({
+    y: ["-15%", "15%", "-15%"],
+    x: ["-10%", "10%", "-10%"],
+    rotate: [0, 15, 0],
+    transition: {
+      delay,
+      duration,
+      repeat: Infinity,
+      ease: "easeInOut",
+    },
+  })
+
   return (
-    <section
-      ref={containerRef}
-      className="w-full py-20 bg-gradient-to-r from-navy to-blue-900 text-white relative overflow-hidden"
-    >
+    <section className="w-full py-24 bg-gradient-to-r from-navy to-blue-900 text-white relative overflow-hidden">
       {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute inset-0 bg-[url('/placeholder.svg?height=100&width=100')] bg-repeat"></div>
+      <div className="absolute inset-0 opacity-5">
+        <div className="absolute inset-0 bg-[url('/placeholder.svg?height=80&width=80')] bg-repeat"></div>
       </div>
+
+      {/* Floating Elements */}
+      <motion.div
+        animate={floatingAnimation(12)}
+        className="absolute top-10 left-1/4 w-32 h-32 bg-orange/10 rounded-full blur-2xl"
+      />
+      <motion.div
+        animate={floatingAnimation(15, 2)}
+        className="absolute top-1/2 right-1/4 w-24 h-24 bg-white/5 rounded-full blur-xl"
+      />
+      <motion.div
+        animate={floatingAnimation(18, 1)}
+        className="absolute bottom-10 left-1/3 w-40 h-40 bg-orange/5 rounded-full blur-2xl"
+      />
+      <motion.div
+        animate={floatingAnimation(20, 3)}
+        className="absolute bottom-1/3 right-1/4 w-20 h-20 bg-white/10 rounded-full blur-xl"
+      />
 
       <div className="w-full max-w-7xl mx-auto px-4 relative z-10">
         <motion.div
-          style={{ y: contentY }}
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
+          transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
+          viewport={{ once: true, amount: 0.3 }}
           className="max-w-4xl mx-auto text-center"
         >
-          <div className="mb-8">
+          <motion.div
+            initial={{ scale: 0.8 }}
+            whileInView={{ scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            viewport={{ once: true }}
+            className="mb-8"
+          >
             <Mail className="h-16 w-16 text-orange mx-auto mb-6" />
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
               Stay Updated with <span className="text-orange">Study Abroad</span>
@@ -77,7 +99,7 @@ export function NewsletterSection() {
               Get the latest updates on study abroad opportunities, scholarship alerts, visa updates, and expert tips
               delivered straight to your inbox.
             </p>
-          </div>
+          </motion.div>
 
           <Card className="bg-white/10 backdrop-blur border-white/20 max-w-2xl mx-auto">
             <CardContent className="p-8">
@@ -158,20 +180,8 @@ export function NewsletterSection() {
           </motion.div>
         </motion.div>
       </div>
-
-      {/* Floating Elements */}
-      <motion.div
-        style={{ y: floating1Y }}
-        animate={{ x: [0, -10, 0] }}
-        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-20 left-10 w-20 h-20 bg-orange/20 rounded-full blur-xl"
-      />
-      <motion.div
-        style={{ y: floating2Y }}
-        animate={{ x: [0, 10, 0] }}
-        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-        className="absolute bottom-20 right-10 w-32 h-32 bg-white/10 rounded-full blur-xl"
-      />
     </section>
   )
 }
+
+

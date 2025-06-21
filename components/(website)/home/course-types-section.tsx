@@ -1,10 +1,9 @@
 "use client"
 
-import { motion, useScroll, useTransform } from "framer-motion"
+import { motion } from "framer-motion"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { GraduationCap, BookOpen, Award, Trophy } from "lucide-react"
 import { SectionContainer } from "@/components/ui/section-container"
-import { useRef } from "react"
 
 const courseTypes = [
   {
@@ -38,15 +37,6 @@ const courseTypes = [
 ]
 
 export function CourseTypesSection() {
-  const containerRef = useRef(null)
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"],
-  })
-
-  const headerY = useTransform(scrollYProgress, [0, 1], ["0%", "10%"])
-  const gridY = useTransform(scrollYProgress, [0, 1], ["0%", "-10%"])
-
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -64,16 +54,25 @@ export function CourseTypesSection() {
       y: 0,
       scale: 1,
       transition: {
-        duration: 0.6,
+        duration: 0.8,
+        ease: [0.25, 0.46, 0.45, 0.94],
       },
     },
   }
 
+  const floatingAnimation = (delay = 0) => ({
+    y: [-4, 4, -4],
+    transition: {
+      delay,
+      duration: 5,
+      repeat: Infinity,
+      ease: "easeInOut",
+    },
+  })
   return (
-    <SectionContainer background="white" className="py-20" ref={containerRef}>
+    <SectionContainer background="white" className="py-20">
       {/* Section Heading */}
       <motion.div
-        style={{ y: headerY }}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.5 }}
@@ -101,31 +100,26 @@ export function CourseTypesSection() {
 
       {/* Course Cards */}
       <motion.div
-        style={{ y: gridY }}
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.2 }}
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
       >
-        {courseTypes.map(course => (
+        {courseTypes.map((course, index) => (
           <motion.div
             key={course.title}
             variants={itemVariants}
-            whileHover={{ scale: 1.03, y: -5 }}
-            transition={{ type: "spring", stiffness: 300 }}
+            animate={floatingAnimation(index * 0.5)}
+            whileHover={{ scale: 1.05, y: -8, transition: { type: "spring", stiffness: 300 } }}
           >
             <Card
-              className={`h-full transition-shadow duration-300 hover:shadow-xl cursor-pointer ${course.color} border`}
+              className={`h-full transition-shadow duration-300 hover:shadow-2xl cursor-pointer ${course.color} border-2`}
             >
               <CardHeader className="text-center">
-                <motion.div
-                  whileHover={{ rotate: 360 }}
-                  transition={{ duration: 0.8 }}
-                  className="mx-auto mb-4 p-3 bg-white rounded-full shadow-md w-fit"
-                >
+                <div className="mx-auto mb-4 p-4 bg-white rounded-full shadow-lg w-fit">
                   <course.icon className="h-8 w-8 text-navy" />
-                </motion.div>
+                </div>
                 <CardTitle className="text-xl text-navy">{course.title}</CardTitle>
               </CardHeader>
               <CardContent className="text-center">

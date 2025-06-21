@@ -1,10 +1,9 @@
 "use client"
 
-import { motion, useScroll, useTransform } from "framer-motion"
+import { motion } from "framer-motion"
 import { Card, CardContent } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Star, Quote } from "lucide-react"
-import { useRef } from "react"
 
 const testimonials = [
   {
@@ -40,15 +39,6 @@ const testimonials = [
 ]
 
 export function TestimonialsSection() {
-  const containerRef = useRef(null)
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"],
-  })
-
-  const headerY = useTransform(scrollYProgress, [0, 1], ["0%", "15%"])
-  const gridY = useTransform(scrollYProgress, [0, 1], ["0%", "-10%"])
-
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -62,10 +52,9 @@ export function TestimonialsSection() {
     visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
   }
   return (
-    <section ref={containerRef} className="w-full py-20 bg-white overflow-hidden">
+    <section className="w-full py-20 bg-white overflow-hidden">
       <div className="w-full max-w-7xl mx-auto px-4">
         <motion.div
-          style={{ y: headerY }}
           variants={itemVariants}
           initial="hidden"
           whileInView="visible"
@@ -92,7 +81,6 @@ export function TestimonialsSection() {
         </motion.div>
 
         <motion.div
-          style={{ y: gridY }}
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"

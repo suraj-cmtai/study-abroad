@@ -234,7 +234,7 @@ export default function GalleryPage() {
   }, [filteredImages.length, lightboxIndex]);
 
   return (
-    <div className="container max-w-7xl mx-auto p-6 space-y-8">
+    <div className="w-full max-w-7xl mx-auto p-6 space-y-8">
       {/* Header Section */}
       <motion.div
         layout

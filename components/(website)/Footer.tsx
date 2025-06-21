@@ -1,13 +1,39 @@
+"use client"
+
 import Link from "next/link"
 import { Facebook, Youtube, Instagram, Linkedin, Mail, Phone, MapPin } from "lucide-react"
+import { motion } from "framer-motion"
 
 export function Footer() {
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.2, delayChildren: 0.1 },
+    },
+  }
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6, ease: "easeOut" },
+    },
+  }
+
   return (
-    <footer className="w-full bg-navy text-white">
-      <div className="w-full max-w-7xl mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+    <footer className="w-full bg-navy text-white overflow-hidden">
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+        className="w-full max-w-7xl mx-auto px-4 py-12"
+      >
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Company Info */}
-          <div className="space-y-4">
+          <motion.div variants={itemVariants} className="space-y-4">
             <h3 className="text-xl font-bold text-orange">Study Abroad</h3>
             <p className="text-gray-300 text-sm">
               Your gateway to global education. Discover world-class opportunities and transform your future.
@@ -26,10 +52,10 @@ export function Footer() {
                 <Linkedin className="h-5 w-5 hover:text-orange cursor-pointer transition-colors" />
               </a>
             </div>
-          </div>
+          </motion.div>
 
           {/* Quick Links */}
-          <div className="space-y-4">
+          <motion.div variants={itemVariants} className="space-y-4">
             <h4 className="text-lg font-semibold">Quick Links</h4>
             <div className="space-y-2">
               <Link href="/courses" className="block text-gray-300 hover:text-orange transition-colors">
@@ -45,10 +71,10 @@ export function Footer() {
                 Test
               </Link>
             </div>
-          </div>
+          </motion.div>
 
           {/* Services */}
-          <div className="space-y-4">
+          <motion.div variants={itemVariants} className="space-y-4">
             <h4 className="text-lg font-semibold">Services</h4>
             <div className="space-y-2">
               <p className="text-gray-300">Certificate Programs</p>
@@ -56,10 +82,10 @@ export function Footer() {
               <p className="text-gray-300">Bachelor Degrees</p>
               <p className="text-gray-300">Master Programs</p>
             </div>
-          </div>
+          </motion.div>
 
           {/* Contact Info */}
-          <div className="space-y-4">
+          <motion.div variants={itemVariants} className="space-y-4">
             <h4 className="text-lg font-semibold">Contact Us</h4>
             <div className="space-y-2">
               <div className="flex items-center space-x-2">
@@ -75,13 +101,19 @@ export function Footer() {
                 <span className="text-gray-300 text-sm">Suite 807, 8th Floor, Building 91, Bhandari House, Nehru Place, New Delhi 110019</span>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
 
-        <div className="border-t border-gray-700 mt-8 pt-8 text-center">
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.5 }}
+          viewport={{ once: true }}
+          className="border-t border-gray-700 mt-8 pt-8 text-center"
+        >
           <p className="text-gray-300 text-sm">© 2024 Study Abroad by ValueAdz. All rights reserved.</p>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </footer>
   )
 }

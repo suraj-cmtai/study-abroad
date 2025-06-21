@@ -1,10 +1,9 @@
 "use client"
 
-import { motion, useScroll, useTransform } from "framer-motion"
+import { motion } from "framer-motion"
 import { CheckCircle, Users, Globe, Award, TrendingUp, Star } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import Image from "next/image"
-import { useRef } from "react"
 
 const features = [
   {
@@ -41,16 +40,6 @@ const stats = [
 ]
 
 export function AboutSection() {
-  const containerRef = useRef(null)
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"]
-  })
-
-  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"])
-const textY = useTransform(scrollYProgress, [0, 1], ["0%", "10%"])
-
-
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -75,16 +64,25 @@ const textY = useTransform(scrollYProgress, [0, 1], ["0%", "10%"])
   }
 
   const floatingAnimation = {
-    y: [-10, 10, -10],
+    y: [-8, 8, -8],
     transition: {
-      duration: 3,
+      duration: 4,
       repeat: Infinity,
-      ease: "easeInOut"
-    }
+      ease: "easeInOut",
+    },
+  }
+
+  const imageBreathingAnimation = {
+    scale: [1, 1.02, 1],
+    transition: {
+      duration: 8,
+      repeat: Infinity,
+      ease: "easeInOut",
+    },
   }
 
   return (
-    <section ref={containerRef} className="w-full pt-10 pb-20 bg-gradient-to-br from-gray-50 via-blue-50/30 to-orange-50/20 overflow-hidden">
+    <section id="about-section" className="w-full pt-10 pb-20 bg-gradient-to-br from-gray-50 via-blue-50/30 to-orange-50/20 overflow-hidden">
       <div className="w-full max-w-7xl mx-auto px-4">
         <motion.div
           variants={containerVariants}
@@ -95,7 +93,6 @@ const textY = useTransform(scrollYProgress, [0, 1], ["0%", "10%"])
         >
           {/* Content */}
           <motion.div
-            style={{ y: textY }}
             variants={itemVariants}
             className="space-y-8"
           >
@@ -154,12 +151,13 @@ const textY = useTransform(scrollYProgress, [0, 1], ["0%", "10%"])
                     delay: index * 0.1,
                     ease: [0.25, 0.46, 0.45, 0.94]
                   }}
-                  whileHover={{ 
-                    scale: 1.02,
-                    transition: { duration: 0.2 }
+                  whileHover={{
+                    y: -5,
+                    boxShadow: "0px 10px 30px -5px rgba(0, 0, 0, 0.1)",
+                    transition: { duration: 0.3 },
                   }}
                   viewport={{ once: true }}
-                  className="group p-4 rounded-xl bg-white/60 backdrop-blur-sm border border-white/20 hover:shadow-lg transition-all duration-300"
+                  className="group p-4 rounded-xl bg-white/60 backdrop-blur-sm border border-transparent hover:border-gray-200/50 transition-shadow duration-300"
                 >
                   <div className="flex items-start space-x-4">
                     <motion.div
@@ -185,7 +183,6 @@ const textY = useTransform(scrollYProgress, [0, 1], ["0%", "10%"])
 
           {/* Image Section */}
           <motion.div
-            style={{ y: backgroundY }}
             variants={itemVariants}
             className="relative"
           >
@@ -193,6 +190,7 @@ const textY = useTransform(scrollYProgress, [0, 1], ["0%", "10%"])
             <motion.div
               initial={{ opacity: 0, rotateY: 25 }}
               whileInView={{ opacity: 1, rotateY: 0 }}
+              animate={imageBreathingAnimation}
               transition={{ duration: 1, ease: [0.25, 0.46, 0.45, 0.94] }}
               viewport={{ once: true }}
               className="relative rounded-3xl overflow-hidden shadow-2xl bg-gradient-to-br from-navy/5 to-orange/5"

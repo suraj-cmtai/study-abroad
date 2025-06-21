@@ -1,7 +1,7 @@
 "use client"
 
-import { useEffect, useRef } from "react"
-import { motion, useScroll, useTransform } from "framer-motion"
+import { useEffect } from "react"
+import { motion } from "framer-motion"
 import Image from "next/image"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -62,15 +62,6 @@ export function CoursesPreview() {
   const error = useSelector(selectCourseError)
   const hasFetched = useSelector(selectCourseHasFetched)
 
-  const containerRef = useRef(null)
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"],
-  })
-
-  const headerY = useTransform(scrollYProgress, [0, 1], ["0%", "20%"])
-  const gridY = useTransform(scrollYProgress, [0, 1], ["0%", "-10%"])
-
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -85,8 +76,10 @@ export function CoursesPreview() {
   }
 
   useEffect(() => {
-    dispatch(fetchActiveCourses())
-  }, [dispatch])
+    if (!hasFetched) {
+      dispatch(fetchActiveCourses())
+    }
+  }, [dispatch, hasFetched])
 
   // Sort by enrollmentCount desc, take top 3
   const featuredCourses = [...courses]
@@ -94,10 +87,9 @@ export function CoursesPreview() {
     .slice(0, 3)
 
   return (
-    <section ref={containerRef} className="w-full py-20 bg-gray-50 overflow-hidden">
+    <section className="w-full py-20 bg-gray-50 overflow-hidden">
       <div className="w-full max-w-7xl mx-auto px-4">
         <motion.div
-          style={{ y: headerY }}
           variants={itemVariants}
           initial="hidden"
           whileInView="visible"
@@ -135,7 +127,6 @@ export function CoursesPreview() {
         {/* Courses Grid */}
         {hasFetched && !isLoading && !error && featuredCourses.length > 0 && (
           <motion.div
-            style={{ y: gridY }}
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"

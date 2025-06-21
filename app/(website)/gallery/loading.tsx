@@ -5,7 +5,7 @@ export default function Loading() {
   return (
     <div className="min-h-screen bg-gray-50">
       <section className="bg-navy text-white py-20">
-        <div className="container mx-auto px-4">
+        <div className="w-full max-w-7xl mx-auto px-4">
           <div className="text-center">
             <div className="h-10 w-2/3 mx-auto bg-white/10 rounded animate-pulse mb-4" style={{ height: 48 }} />
             <div className="h-6 w-1/2 mx-auto bg-white/10 rounded animate-pulse" style={{ height: 24 }} />
@@ -13,7 +13,7 @@ export default function Loading() {
         </div>
       </section>
       <section className="py-12">
-        <div className="container mx-auto px-4">
+        <div className="w-full max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {[...Array(8)].map((_, i) => (
               <Card key={i} className="overflow-hidden">

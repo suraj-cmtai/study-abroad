@@ -188,7 +188,7 @@ export default function Profile() {
     // <div className="min-h-screen bg-gray-50">
     //   {/* Profile Header */}
     //   <section className="bg-navy text-white py-12">
-    //     <div className="container mx-auto px-4">
+    //     <div className="w-full max-w-7xl mx-auto px-4">
     //       <motion.div
     //         initial={{ opacity: 0, y: 30 }}
     //         animate={{ opacity: 1, y: 0 }}
@@ -234,7 +234,7 @@ export default function Profile() {
     //   </section>
 
     //   {/* Profile Content */}
-    //   <div className="container mx-auto px-4 py-8">
+    //   <div className="w-full max-w-7xl mx-auto px-4 py-8">
     //     <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
     //       <TabsList className="grid w-full grid-cols-5">
     //         <TabsTrigger value="overview">Overview</TabsTrigger>
