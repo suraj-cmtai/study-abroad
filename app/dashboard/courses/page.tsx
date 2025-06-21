@@ -602,6 +602,17 @@ export default function CoursesPage() {
       </div>
 
       <div className="grid gap-2">
+        <Label htmlFor="description">Description <span className="text-red-500">*</span></Label>
+        <Textarea
+          id="description"
+          value={formState.description}
+          onChange={(e) => setFormState({ ...formState, description: e.target.value })}
+          rows={4}
+          placeholder="Enter course description"
+        />
+      </div>
+
+      <div className="grid gap-2">
         <Label htmlFor="modules">Modules</Label>
         <Textarea
           id="modules"
@@ -635,17 +646,6 @@ export default function CoursesPage() {
           placeholder="Enter career opportunities, separated by commas"
         />
         <span className="text-xs text-muted-foreground">Separate each opportunity with a comma.</span>
-      </div>
-
-      <div className="grid gap-2">
-        <Label htmlFor="description">Description <span className="text-red-500">*</span></Label>
-        <Textarea
-          id="description"
-          value={formState.description}
-          onChange={(e) => setFormState({ ...formState, description: e.target.value })}
-          rows={4}
-          placeholder="Enter course description"
-        />
       </div>
     </div>
   )
