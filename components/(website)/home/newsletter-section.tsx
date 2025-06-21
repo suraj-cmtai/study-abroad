@@ -2,8 +2,8 @@
 
 import type React from "react"
 
-import { useState } from "react"
-import { motion } from "framer-motion"
+import { useState, useRef } from "react"
+import { motion, useScroll, useTransform } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
@@ -23,6 +23,16 @@ export function NewsletterSection() {
   const loading = useSelector(selectSubscriberLoading)
   const error = useSelector(selectSubscriberError)
 
+  const containerRef = useRef(null)
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"],
+  })
+
+  const contentY = useTransform(scrollYProgress, [0, 1], ["0%", "-10%"])
+  const floating1Y = useTransform(scrollYProgress, [0, 1], ["0%", "30%"])
+  const floating2Y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"])
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!email) return
@@ -40,7 +50,10 @@ export function NewsletterSection() {
   }
 
   return (
-    <section className="w-full py-20 bg-gradient-to-r from-navy to-blue-900 text-white relative overflow-hidden">
+    <section
+      ref={containerRef}
+      className="w-full py-20 bg-gradient-to-r from-navy to-blue-900 text-white relative overflow-hidden"
+    >
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute inset-0 bg-[url('/placeholder.svg?height=100&width=100')] bg-repeat"></div>
@@ -48,6 +61,7 @@ export function NewsletterSection() {
 
       <div className="w-full max-w-7xl mx-auto px-4 relative z-10">
         <motion.div
+          style={{ y: contentY }}
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
@@ -147,13 +161,15 @@ export function NewsletterSection() {
 
       {/* Floating Elements */}
       <motion.div
-        animate={{ y: [0, -20, 0] }}
-        transition={{ duration: 4, repeat: Number.POSITIVE_INFINITY }}
+        style={{ y: floating1Y }}
+        animate={{ x: [0, -10, 0] }}
+        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
         className="absolute top-20 left-10 w-20 h-20 bg-orange/20 rounded-full blur-xl"
       />
       <motion.div
-        animate={{ y: [0, 20, 0] }}
-        transition={{ duration: 5, repeat: Number.POSITIVE_INFINITY }}
+        style={{ y: floating2Y }}
+        animate={{ x: [0, 10, 0] }}
+        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 1 }}
         className="absolute bottom-20 right-10 w-32 h-32 bg-white/10 rounded-full blur-xl"
       />
     </section>

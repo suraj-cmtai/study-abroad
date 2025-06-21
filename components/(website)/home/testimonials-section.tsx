@@ -1,9 +1,10 @@
 "use client"
 
-import { motion } from "framer-motion"
+import { motion, useScroll, useTransform } from "framer-motion"
 import { Card, CardContent } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Star, Quote } from "lucide-react"
+import { useRef } from "react"
 
 const testimonials = [
   {
@@ -39,18 +40,50 @@ const testimonials = [
 ]
 
 export function TestimonialsSection() {
+  const containerRef = useRef(null)
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"],
+  })
+
+  const headerY = useTransform(scrollYProgress, [0, 1], ["0%", "15%"])
+  const gridY = useTransform(scrollYProgress, [0, 1], ["0%", "-10%"])
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.15 },
+    },
+  }
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+  }
   return (
-    <section className="w-full py-20 bg-white">
+    <section ref={containerRef} className="w-full py-20 bg-white overflow-hidden">
       <div className="w-full max-w-7xl mx-auto px-4">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
+          style={{ y: headerY }}
+          variants={itemVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.5 }}
           className="text-center mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-bold text-navy mb-4">
-            Student <span className="text-orange">Success Stories</span>
+            Student{" "}
+            <span className="relative inline-block text-orange">
+              Success Stories
+              <motion.div
+                className="absolute -bottom-1 left-0 h-1 w-full bg-orange/50 rounded-full"
+                initial={{ scaleX: 0 }}
+                whileInView={{ scaleX: 1 }}
+                transition={{ duration: 0.8, delay: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+                style={{ transformOrigin: "left" }}
+              />
+            </span>
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Hear from our successful students who achieved their dreams of studying abroad with our guidance and
@@ -58,14 +91,21 @@ export function TestimonialsSection() {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {testimonials.map((testimonial, index) => (
+        <motion.div
+          style={{ y: gridY }}
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+        >
+          {testimonials.map(testimonial => (
             <motion.div
               key={testimonial.id}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-              viewport={{ once: true }}
+              variants={itemVariants}
+              className="h-full"
+              whileHover={{ y: -5, scale: 1.03 }}
+              transition={{ type: "spring", stiffness: 300 }}
             >
               <Card className="h-full card-hover relative">
                 <CardContent className="p-6">
@@ -85,7 +125,7 @@ export function TestimonialsSection() {
                       <AvatarFallback>
                         {testimonial.name
                           .split(" ")
-                          .map((n) => n[0])
+                          .map(n => n[0])
                           .join("")}
                       </AvatarFallback>
                     </Avatar>
@@ -99,7 +139,7 @@ export function TestimonialsSection() {
               </Card>
             </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   )

@@ -1,7 +1,7 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { useEffect, useState, useRef } from "react"
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -36,6 +36,32 @@ export function GalleryPreview() {
   const isLoading = useSelector(selectIsLoading)
   const hasFetched = useSelector(selectHasFetched)
   const error = useSelector(selectError)
+
+  const containerRef = useRef(null)
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"],
+  })
+  const headerY = useTransform(scrollYProgress, [0, 1], ["0%", "20%"])
+  const gridY = useTransform(scrollYProgress, [0, 1], ["0%", "-10%"])
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1 },
+    },
+  }
+
+  const itemVariants = {
+    hidden: { opacity: 0, scale: 0.9 },
+    visible: { opacity: 1, scale: 1, transition: { duration: 0.6 } },
+  }
+
+  const headingVariant = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.8 } },
+  }
 
   // Lightbox state
   const [selectedImage, setSelectedImage] = useState<any>(null)
@@ -77,17 +103,28 @@ export function GalleryPreview() {
   }
 
   return (
-    <section className="w-full py-20 bg-gray-50">
+    <section ref={containerRef} className="w-full py-20 bg-gray-50 overflow-hidden">
       <div className="w-full max-w-7xl mx-auto px-4">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
+          style={{ y: headerY }}
+          variants={headingVariant}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.5 }}
           className="text-center mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-bold text-navy mb-4">
-            Student <span className="text-orange">Gallery</span>
+            Student{" "}
+            <span className="relative inline-block text-orange">
+              Gallery
+              <motion.div
+                className="absolute -bottom-1 left-0 h-1 w-full bg-orange/50 rounded-full"
+                initial={{ scaleX: 0 }}
+                whileInView={{ scaleX: 1 }}
+                transition={{ duration: 0.8, delay: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+                style={{ transformOrigin: "left" }}
+              />
+            </span>
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Take a glimpse into the vibrant student life and memorable moments
@@ -107,14 +144,20 @@ export function GalleryPreview() {
 
         {/* Gallery Grid */}
         {hasFetched && !isLoading && !error && featuredImages.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+          <motion.div
+            style={{ y: gridY }}
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12"
+          >
             {featuredImages.map((image, index) => (
               <motion.div
                 key={image.id}
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                viewport={{ once: true }}
+                variants={itemVariants}
+                whileHover={{ y: -5, scale: 1.02 }}
+                transition={{ type: "spring", stiffness: 300 }}
                 className={`relative overflow-hidden rounded-2xl shadow-lg card-hover cursor-pointer h-64 ${
                   index === 1 ? "md:row-span-2 md:h-full" : ""
                 }`}
@@ -141,7 +184,7 @@ export function GalleryPreview() {
                 </div>
               </motion.div>
             ))}
-          </div>
+          </motion.div>
         )}
 
         {/* No Images State */}
@@ -163,10 +206,10 @@ export function GalleryPreview() {
           <Link href="/gallery">
             <Button
               size="lg"
-              className="bg-orange hover:bg-orange/90 text-white px-8"
+              className="bg-orange hover:bg-orange/90 text-white px-8 group"
             >
               View Full Gallery
-              <ArrowRight className="ml-2 h-5 w-5" />
+              <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
             </Button>
           </Link>
         </motion.div>
@@ -194,7 +237,7 @@ export function GalleryPreview() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="absolute right-4 top-4 z-10 text-white hover:bg-white/20"
+                  className="absolute right-4 top-4 z-10 text-white hover:bg-white/20 rounded-full"
                   onClick={() => setSelectedImage(false)}
                 >
                   <X className="h-6 w-6" />
@@ -208,7 +251,7 @@ export function GalleryPreview() {
                         variant="ghost"
                         size="icon"
                         onClick={() => navigateImage("prev")}
-                        className="text-white rounded-full hover:bg-white/20 hover:text-white"
+                        className="text-white rounded-full hover:bg-white/20 hover:text-white h-12 w-12"
                       >
                         <ChevronLeft className="h-8 w-8" />
                       </Button>
@@ -218,7 +261,7 @@ export function GalleryPreview() {
                         variant="ghost"
                         size="icon"
                         onClick={() => navigateImage("next")}
-                        className="text-white rounded-full hover:bg-white/20 hover:text-white"
+                        className="text-white rounded-full hover:bg-white/20 hover:text-white h-12 w-12"
                       >
                         <ChevronRight className="h-8 w-8" />
                       </Button>

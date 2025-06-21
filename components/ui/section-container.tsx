@@ -1,3 +1,5 @@
+import React from "react"
+
 interface SectionContainerProps {
   children: React.ReactNode
   className?: string
@@ -5,12 +7,12 @@ interface SectionContainerProps {
   background?: 'white' | 'gray' | 'navy' | 'orange' | 'transparent'
 }
 
-export function SectionContainer({ 
+export const SectionContainer = React.forwardRef<HTMLElement, SectionContainerProps>(({ 
   children, 
   className = '', 
   fullWidth = false,
   background = 'white' 
-}: SectionContainerProps) {
+}, ref) => {
   const backgroundClasses = {
     white: 'bg-white',
     gray: 'bg-gray-50',
@@ -20,10 +22,12 @@ export function SectionContainer({
   }
 
   return (
-    <section className={`w-full ${backgroundClasses[background]} ${className}`}>
+    <section ref={ref} className={`w-full ${backgroundClasses[background]} ${className}`}>
       <div className={`${fullWidth ? 'w-full' : 'w-full max-w-7xl mx-auto px-4'}`}>
         {children}
       </div>
     </section>
   )
-}
+})
+
+SectionContainer.displayName = "SectionContainer"

@@ -1,7 +1,9 @@
-import React from 'react'
-import { motion } from 'framer-motion'
-import { Card } from '@/components/ui/card'
-import { SectionContainer } from '@/components/ui/section-container'
+"use client"
+
+import React, { useRef } from "react"
+import { motion, useScroll, useTransform } from "framer-motion"
+import { Card } from "@/components/ui/card"
+import { SectionContainer } from "@/components/ui/section-container"
 
 const features = [
   {
@@ -43,44 +45,88 @@ const features = [
 ]
 
 const WhyChooseUs = () => {
+  const containerRef = useRef(null)
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"],
+  })
+
+  const headerY = useTransform(scrollYProgress, [0, 1], ["0%", "15%"])
+  const gridY = useTransform(scrollYProgress, [0, 1], ["0%", "-10%"])
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1 },
+    },
+  }
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+  }
+
   return (
-    <SectionContainer background="gray" className="py-20">
+    <SectionContainer ref={containerRef} background="gray" className="py-20 overflow-hidden">
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        viewport={{ once: true }}
+        style={{ y: headerY }}
+        variants={itemVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.5 }}
         className="text-center mb-12"
       >
-        <h2 className="text-4xl font-bold text-[#004672] mb-4">
-          Why Choose Us
-        </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            We provide comprehensive support throughout your study abroad journey,
-            ensuring you have everything you need to succeed.
-          </p>
-        </motion.div>
-
-        <div className="grid md:grid-cols-3 gap-6">
-          {features.map((feature, index) => (
+        <h2 className="text-4xl font-bold text-navy mb-4">
+          Why{" "}
+          <span className="relative inline-block text-orange">
+            Choose Us
             <motion.div
-              key={feature.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              viewport={{ once: true }}
-            >
-              <Card className="p-6 h-full hover:shadow-lg transition-shadow">
-                <div className="text-4xl mb-4">{feature.icon}</div>
-                <h3 className="text-xl font-semibold text-[#004672] mb-2">
-                  {feature.title}
-                </h3>
-                <p className="text-gray-600">{feature.description}</p>
-              </Card>
-            </motion.div>
-          ))}
-        </div>
-      
+              className="absolute -bottom-1 left-0 h-1 w-full bg-orange/50 rounded-full"
+              initial={{ scaleX: 0 }}
+              whileInView={{ scaleX: 1 }}
+              transition={{ duration: 0.8, delay: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+              style={{ transformOrigin: "left" }}
+            />
+          </span>
+        </h2>
+        <p className="text-gray-600 max-w-2xl mx-auto">
+          We provide comprehensive support throughout your study abroad journey, ensuring you have everything you need
+          to succeed.
+        </p>
+      </motion.div>
+
+      <motion.div
+        style={{ y: gridY }}
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+        className="grid md:grid-cols-3 gap-6"
+      >
+        {features.map(feature => (
+          <motion.div
+            key={feature.id}
+            variants={itemVariants}
+            whileHover={{ y: -5, scale: 1.03 }}
+            transition={{ type: "spring", stiffness: 300 }}
+          >
+            <Card className="p-6 h-full hover:shadow-lg transition-shadow group">
+              <motion.div
+                className="text-4xl mb-4"
+                whileHover={{ rotate: 15, scale: 1.2 }}
+                transition={{ type: "spring", stiffness: 400 }}
+              >
+                {feature.icon}
+              </motion.div>
+              <h3 className="text-xl font-semibold text-navy mb-2 group-hover:text-orange transition-colors">
+                {feature.title}
+              </h3>
+              <p className="text-gray-600">{feature.description}</p>
+            </Card>
+          </motion.div>
+        ))}
+      </motion.div>
     </SectionContainer>
   )
 }

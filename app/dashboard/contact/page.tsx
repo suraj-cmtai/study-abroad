@@ -261,7 +261,7 @@ export default function ContactPage() {
         layout
         className="rounded-md border"
       >
-        <Table>
+        <Table className="overflow-y-scroll">
           <TableHeader>
             <TableRow>
               <TableHead>Name</TableHead>
