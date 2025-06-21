@@ -211,11 +211,23 @@ export function GalleryPreview() {
                 )}
 
                 {/* Image */}
-                <img
-                  src={selectedImage.image || "/placeholder.svg"}
-                  alt={selectedImage.title}
-                  className="w-full h-auto max-h-[80vh] object-contain"
-                />
+                <div
+                  className="relative h-[80vh]"
+                  style={{
+                    backgroundImage: `url('/placeholder.svg')`,
+                    backgroundSize: "contain",
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "center",
+                  }}
+                >
+                  <Image
+                    src={selectedImage.image || "/placeholder.svg"}
+                    alt={selectedImage.title}
+                    fill
+                    className="object-contain"
+                    sizes="90vw"
+                  />
+                </div>
 
                 {/* Image Info */}
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6 text-white">
