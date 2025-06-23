@@ -35,7 +35,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Company Info */}
           <motion.div variants={itemVariants} className="space-y-4">
-            <Image src="/vz-logo-golden.png" alt="Study Abroad Logo" width={120} height={40} className="outline-orange/50 rounded-lg filter" />
+            <Image src="/vz-logo-golden.png" alt="Study Abroad Logo" width={120} height={40} className="outline-orange/50 rounded-lg w-auto h-auto" />
             <p className="text-gray-300 text-sm">
               Your gateway to global education. Discover world-class opportunities and transform your future.
             </p>
