@@ -5,8 +5,10 @@ import { ArrowRight, Play } from "lucide-react"
 import { motion, useScroll, useTransform } from "framer-motion"
 import { useState, useRef } from "react"
 import Image from "next/image"
+import { useRouter } from "next/navigation"
 
 export function HeroSection() {
+  const router = useRouter()
   const [isVideoLoaded, setIsVideoLoaded] = useState(false)
   const [isVideoPlaying, setIsVideoPlaying] = useState(false)
   const [videoError, setVideoError] = useState(false)
@@ -166,6 +168,7 @@ export function HeroSection() {
             <Button
               size="lg"
               className="bg-orange hover:bg-orange/90 text-white px-8 py-4 text-lg"
+              onClick={() => router.push("/courses")}
             >
               Explore Courses
               <ArrowRight className="ml-2 h-5 w-5" />
@@ -174,7 +177,7 @@ export function HeroSection() {
             <Button
               size="lg"
               variant="outline"
-              className="border-navy text-navy hover:bg-navy hover:text-white px-8 py-4 text-lg transition-all"
+              className="border-navy hidden text-navy hover:bg-navy hover:text-white px-8 py-4 text-lg transition-all"
               onClick={handleWatchNow}
             >
               <Play

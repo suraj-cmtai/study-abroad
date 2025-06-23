@@ -49,9 +49,13 @@ export default function middleware(request: NextRequest) {
     }
   }
 
-  // Protect API routes: only admin except for published/active
+  // Protect API routes: only admin except for published/active and specific public POST routes
   if (pathname.startsWith("/api/")) {
-    // Allow public access to /published or /active API routes
+    // Determine if the current API route is for contact or subscribers
+    const isContactOrSubscribers =
+      pathname.includes("/contact") || pathname.includes("/subscribers");
+
+    // Allow specific public API routes (existing ones)
     if (
       pathname.includes("/published") ||
       pathname.includes("/active") ||
@@ -59,15 +63,14 @@ export default function middleware(request: NextRequest) {
       pathname.includes("/signup") ||
       pathname.includes("/logout") ||
       pathname.includes("/public") ||
-      pathname.includes("/auth") ||
-      pathname.includes("/subscribers") ||
-      pathname.includes("/contact")
-    
-
+      pathname.includes("/auth")
     ) {
       // Public, do nothing
+    } else if (isContactOrSubscribers && request.method === "POST") {
+      // Allow POST requests for /api/contact and /api/subscribers
+      // This is for public submission (e.g., contact form, newsletter signup)
     } else {
-      // All other API routes require admin
+      // All other API routes (including GET/PUT/DELETE for contact/subscribers) require admin
       if (!user || user.role !== "admin") {
         return NextResponse.redirect(new URL("/login", request.url));
       }
@@ -83,6 +86,6 @@ export const config = {
     "/dashboard/:path*",
     "/login/:path*",
     "/signup/:path*",
-    "/api/:path*"
+    "/api/:path*",
   ],
 };
