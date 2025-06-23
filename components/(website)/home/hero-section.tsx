@@ -6,6 +6,7 @@ import { motion, useScroll, useTransform } from "framer-motion"
 import { useState, useRef } from "react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 
 export function HeroSection() {
   const router = useRouter()
@@ -165,16 +166,14 @@ export function HeroSection() {
             variants={itemVariants}
             className="flex flex-col sm:flex-row gap-4 justify-center items-center"
           >
-            <Button
-              size="lg"
-              className="bg-orange hover:bg-orange/90 text-white px-8 py-4 text-lg"
-              onClick={() => router.push("/courses")}
-            >
+            <Link href="/courses" className="w-full sm:w-auto">
+            <Button size="lg" className="bg-orange hover:bg-orange/90 text-white px-8 group py-4 text-lg transition-all">
               Explore Courses
-              <ArrowRight className="ml-2 h-5 w-5" />
+              <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
             </Button>
+          </Link>
 
-            <Button
+            {/* <Button
               size="lg"
               variant="outline"
               className="border-navy hidden text-navy hover:bg-navy hover:text-white px-8 py-4 text-lg transition-all"
@@ -184,7 +183,7 @@ export function HeroSection() {
                 className={`mr-2 h-5 w-5 transition-opacity ${isVideoPlaying ? "opacity-50" : ""}`}
               />
               {isVideoPlaying ? "Pause Video" : "Watch Now"}
-            </Button>
+            </Button> */}
           </motion.div>
         </motion.div>
       </motion.div>

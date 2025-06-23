@@ -279,7 +279,7 @@ const Header = ({ title, onMenuClick, className }: HeaderProps) => {
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="text-red-600 focus:text-red-600">
+              <DropdownMenuItem className="text-red-600 focus:text-red-600 cursor-pointer">
                 <span onClick={() => router.push('/logout')}>Log out</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
