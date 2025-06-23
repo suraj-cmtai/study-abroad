@@ -18,8 +18,14 @@ export function HeroSection() {
     offset: ["start start", "end start"],
   })
 
+  // Original scroll-based transformations for content
   const contentY = useTransform(scrollYProgress, [0, 1], ["0%", "-50%"])
   const contentOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0])
+
+  // New: Background pattern pan/zoom effect
+  const patternScale = useTransform(scrollYProgress, [0, 1], [1, 1.2])
+  const patternX = useTransform(scrollYProgress, [0, 1], ["0%", "-10%"])
+  const patternY = useTransform(scrollYProgress, [0, 1], ["0%", "-10%"])
 
   const handleWatchNow = async () => {
     if (videoRef.current) {
@@ -36,6 +42,22 @@ export function HeroSection() {
         setVideoError(true)
       }
     }
+  }
+
+  // Variants for staggered animations
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2, // Delay between children animations
+      },
+    },
+  }
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 40 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut" } },
   }
 
   return (
@@ -85,35 +107,51 @@ export function HeroSection() {
           Your browser does not support the video tag.
         </video>
 
-        {/* Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-navy/60 via-navy/50 to-navy/90 " />
+        {/* Dynamic Overlay */}
+        <motion.div
+          className="absolute inset-0 bg-gradient-to-b from-navy/60 via-navy/50 to-navy/90"
+          animate={{
+            backgroundPosition: ["0% 0%", "100% 100%"],
+          }}
+          transition={{
+            duration: 10,
+            ease: "linear",
+            repeat: Infinity,
+            repeatType: "mirror",
+          }}
+        />
       </div>
 
-      {/* Pattern */}
-      <div className="absolute inset-0 opacity-10 z-10">
+      {/* Animated Pattern */}
+      <motion.div
+        style={{ scale: patternScale, x: patternX, y: patternY }}
+        className="absolute inset-0 opacity-10 z-10"
+      >
         <div className="absolute inset-0 bg-[url('/placeholder.svg?height=800&width=800')] bg-repeat opacity-20"></div>
-      </div>
+      </motion.div>
 
       {/* Content */}
       <motion.div
         style={{ y: contentY, opacity: contentOpacity }}
         className="w-full max-w-7xl mx-auto px-4 relative z-20"
       >
-        <div className="text-center text-white">
+        <motion.div
+          className="text-center text-white"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.5 }} // Only animate once when in view
+        >
           <motion.h1
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+            variants={itemVariants}
             className="text-5xl md:text-7xl font-bold mb-6 leading-tight"
           >
             Your Gateway to{" "}
-              <span className="text-orange block">Global Education</span>
+            <span className="text-orange block">Global Education</span>
           </motion.h1>
 
           <motion.p
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
+            variants={itemVariants}
             className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto text-gray-100"
           >
             Discover world-class education opportunities abroad with our
@@ -122,9 +160,7 @@ export function HeroSection() {
           </motion.p>
 
           <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
+            variants={itemVariants}
             className="flex flex-col sm:flex-row gap-4 justify-center items-center"
           >
             <Button
@@ -147,17 +183,17 @@ export function HeroSection() {
               {isVideoPlaying ? "Pause Video" : "Watch Now"}
             </Button>
           </motion.div>
-        </div>
+        </motion.div>
       </motion.div>
 
-      {/* Floating Elements */}
+      {/* Enhanced Floating Elements */}
       <motion.div
-        animate={{ y: [0, -20, 0] }}
+        animate={{ y: [0, -20, 0], scale: [1, 1.05, 1] }}
         transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
         className="absolute top-20 left-10 w-20 h-20 bg-orange/20 rounded-full blur-xl z-10"
       />
       <motion.div
-        animate={{ y: [0, 20, 0] }}
+        animate={{ y: [0, 20, 0], scale: [1, 1.05, 1] }}
         transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
         className="absolute bottom-20 right-10 w-32 h-32 bg-white/10 rounded-full blur-xl z-10"
       />

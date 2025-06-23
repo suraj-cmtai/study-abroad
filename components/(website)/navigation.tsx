@@ -12,6 +12,7 @@ import {
   SheetTitle,
   SheetDescription,
 } from "@/components/ui/sheet";
+import { usePathname } from "next/navigation";
 
 const navItems = [
   { name: "Home", href: "/" },
@@ -19,11 +20,12 @@ const navItems = [
   { name: "Courses", href: "/courses" },
   { name: "Gallery", href: "/gallery" },
   { name: "Contact", href: "/contact" },
-  { name: "Login", href: "/login" },
+  // { name: "Login", href: "/login" },
 ];
 
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur-xl supports-[backdrop-filter]:bg-white/60">
@@ -46,15 +48,27 @@ export function Navigation() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            {navItems.map((item) => (
-              <Link
-                key={item.name}
-                href={item.href}
-                className="text-sm font-medium text-gray-700 hover:text-navy transition-colors"
-              >
-                {item.name}
-              </Link>
-            ))}
+            {navItems.map((item) => {
+              const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
+              return (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className={
+                    `group relative text-sm font-medium text-gray-700 hover:text-navy transition-colors flex flex-col items-center px-1` +
+                    (isActive ? ' text-orange' : '')
+                  }
+                >
+                  {item.name}
+                  <span
+                    className={`
+                      pointer-events-none absolute left-0 right-0 -bottom-1 h-0.5 rounded-full bg-orange origin-left transform transition-transform duration-300
+                      ${isActive ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'}
+                    `}
+                  />
+                </Link>
+              );
+            })}
           </div>
 
           {/* Mobile Navigation */}
@@ -95,28 +109,40 @@ export function Navigation() {
               {/* Navigation Links */}
               <div className="px-4 py-6">
                 <div className="flex flex-col space-y-1">
-                  {navItems.map((item) => (
-                    <Link
-                      key={item.name}
-                      href={item.href}
-                      className="px-4 py-3 rounded-lg text-gray-700 hover:text-navy hover:bg-gray-50/80 active:bg-gray-100 transition-all duration-200 flex items-center space-x-2"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      <span className="text-base font-medium">{item.name}</span>
-                    </Link>
-                  ))}
+                  {navItems.map((item) => {
+                    const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
+                    return (
+                      <Link
+                        key={item.name}
+                        href={item.href}
+                        className={
+                          `group relative px-4 py-3 rounded-lg text-gray-700 hover:text-navy hover:bg-gray-50/80 active:bg-gray-100 transition-all duration-200 flex items-center space-x-2` +
+                          (isActive ? ' text-orange' : '')
+                        }
+                        onClick={() => setIsOpen(false)}
+                      >
+                        <span className="text-base font-medium">{item.name}</span>
+                        <span
+                          className={`
+                            pointer-events-none absolute left-4 right-4 -bottom-1 h-0.5 rounded-full bg-orange origin-left transform transition-transform duration-300
+                            ${isActive ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'}
+                          `}
+                        />
+                      </Link>
+                    );
+                  })}
                 </div>
               </div>
 
               {/* Bottom CTA */}
-              <div className="absolute bottom-0 left-0 right-0 p-6 border-t border-gray-100 bg-gray-50/50 backdrop-blur-sm">
+              {/* <div className="absolute bottom-0 left-0 right-0 p-6 border-t border-gray-100 bg-gray-50/50 backdrop-blur-sm">
                 <Button
                   className="w-full bg-orange hover:bg-orange/90 text-white font-medium py-6"
                   onClick={() => (window.location.href = "/login")}
                 >
                   Get Started
                 </Button>
-              </div>
+              </div> */}
             </SheetContent>
           </Sheet>
         </div>
