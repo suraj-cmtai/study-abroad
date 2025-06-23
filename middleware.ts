@@ -48,12 +48,31 @@ export default function middleware(request: NextRequest) {
     }
   }
 
-  
-
+  // Protect API routes: only admin except for published/active
+  if (pathname.startsWith("/api/")) {
+    // Allow public access to /published or /active API routes
+    if (
+      pathname.includes("/published") ||
+      pathname.includes("/active")
+    ) {
+      // Public, do nothing
+    } else {
+      // All other API routes require admin
+      if (!user || user.role !== "admin") {
+        return NextResponse.redirect(new URL("/login", request.url));
+      }
+    }
+  }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/profile/:path*", "/dashboard/:path*", "/login/:path*", "/signup/:path*"],
+  matcher: [
+    "/profile/:path*",
+    "/dashboard/:path*",
+    "/login/:path*",
+    "/signup/:path*",
+    "/api/:path*"
+  ],
 };

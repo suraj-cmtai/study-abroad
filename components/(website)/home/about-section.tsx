@@ -70,7 +70,7 @@ export function AboutSection() {
       repeat: Infinity,
       ease: "easeInOut",
     },
-  }
+    }
 
   const imageBreathingAnimation = {
     scale: [1, 1.02, 1],
@@ -151,7 +151,7 @@ export function AboutSection() {
                     delay: index * 0.1,
                     ease: [0.25, 0.46, 0.45, 0.94]
                   }}
-                  whileHover={{
+                  whileHover={{ 
                     y: -5,
                     boxShadow: "0px 10px 30px -5px rgba(0, 0, 0, 0.1)",
                     transition: { duration: 0.3 },
