@@ -56,6 +56,13 @@ export default function middleware(request: NextRequest) {
       pathname.includes("/contact") || pathname.includes("/subscribers");
 
     // Allow specific public API routes (existing ones)
+    const isBlogsSlug = pathname.startsWith("/api/routes/blogs/slug/");
+    const isCourseIdGet =
+      pathname.startsWith("/api/routes/course/") &&
+      !pathname.includes("/active") &&
+      !pathname.includes("/published") &&
+      request.method === "GET";
+
     if (
       pathname.includes("/published") ||
       pathname.includes("/active") ||
@@ -63,7 +70,9 @@ export default function middleware(request: NextRequest) {
       pathname.includes("/signup") ||
       pathname.includes("/logout") ||
       pathname.includes("/public") ||
-      pathname.includes("/auth")
+      pathname.includes("/auth") ||
+      isBlogsSlug ||
+      isCourseIdGet
     ) {
       // Public, do nothing
     } else if (isContactOrSubscribers && request.method === "POST") {
