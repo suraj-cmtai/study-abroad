@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import path from "path";
 
 export default function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -53,7 +54,16 @@ export default function middleware(request: NextRequest) {
     // Allow public access to /published or /active API routes
     if (
       pathname.includes("/published") ||
-      pathname.includes("/active")
+      pathname.includes("/active") ||
+      pathname.includes("/login") ||
+      pathname.includes("/signup") ||
+      pathname.includes("/logout") ||
+      pathname.includes("/public") ||
+      pathname.includes("/auth") ||
+      pathname.includes("/subscribers") ||
+      pathname.includes("/contact")
+    
+
     ) {
       // Public, do nothing
     } else {
