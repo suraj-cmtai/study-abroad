@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Calendar, User, Clock, Share2, BookmarkPlus, ArrowLeft, CheckCircle } from "lucide-react"
+import { Calendar, User, Clock, Share2, BookmarkPlus, ArrowLeft, CheckCircle, User2 } from "lucide-react"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { AppDispatch } from "@/lib/redux/store"
@@ -224,7 +224,9 @@ export default function BlogDetailPage({ params }: { params: Promise<{ slug: str
               <div className="flex items-center justify-between p-6 bg-gray-50 rounded-xl">
                 <div className="flex items-center space-x-4">
                   <Avatar className="h-12 w-12">
-                    <AvatarImage src="/placeholder.svg" alt={currentBlog.author} />
+                    <AvatarImage asChild>
+                      <User2 className="h-8 w-8 text-gray-600" />
+                    </AvatarImage>
                     <AvatarFallback>
                       {currentBlog.author
                         .split(" ")
@@ -237,7 +239,7 @@ export default function BlogDetailPage({ params }: { params: Promise<{ slug: str
                     <div className="text-sm text-gray-600">Education Consultant</div>
                   </div>
                 </div>
-                <div className="flex space-x-2">
+                {/* <div className="flex space-x-2">
                   <Button variant="outline" size="sm">
                     <Share2 className="h-4 w-4 mr-2" />
                     Share
@@ -246,7 +248,7 @@ export default function BlogDetailPage({ params }: { params: Promise<{ slug: str
                     <BookmarkPlus className="h-4 w-4 mr-2" />
                     Save
                   </Button>
-                </div>
+                </div> */}
               </div>
             </motion.article>
 
