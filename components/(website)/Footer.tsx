@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { Facebook, Youtube, Instagram, Linkedin, Mail, Phone, MapPin } from "lucide-react"
 import { motion } from "framer-motion"
+import Image from "next/image"
 
 export function Footer() {
   const containerVariants = {
@@ -34,7 +35,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Company Info */}
           <motion.div variants={itemVariants} className="space-y-4">
-            <h3 className="text-xl font-bold text-orange">Study Abroad</h3>
+            <Image src="/avatar.png" alt="Study Abroad Logo" width={120} height={40} className="outline-orange/50 rounded-lg filter brightness-0 invert" />
             <p className="text-gray-300 text-sm">
               Your gateway to global education. Discover world-class opportunities and transform your future.
             </p>
@@ -67,8 +68,8 @@ export function Footer() {
               <Link href="/gallery" className="block text-gray-300 hover:text-orange transition-colors">
                 Gallery
               </Link>
-              <Link href="/test" className="block text-gray-300 hover:text-orange transition-colors">
-                Test
+              <Link href="/contact" className="block text-gray-300 hover:text-orange transition-colors">
+                Contact
               </Link>
             </div>
           </motion.div>
