@@ -112,7 +112,7 @@ export function Footer() {
           viewport={{ once: true }}
           className="border-t border-gray-700 mt-8 pt-8 text-center"
         >
-          <p className="text-gray-300 text-sm">© 2024 Study Abroad by ValueAdz. All rights reserved.</p>
+          <p className="text-gray-300 text-sm">© {new Date().getFullYear()} Study Abroad by ValueAdz. All rights reserved.</p>
         </motion.div>
       </motion.div>
     </footer>
