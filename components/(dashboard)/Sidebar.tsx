@@ -28,6 +28,7 @@ import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 const links = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard, badge: null },
@@ -105,11 +106,20 @@ const Sidebar = ({ onClose, isMobile = false }: SidebarProps) => {
               exit={{ opacity: 0, x: -10 }}
               className="flex items-center space-x-3"
             >
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">SA</span>
-              </div>
+              <Link href="/" target="_blank" className="w-8 h-8 rounded-lg flex items-center justify-center">
+              <Button variant="ghost" className="relative h-9 w-9 rounded-full">
+                <Avatar className="h-9 w-9">
+                  <AvatarImage src="/avatar.png" alt="User" />
+                  <AvatarFallback className="bg-gradient-to-br from-orange-600 to-navy-600 text-white">
+                    SA
+                  </AvatarFallback>
+                </Avatar>
+              </Button>
+              </Link>
               <div>
-                <h2 className="text-lg font-bold">Study Abroad</h2>
+                <Link href="/" target="_blank" className="text-lg font-bold text-primary">
+                  <span className="text-navy">Study</span> <span className="text-orange">Abroad</span>
+                </Link>
               </div>
             </motion.div>
           )}
