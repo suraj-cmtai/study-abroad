@@ -117,14 +117,14 @@ export function NewsletterSection() {
                     <Button
                       type="submit"
                       disabled={loading}
-                      className="bg-orange hover:bg-orange/90 text-white px-8 py-3 whitespace-nowrap"
+                      className="bg-orange hover:bg-orange/90 text-white px-8 py-3 whitespace-nowrap group transition-all"
                     >
                       {loading ? (
                         "Subscribing..."
                       ) : (
                         <>
                           Subscribe Now
-                          <ArrowRight className="ml-2 h-4 w-4" />
+                          <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                         </>
                       )}
                     </Button>

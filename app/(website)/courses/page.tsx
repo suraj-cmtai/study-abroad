@@ -196,9 +196,9 @@ export default function CoursesPage() {
                         <div className="text-sm text-gray-500">Total Program</div>
                       </div>
                       <Link href={`/courses/${course.id}`}>
-                        <Button className="bg-navy hover:bg-navy/90">
+                        <Button className="bg-navy hover:bg-navy/90 group transition-all">
                           Learn More
-                          <ArrowRight className="ml-2 h-4 w-4" />
+                          <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                         </Button>
                       </Link>
                     </div>
