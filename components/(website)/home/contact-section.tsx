@@ -75,15 +75,15 @@ const ContactSection = () => {
               transition={{ type: "spring", stiffness: 300 }}
             >
               <Card className="p-6 transition-shadow hover:shadow-xl">
-                <div className="flex items-start space-x-4">
+              <div className="flex items-start space-x-4">
                   <Mail className="w-6 h-6 text-orange" />
-                  <div>
+                <div>
                     <h3 className="font-semibold text-navy mb-2">Email Us</h3>
-                    <p className="text-gray-600">info@studyabroad.com</p>
-                    <p className="text-gray-600">admissions@studyabroad.com</p>
-                  </div>
+                  <p className="text-gray-600">info@studyabroad.com</p>
+                  <p className="text-gray-600">admissions@studyabroad.com</p>
                 </div>
-              </Card>
+              </div>
+            </Card>
             </motion.div>
 
             <motion.div
@@ -92,15 +92,15 @@ const ContactSection = () => {
               transition={{ type: "spring", stiffness: 300 }}
             >
               <Card className="p-6 transition-shadow hover:shadow-xl">
-                <div className="flex items-start space-x-4">
+              <div className="flex items-start space-x-4">
                   <Phone className="w-6 h-6 text-orange" />
-                  <div>
+                <div>
                     <h3 className="font-semibold text-navy mb-2">Call Us</h3>
-                    <p className="text-gray-600">+1 (555) 123-4567</p>
-                    <p className="text-gray-600">+1 (555) 987-6543</p>
-                  </div>
+                  <p className="text-gray-600">+1 (555) 123-4567</p>
+                  <p className="text-gray-600">+1 (555) 987-6543</p>
                 </div>
-              </Card>
+              </div>
+            </Card>
             </motion.div>
 
             <motion.div
@@ -109,20 +109,20 @@ const ContactSection = () => {
               transition={{ type: "spring", stiffness: 300 }}
             >
               <Card className="p-6 transition-shadow hover:shadow-xl">
-                <div className="flex items-start space-x-4">
+              <div className="flex items-start space-x-4">
                   <MapPin className="w-6 h-6 text-orange" />
-                  <div>
+                <div>
                     <h3 className="font-semibold text-navy mb-2">Visit Us</h3>
-                    <p className="text-gray-600">
-                      123 Education Street
-                      <br />
-                      New York, NY 10001
-                      <br />
-                      United States
-                    </p>
-                  </div>
+                  <p className="text-gray-600">
+                    123 Education Street
+                    <br />
+                    New York, NY 10001
+                    <br />
+                    United States
+                  </p>
                 </div>
-              </Card>
+              </div>
+            </Card>
             </motion.div>
           </motion.div>
 

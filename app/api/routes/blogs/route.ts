@@ -91,7 +91,7 @@ export async function POST(req: Request) {
         }
         const status = statusValue as 'draft' | 'published' | 'archived';
         const customSlug = formData.get("slug");
-        const file = formData.get("image");
+        const file = formData.get("imageFile");
 
         // Validate required fields
         if (!title || !content || !author) {

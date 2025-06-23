@@ -134,13 +134,13 @@ export function CoursesPreview() {
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12"
           >
             {featuredCourses.map(course => (
-              <motion.div
-                key={course.id}
+            <motion.div
+              key={course.id}
                 variants={itemVariants}
                 whileHover={{ y: -5, scale: 1.03 }}
                 transition={{ type: "spring", stiffness: 300 }}
-              >
-                <Card className="h-full card-hover overflow-hidden">
+            >
+              <Card className="h-full card-hover overflow-hidden">
                   <div
                     className="relative h-48"
                     style={{
@@ -150,58 +150,58 @@ export function CoursesPreview() {
                     }}
                   >
                     <Image
-                      src={course.image || "/placeholder.svg"}
-                      alt={course.title}
+                    src={course.image || "/placeholder.svg"}
+                    alt={course.title}
                       fill
                       className="object-cover"
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    />
-                    <Badge className="absolute top-4 left-4 bg-orange text-white">{course.level}</Badge>
+                  />
+                  <Badge className="absolute top-4 left-4 bg-orange text-white">{course.level}</Badge>
+                </div>
+
+                <CardHeader>
+                  <div className="flex items-center justify-between mb-2">
+                    <Badge variant="outline" className="text-navy border-navy">
+                      {course.category}
+                    </Badge>
+                    <div className="flex items-center text-sm text-gray-500">
+                      <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 mr-1" />
+                      4.8
+                    </div>
+                  </div>
+                  <CardTitle className="text-xl text-navy line-clamp-2">{course.title}</CardTitle>
+                </CardHeader>
+
+                <CardContent className="space-y-4">
+                  <p className="text-gray-600 text-sm line-clamp-2">{course.description}</p>
+
+                  <div className="flex items-center justify-between text-sm text-gray-500">
+                    <div className="flex items-center">
+                      <Clock className="h-4 w-4 mr-1" />
+                      {course.duration}
+                    </div>
+                    <div className="flex items-center">
+                      <Users className="h-4 w-4 mr-1" />
+                      {course.enrollmentCount} enrolled
+                    </div>
                   </div>
 
-                  <CardHeader>
-                    <div className="flex items-center justify-between mb-2">
-                      <Badge variant="outline" className="text-navy border-navy">
-                        {course.category}
-                      </Badge>
-                      <div className="flex items-center text-sm text-gray-500">
-                        <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 mr-1" />
-                        4.8
-                      </div>
-                    </div>
-                    <CardTitle className="text-xl text-navy line-clamp-2">{course.title}</CardTitle>
-                  </CardHeader>
-
-                  <CardContent className="space-y-4">
-                    <p className="text-gray-600 text-sm line-clamp-2">{course.description}</p>
-
-                    <div className="flex items-center justify-between text-sm text-gray-500">
-                      <div className="flex items-center">
-                        <Clock className="h-4 w-4 mr-1" />
-                        {course.duration}
-                      </div>
-                      <div className="flex items-center">
-                        <Users className="h-4 w-4 mr-1" />
-                        {course.enrollmentCount} enrolled
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between pt-4 border-t">
-                      <div>
+                  <div className="flex items-center justify-between pt-4 border-t">
+                    <div>
                         <div className="text-2xl font-bold text-navy">${course.price?.toLocaleString?.() ?? course.price}</div>
-                        <div className="text-sm text-gray-500">Total Program</div>
-                      </div>
-                      <Link href={`/courses/${course.id}`}>
-                        <Button className="bg-navy hover:bg-navy/90 group">
-                          Learn More
-                          <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                        </Button>
-                      </Link>
+                      <div className="text-sm text-gray-500">Total Program</div>
                     </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
+                    <Link href={`/courses/${course.id}`}>
+                        <Button className="bg-navy hover:bg-navy/90 group">
+                        Learn More
+                          <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                      </Button>
+                    </Link>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
           </motion.div>
         )}
 
@@ -209,7 +209,7 @@ export function CoursesPreview() {
         {hasFetched && !isLoading && !error && featuredCourses.length === 0 && (
           <div className="text-center py-8 text-gray-500">
             <p className="text-lg font-semibold">No featured courses available at the moment.</p>
-          </div>
+        </div>
         )}
 
         <motion.div

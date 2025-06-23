@@ -117,7 +117,7 @@ export default function ContactPage() {
     data.append("message", formData.message)
     try {
       await dispatch(createContact(data)).unwrap()
-      setIsSubmitted(true)
+    setIsSubmitted(true)
       setFormData({
         name: "",
         email: "",
@@ -373,9 +373,9 @@ export default function ContactPage() {
                             );
                           }
                           return (
-                            <p key={idx} className="text-gray-600 text-sm">
-                              {detail}
-                            </p>
+                          <p key={idx} className="text-gray-600 text-sm">
+                            {detail}
+                          </p>
                           );
                         })}
                       </div>

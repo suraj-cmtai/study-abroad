@@ -107,7 +107,7 @@ export function HeroSection() {
             className="text-5xl md:text-7xl font-bold mb-6 leading-tight"
           >
             Your Gateway to{" "}
-            <span className="text-orange block">Global Education</span>
+              <span className="text-orange block">Global Education</span>
           </motion.h1>
 
           <motion.p

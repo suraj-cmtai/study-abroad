@@ -126,77 +126,77 @@ export default function CourseDetailPage() {
             </motion.div>
             {/* Course Modules */}
             {course.modules && course.modules.length > 0 && (
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.1 }}
-              >
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-2xl text-navy">Course Modules</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+            >
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-2xl text-navy">Course Modules</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       {course.modules.map((module, index) => (
-                        <div key={index} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                          <div className="w-6 h-6 bg-orange text-white rounded-full flex items-center justify-center text-sm font-bold">
-                            {index + 1}
-                          </div>
-                          <span className="text-gray-700">{module}</span>
+                      <div key={index} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                        <div className="w-6 h-6 bg-orange text-white rounded-full flex items-center justify-center text-sm font-bold">
+                          {index + 1}
                         </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
+                        <span className="text-gray-700">{module}</span>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
             )}
             {/* Prerequisites */}
             {course.prerequisites && course.prerequisites.length > 0 && (
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-              >
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-2xl text-navy">Prerequisites</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <ul className="space-y-2">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-2xl text-navy">Prerequisites</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-2">
                       {course.prerequisites.map((prerequisite, index) => (
-                        <li key={index} className="flex items-start space-x-3">
-                          <div className="w-2 h-2 bg-orange rounded-full mt-2 flex-shrink-0"></div>
-                          <span className="text-gray-700">{prerequisite}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </CardContent>
-                </Card>
-              </motion.div>
+                      <li key={index} className="flex items-start space-x-3">
+                        <div className="w-2 h-2 bg-orange rounded-full mt-2 flex-shrink-0"></div>
+                        <span className="text-gray-700">{prerequisite}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+            </motion.div>
             )}
             {/* Career Opportunities */}
             {course.careerOpportunities && course.careerOpportunities.length > 0 && (
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.3 }}
-              >
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-2xl text-navy">Career Opportunities</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+            >
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-2xl text-navy">Career Opportunities</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       {course.careerOpportunities.map((career, index) => (
-                        <div key={index} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                          <Award className="h-5 w-5 text-orange flex-shrink-0" />
-                          <span className="text-gray-700">{career}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
+                      <div key={index} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                        <Award className="h-5 w-5 text-orange flex-shrink-0" />
+                        <span className="text-gray-700">{career}</span>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
             )}
           </div>
           {/* Sidebar */}
@@ -212,16 +212,16 @@ export default function CourseDetailPage() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <Link href={`/contact?course=${encodeURIComponent(course.title)}`} className="w-full">
-                    <Button className="w-full bg-orange hover:bg-orange/90 text-white py-3">
-                      Enroll Now
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Button>
+                  <Button className="w-full bg-orange hover:bg-orange/90 text-white py-3">
+                    Enroll Now
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
                   </Link>
                   <Separator />
                   <Link href={`/contact?course=${encodeURIComponent(course.title)}`} className="w-full">
-                    <Button variant="outline" className="w-full border-navy text-navy hover:bg-navy hover:text-white">
-                      Download Brochure
-                    </Button>
+                  <Button variant="outline" className="w-full border-navy text-navy hover:bg-navy hover:text-white">
+                    Download Brochure
+                  </Button>
                   </Link>
                   <Separator />
                   <div className="space-y-3 text-sm">
@@ -260,9 +260,9 @@ export default function CourseDetailPage() {
                     Have questions about this course? Our counselors are here to help.
                   </p>
                   <Link href={`/contact?course=${encodeURIComponent(course.title)}`}>
-                    <Button variant="outline" className="w-full">
-                      Contact Counselor
-                    </Button>
+                  <Button variant="outline" className="w-full">
+                    Contact Counselor
+                  </Button>
                   </Link>
                 </CardContent>
               </Card>

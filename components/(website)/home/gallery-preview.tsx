@@ -142,38 +142,38 @@ export function GalleryPreview() {
             viewport={{ once: true, amount: 0.2 }}
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12"
           >
-            {featuredImages.map((image, index) => (
-              <motion.div
-                key={image.id}
+          {featuredImages.map((image, index) => (
+            <motion.div
+              key={image.id}
                 variants={itemVariants}
                 whileHover={{ y: -5, scale: 1.02 }}
                 transition={{ type: "spring", stiffness: 300 }}
                 className={`relative overflow-hidden rounded-2xl shadow-lg card-hover cursor-pointer h-64 ${
                   index === 1 ? "md:row-span-2 md:h-full" : ""
-                }`}
+              }`}
                 style={{
                   backgroundImage: `url('/placeholder.svg')`,
                   backgroundSize: "cover",
                   backgroundPosition: "center",
                 }}
                 onClick={() => openLightbox(image)}
-              >
+            >
                 <Image
-                  src={image.image || "/placeholder.svg"}
-                  alt={image.title}
+                src={image.image || "/placeholder.svg"}
+                alt={image.title}
                   fill
                   className="object-cover"
                   sizes="(min-width: 768px) 50vw, 100vw"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300">
-                  <div className="absolute bottom-4 left-4 right-4">
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300">
+                <div className="absolute bottom-4 left-4 right-4">
                     <h3 className="text-white font-semibold text-lg">
                       {image.title}
                     </h3>
-                  </div>
                 </div>
-              </motion.div>
-            ))}
+              </div>
+            </motion.div>
+          ))}
           </motion.div>
         )}
 
@@ -183,7 +183,7 @@ export function GalleryPreview() {
             <p className="text-lg font-semibold">
               No gallery images available at the moment.
             </p>
-          </div>
+        </div>
         )}
 
         <motion.div

@@ -79,7 +79,7 @@ export function BlogsPreview() {
         </motion.div>
 
         {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
             {[...Array(3)].map((_, i) => (
               <div key={i} className="h-80 bg-gray-100 animate-pulse rounded-xl" />
             ))}
@@ -95,14 +95,14 @@ export function BlogsPreview() {
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12"
           >
             {latestBlogs.map(blog => (
-              <motion.div
-                key={blog.id}
+            <motion.div
+              key={blog.id}
                 variants={itemVariants}
                 className="h-full"
                 whileHover={{ y: -5, scale: 1.03 }}
                 transition={{ type: "spring", stiffness: 300 }}
-              >
-                <Card className="h-full card-hover overflow-hidden">
+            >
+              <Card className="h-full card-hover overflow-hidden">
                   <div
                     className="relative h-48"
                     style={{
@@ -118,38 +118,38 @@ export function BlogsPreview() {
                       className="object-cover"
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
-                    <Badge className="absolute top-4 left-4 bg-navy text-white">{blog.category}</Badge>
+                  <Badge className="absolute top-4 left-4 bg-navy text-white">{blog.category}</Badge>
+                </div>
+
+                <CardHeader className="space-y-3">
+                  <div className="flex items-center space-x-4 text-sm text-gray-500">
+                    <div className="flex items-center">
+                      <Calendar className="h-4 w-4 mr-1" />
+                      {new Date(blog.createdOn).toLocaleDateString('en-GB')}
+                    </div>
+                    <div className="flex items-center">
+                      <User className="h-4 w-4 mr-1" />
+                      {blog.author}
+                    </div>
                   </div>
 
-                  <CardHeader className="space-y-3">
-                    <div className="flex items-center space-x-4 text-sm text-gray-500">
-                      <div className="flex items-center">
-                        <Calendar className="h-4 w-4 mr-1" />
-                        {new Date(blog.createdOn).toLocaleDateString('en-GB')}
-                      </div>
-                      <div className="flex items-center">
-                        <User className="h-4 w-4 mr-1" />
-                        {blog.author}
-                      </div>
-                    </div>
+                  <h3 className="text-xl font-bold text-navy line-clamp-2 hover:text-orange transition-colors">
+                    <Link href={`/blogs/${blog.slug}`}>{blog.title}</Link>
+                  </h3>
+                </CardHeader>
 
-                    <h3 className="text-xl font-bold text-navy line-clamp-2 hover:text-orange transition-colors">
-                      <Link href={`/blogs/${blog.slug}`}>{blog.title}</Link>
-                    </h3>
-                  </CardHeader>
+                <CardContent className="space-y-4">
+                  <p className="text-gray-600 line-clamp-3">{blog.excerpt}</p>
 
-                  <CardContent className="space-y-4">
-                    <p className="text-gray-600 line-clamp-3">{blog.excerpt}</p>
-
-                    <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-2">
                       {blog.tags?.slice(0, 2).map((tag) => (
-                        <Badge key={tag} variant="outline" className="text-xs">
-                          {tag}
-                        </Badge>
-                      ))}
-                    </div>
+                      <Badge key={tag} variant="outline" className="text-xs">
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
 
-                    <div className="pt-4 border-t">
+                  <div className="pt-4 border-t">
                       <Link href={`/blogs/${blog.slug}`}>
                         <Button
                           variant="ghost"
@@ -157,13 +157,13 @@ export function BlogsPreview() {
                         >
                           <span className="group-hover:text-orange">Read More</span>
                           <ArrowRight className="ml-2 h-4 w-4 group-hover:text-orange transition-all duration-300 group-hover:translate-x-1" />
-                        </Button>
-                      </Link>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
+                      </Button>
+                    </Link>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
           </motion.div>
         )}
 

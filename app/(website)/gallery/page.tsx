@@ -297,24 +297,24 @@ export default function GalleryPage() {
                 {filteredItems.length > 1 && (
                   <>
                     <div className="absolute top-1/2 -translate-y-1/2 left-4 z-20">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => navigateImage("prev")}
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => navigateImage("prev")}
                         className="text-white rounded-full hover:bg-white/20 hover:text-white"
-                      >
-                        <ChevronLeft className="h-8 w-8" />
-                      </Button>
+                    >
+                      <ChevronLeft className="h-8 w-8" />
+                    </Button>
                     </div>
                     <div className="absolute top-1/2 -translate-y-1/2 right-4 z-20">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => navigateImage("next")}
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => navigateImage("next")}
                         className="text-white rounded-full hover:bg-white/20 hover:text-white"
-                      >
-                        <ChevronRight className="h-8 w-8" />
-                      </Button>
+                    >
+                      <ChevronRight className="h-8 w-8" />
+                    </Button>
                     </div>
                   </>
                 )}
@@ -330,13 +330,13 @@ export default function GalleryPage() {
                   }}
                 >
                   <Image
-                    src={selectedImage.image || "/placeholder.svg"}
-                    alt={selectedImage.title}
+                  src={selectedImage.image || "/placeholder.svg"}
+                  alt={selectedImage.title}
                     fill
                     className="object-contain"
                     sizes="90vw"
                     priority
-                  />
+                />
                 </div>
 
                 {/* Image Info */}
@@ -347,11 +347,11 @@ export default function GalleryPage() {
                       {selectedImage.category}
                     </p>
                   )}
-                  {filteredItems.length > 1 && (
+                    {filteredItems.length > 1 && (
                     <p className="text-xs text-gray-400 mt-2">
-                      {currentImageIndex + 1} / {filteredItems.length}
+                        {currentImageIndex + 1} / {filteredItems.length}
                     </p>
-                  )}
+                    )}
                 </div>
               </motion.div>
             )}

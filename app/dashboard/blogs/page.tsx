@@ -88,8 +88,9 @@ interface BlogFormState {
   tags: string; // comma-separated string for the input
   excerpt: string;
   status: 'draft' | 'published' | 'archived';
-  image: string | null;
+  image: string | null; // backend value only
   imageFile: File | null;
+  imagePreviewUrl: string | null; // for preview only
   removeImage: boolean;
   existingImageUrl: string | null;
 }
@@ -105,6 +106,7 @@ const initialFormState: BlogFormState = {
   status: "draft",
   image: null,
   imageFile: null,
+  imagePreviewUrl: null,
   removeImage: false,
   existingImageUrl: null,
 }
@@ -176,6 +178,7 @@ export default function BlogsPage() {
       status: blog.status,
       image: blog.image,
       imageFile: null,
+      imagePreviewUrl: null,
       removeImage: false,
       existingImageUrl: blog.image,
     });
@@ -228,6 +231,49 @@ export default function BlogsPage() {
       toast.success("Blog deleted successfully!")
     } catch (error) {
       toast.error("Failed to delete blog")
+    }
+  }
+
+  const handleImageChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    formState: BlogFormState,
+    setFormState: React.Dispatch<React.SetStateAction<any>>
+  ) => {
+    const file = e.target.files?.[0] || null
+    
+    // Clean up previous object URL
+    if (formState.imageFile && formState.imagePreviewUrl && formState.imagePreviewUrl.startsWith('blob:')) {
+      URL.revokeObjectURL(formState.imagePreviewUrl)
+    }
+
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        toast.error('Please select a valid image file')
+        e.target.value = '' // Reset input
+        return
+      }
+
+      // Validate file size (5MB limit)
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error('Image size must be less than 5MB')
+        e.target.value = '' // Reset input
+        return
+      }
+
+      const objectUrl = URL.createObjectURL(file)
+      setFormState({
+        ...formState,
+        imageFile: file,
+        imagePreviewUrl: objectUrl,
+        removeImage: false, // Reset remove flag when new image is selected
+      })
+    } else {
+      setFormState({
+        ...formState,
+        imageFile: null,
+        imagePreviewUrl: null,
+      })
     }
   }
 
@@ -344,17 +390,27 @@ export default function BlogsPage() {
           <Input 
             id="image"
             value={formState.image || ""}
-            onChange={(e) => setFormState({ ...formState, image: e.target.value || null })}
+            readOnly
+            className="bg-muted text-muted-foreground cursor-pointer"
+            //onclick copy url
+            onClick={() => {
+              if (formState.image) {
+                navigator.clipboard.writeText(formState.image)
+                toast.success("Image URL copied to clipboard!")
+              }
+            }}
             placeholder="https://example.com/image.jpg"
           />
         </div>
 
         {/* Featured Image File Field */}
         <div className="grid gap-2">
-          <Label>Featured Image File</Label>
-          {formState.existingImageUrl && !formState.imageFile && (
+          <Label>Featured Image</Label>
+          {(formState.imagePreviewUrl || (formState.image && !formState.removeImage)) && (
             <div className="my-2 space-y-2">
-              <p className="text-sm text-muted-foreground">Current image:</p>
+              <p className="text-sm text-muted-foreground">
+                {formState.imageFile ? 'New image preview:' : 'Current image:'}
+              </p>
               <div
                 className="relative w-full h-40"
                 style={{
@@ -364,34 +420,38 @@ export default function BlogsPage() {
                 }}
               >
                 <Image
-                  src={formState.existingImageUrl} 
-                  alt="Current" 
+                  src={formState.imagePreviewUrl || formState.image || ''}
+                  alt="Blog preview"
                   fill
-                  className="object-cover rounded-md border" 
+                  className="object-cover rounded-md border"
+                  onError={(e) => {
+                    // Fallback to placeholder if image fails to load
+                    e.currentTarget.style.display = 'none'
+                    e.currentTarget.parentElement?.nextElementSibling?.classList.remove('hidden')
+                  }}
                 />
               </div>
-              <div className="flex items-center space-x-2">
-                <Checkbox 
-                  id="removeImage" 
-                  checked={formState.removeImage}
-                  onCheckedChange={(checked) => 
-                    setFormState({ ...formState, removeImage: !!checked })
-                  }
-                />
-                <Label htmlFor="removeImage" className="text-sm font-medium">
-                  Remove this image on save
-                </Label>
-              </div>
+              {!formState.imageFile && formState.image && (
+                <div className="flex items-center space-x-2">
+                  <Checkbox 
+                    id="removeImage" 
+                    checked={formState.removeImage}
+                    onCheckedChange={(checked) => 
+                      setFormState({ ...formState, removeImage: !!checked })
+                    }
+                  />
+                  <Label htmlFor="removeImage" className="text-sm font-medium">
+                    Remove this image on save
+                  </Label>
+                </div>
+              )}
             </div>
           )}
           <Input 
             id="imageFile"
             type="file"
             accept="image/*"
-            onChange={(e) => setFormState({ 
-              ...formState, 
-              imageFile: e.target.files?.[0] || null 
-            })}
+            onChange={(e) => handleImageChange(e, formState, setFormState)}
             className="file:text-foreground"
           />
           {formState.imageFile && (
@@ -403,6 +463,22 @@ export default function BlogsPage() {
       </div>
     );
   }
+
+  useEffect(() => {
+    return () => {
+      if (newBlogForm.imageFile && newBlogForm.imagePreviewUrl) {
+        URL.revokeObjectURL(newBlogForm.imagePreviewUrl)
+      }
+    }
+  }, [newBlogForm.imageFile])
+
+  useEffect(() => {
+    return () => {
+      if (editBlogForm?.imageFile && editBlogForm.imagePreviewUrl) {
+        URL.revokeObjectURL(editBlogForm.imagePreviewUrl)
+      }
+    }
+  }, [editBlogForm?.imageFile])
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="p-6 space-y-6">
@@ -488,18 +564,18 @@ export default function BlogsPage() {
                         backgroundPosition: "center",
                       }}
                     >
-                      {blog.image ? (
+                    {blog.image ? (
                         <Image
                           src={blog.image}
                           alt={blog.title}
                           fill
                           className="object-cover"
                         />
-                      ) : (
+                    ) : (
                         <div className="w-full h-full bg-muted flex items-center justify-center">
-                          <ImageIcon className="h-6 w-6 text-muted-foreground" />
-                        </div>
-                      )}
+                        <ImageIcon className="h-6 w-6 text-muted-foreground" />
+                      </div>
+                    )}
                     </div>
                   </TableCell>
                   <TableCell className="font-medium max-w-[250px] truncate" title={blog.title}>

@@ -90,11 +90,11 @@ const WhyChooseUs = () => {
             />
           </span>
         </h2>
-        <p className="text-gray-600 max-w-2xl mx-auto">
+          <p className="text-gray-600 max-w-2xl mx-auto">
           We provide comprehensive support throughout your study abroad journey, ensuring you have everything you need
           to succeed.
-        </p>
-      </motion.div>
+          </p>
+        </motion.div>
 
       <motion.div
         style={{ y: gridY }}
@@ -105,12 +105,12 @@ const WhyChooseUs = () => {
         className="grid md:grid-cols-3 gap-6"
       >
         {features.map(feature => (
-          <motion.div
-            key={feature.id}
+            <motion.div
+              key={feature.id}
             variants={itemVariants}
             whileHover={{ y: -5, scale: 1.03 }}
             transition={{ type: "spring", stiffness: 300 }}
-          >
+            >
             <Card className="p-6 h-full hover:shadow-lg transition-shadow group">
               <motion.div
                 className="text-4xl mb-4"
@@ -120,12 +120,12 @@ const WhyChooseUs = () => {
                 {feature.icon}
               </motion.div>
               <h3 className="text-xl font-semibold text-navy mb-2 group-hover:text-orange transition-colors">
-                {feature.title}
-              </h3>
-              <p className="text-gray-600">{feature.description}</p>
-            </Card>
-          </motion.div>
-        ))}
+                  {feature.title}
+                </h3>
+                <p className="text-gray-600">{feature.description}</p>
+              </Card>
+            </motion.div>
+          ))}
       </motion.div>
     </SectionContainer>
   )
