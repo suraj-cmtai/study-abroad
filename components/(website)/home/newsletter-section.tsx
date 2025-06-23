@@ -55,7 +55,7 @@ export function NewsletterSection() {
     <section className="w-full py-24 bg-gradient-to-r from-navy to-blue-900 text-white relative overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5">
-        <div className="absolute inset-0 bg-[url('/placeholder.svg?height=80&width=80')] bg-repeat"></div>
+        <div className="absolute inset-0 bg-[url('/avatar.png?height=60&width=60')] bg-repeat"></div>
       </div>
 
       {/* Floating Elements */}

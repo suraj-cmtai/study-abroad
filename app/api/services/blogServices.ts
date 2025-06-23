@@ -84,7 +84,7 @@ class BlogService {
     } else {
       consoleManager.log("Returning cached blogs. No Firestore read.");
     }
-    console.log(this.blogs)
+    // console.log(this.blogs)
     return this.blogs;
   }
 

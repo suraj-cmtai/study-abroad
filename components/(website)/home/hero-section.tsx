@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Play } from "lucide-react"
 import { motion, useScroll, useTransform } from "framer-motion"
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react" // Import useEffect
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
@@ -30,22 +30,29 @@ export function HeroSection() {
   const patternX = useTransform(scrollYProgress, [0, 1], ["0%", "-10%"])
   const patternY = useTransform(scrollYProgress, [0, 1], ["0%", "-10%"])
 
-  const handleWatchNow = async () => {
+  // Function to attempt video play
+  const attemptPlay = async () => {
     if (videoRef.current) {
       try {
-        if (isVideoPlaying) {
-          videoRef.current.pause()
-          setIsVideoPlaying(false)
-        } else {
-          await videoRef.current.play()
-          setIsVideoPlaying(true)
-        }
+        await videoRef.current.play()
+        setIsVideoPlaying(true)
+        setVideoError(false) // Clear any previous error on successful play
       } catch (error) {
         console.error("Video play failed:", error)
+        setIsVideoPlaying(false)
         setVideoError(true)
       }
     }
   }
+
+  // Use useEffect to attempt play on component mount
+  // This ensures a play attempt even if onCanPlay doesn't fire immediately
+  useEffect(() => {
+    // Check if the video is already ready to play after initial render
+    if (videoRef.current && videoRef.current.readyState >= 3) { // READY_STATE_HAVE_FUTURE_DATA
+      attemptPlay();
+    }
+  }, []); // Run once on mount
 
   // Variants for staggered animations
   const containerVariants = {
@@ -67,46 +74,40 @@ export function HeroSection() {
     <section ref={sectionRef} className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black">
       {/* Video Background */}
       <div className="absolute inset-0 w-full h-full">
-        {/* Fallback Image */}
-        {(!isVideoLoaded || videoError) && (
+        {/* You could add a fallback image here if video fails entirely */}
+        {/* {!isVideoLoaded && videoError && (
           <Image
-            src="/images/hero.jpeg"
+            src="/images/hero.jpeg" // Replace with your fallback image
             alt="Hero Background"
             fill
             className="object-cover"
             priority
           />
-        )}
+        )} */}
 
         <video
           ref={videoRef}
           className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
             isVideoLoaded && !videoError ? "opacity-100" : "opacity-0"
           }`}
-          autoPlay
-          muted
+          autoPlay // Keep autoplay
+          muted    // **Crucial for consistent autoplay**
           loop
           playsInline
           preload="auto"
           onCanPlay={() => {
             setIsVideoLoaded(true)
-            videoRef.current
-              ?.play()
-              .then(() => setIsVideoPlaying(true))
-              .catch((err) => {
-                console.error("Autoplay failed:", err)
-                setIsVideoPlaying(false)
-              })
+            attemptPlay() // Attempt to play when the browser says it *can* play
           }}
           onPlay={() => setIsVideoPlaying(true)}
           onPause={() => setIsVideoPlaying(false)}
-          onError={() => {
-            console.error("Video failed to load")
+          onError={(e) => {
+            console.error("Video failed to load or play:", e)
             setVideoError(true)
-            setIsVideoLoaded(false)
+            setIsVideoLoaded(false) // Mark as not loaded if there's an error
           }}
         >
-          <source src="/videos/hero.mp4" type="video/mp4" />
+          <source src="/videos/education_people.mp4" type="video/mp4" />
           Your browser does not support the video tag.
         </video>
 
@@ -130,7 +131,7 @@ export function HeroSection() {
         style={{ scale: patternScale, x: patternX, y: patternY }}
         className="absolute inset-0 opacity-10 z-10"
       >
-        <div className="absolute inset-0 bg-[url('/placeholder.svg?height=800&width=800')] bg-repeat opacity-20"></div>
+        <div className="absolute inset-0 bg-[url('/avatar.png?height=800&width=800')] bg-repeat opacity-20"></div>
       </motion.div>
 
       {/* Content */}
@@ -173,16 +174,17 @@ export function HeroSection() {
             </Button>
           </Link>
 
+            {/* If you want a play/pause button, uncomment this and adjust `handleWatchNow` */}
             {/* <Button
               size="lg"
               variant="outline"
-              className="border-navy hidden text-navy hover:bg-navy hover:text-white px-8 py-4 text-lg transition-all"
-              onClick={handleWatchNow}
+              className="border-navy text-navy hover:bg-navy hover:text-white px-8 py-4 text-lg transition-all"
+              onClick={handleWatchNow} // This needs `handleWatchNow` to be re-introduced
             >
               <Play
                 className={`mr-2 h-5 w-5 transition-opacity ${isVideoPlaying ? "opacity-50" : ""}`}
               />
-              {isVideoPlaying ? "Pause Video" : "Watch Now"}
+              {isVideoPlaying ? "Pause Video" : "Play Video"}
             </Button> */}
           </motion.div>
         </motion.div>

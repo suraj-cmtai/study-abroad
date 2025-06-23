@@ -43,7 +43,7 @@ const ReplaceImage = async (file: any, oldImageUrl: string, width: number, heigh
     // Delete old image if exists
     if (oldImageUrl) {
       try {
-        console.log("Old Image URL:", oldImageUrl); // Debugging
+        // console.log("Old Image URL:", oldImageUrl); // Debugging
 
         let oldFilePath;
         if (oldImageUrl.includes("/o/")) {
@@ -62,7 +62,7 @@ const ReplaceImage = async (file: any, oldImageUrl: string, width: number, heigh
         
         // Delete the old image
         await bucket.file(decodedOldFilePath).delete();
-        console.log("Old image deleted:", decodedOldFilePath);
+        // console.log("Old image deleted:", decodedOldFilePath);
       } catch (deleteError: any) {
         console.warn("Failed to delete old image:", deleteError.message);
         throw new Error("Failed to delete old image: " + deleteError.message);
