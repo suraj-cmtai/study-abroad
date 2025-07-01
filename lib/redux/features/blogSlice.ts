@@ -159,9 +159,9 @@ const blogSlice = createSlice({
       })
       .addCase(fetchBlogs.fulfilled, (state, action) => {
         state.loading = false;
-        state.blogs = action.payload;
+        state.blogs = action.payload || [];
         state.error = null;
-        state.pagination.total = action.payload.length;
+        state.pagination.total = Array.isArray(action.payload) ? action.payload.length : 0;
       })
       .addCase(fetchBlogs.rejected, (state, action) => {
         state.loading = false;

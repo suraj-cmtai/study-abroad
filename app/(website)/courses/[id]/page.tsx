@@ -234,21 +234,29 @@ export default function CourseDetailPage() {
                   </Link>
                   <Separator />
                   <div className="space-y-3 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Duration:</span>
-                      <span className="font-medium">{course.duration}</span>
+                    <div className="flex flex-col">
+                      <div className="flex">
+                        <span className="text-gray-600 min-w-[80px]">Duration:</span>
+                        <span className="font-medium ml-1">{course.duration}</span>
+                      </div>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Level:</span>
-                      <span className="font-medium">{course.level}</span>
+                    <div className="flex flex-col">
+                      <div className="flex">
+                        <span className="text-gray-600 min-w-[80px]">Level:</span>
+                        <span className="font-medium ml-1">{course.level}</span>
+                      </div>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Category:</span>
-                      <span className="font-medium">{course.category}</span>
+                    <div className="flex flex-col">
+                      <div className="flex">
+                        <span className="text-gray-600 min-w-[80px]">Category:</span>
+                        <span className="font-medium ml-1">{course.category}</span>
+                      </div>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Instructor:</span>
-                      <span className="font-medium">{course.instructor}</span>
+                    <div className="flex flex-col">
+                      <div className="flex items-start">
+                        <span className="text-gray-600 min-w-[80px]">Instructor:</span>
+                        <span className="font-medium ml-1 whitespace-pre-line">{course.instructor}</span>
+                      </div>
                     </div>
                   </div>
                 </CardContent>
