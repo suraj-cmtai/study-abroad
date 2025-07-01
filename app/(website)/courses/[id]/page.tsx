@@ -139,7 +139,16 @@ export default function CourseDetailPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       {course.modules.map((module, index) => (
                       <div key={index} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                        <div className="w-6 h-6 bg-orange text-white rounded-full flex items-center justify-center text-sm font-bold">
+                        <div
+                          className="flex items-center justify-center text-sm font-bold text-white bg-orange rounded-full"
+                          style={{
+                            width: "1.5rem",
+                            height: "1.5rem",
+                            minWidth: "1.5rem",
+                            minHeight: "1.5rem",
+                            aspectRatio: "1 / 1",
+                          }}
+                        >
                           {index + 1}
                         </div>
                         <span className="text-gray-700">{module}</span>
