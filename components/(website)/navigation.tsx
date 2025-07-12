@@ -20,8 +20,8 @@ const navItems = [
   { name: "Blogs", href: "/blogs", targetBlank: false },
   { name: "Courses", href: "/courses", targetBlank: false },
   { name: "Gallery", href: "/gallery", targetBlank: false },
-  { name: "Contact", href: "/contact", targetBlank: false },
   { name: "Psychometric Test", href: "https://test.studyabroadind.com", targetBlank: true },
+  { name: "Contact", href: "/contact", targetBlank: false },
   // { name: "Login", href: "/login", targetBlank: false },
 ];
 
