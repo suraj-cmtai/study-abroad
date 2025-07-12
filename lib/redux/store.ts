@@ -5,6 +5,7 @@ import blogReducer from "./features/blogSlice";
 import courseReducer from "./features/courseSlice";
 import subscriberReducer from "./features/subscriberSlice";
 import contactReducer from "./features/contactSlice";
+import testReducer from "./features/testSlice";
 
 
 export const store = configureStore({
@@ -12,8 +13,10 @@ export const store = configureStore({
     gallery: galleryReducer,
     auth: authReducer,
     blog: blogReducer,
-    course: courseReducer,    subscriber: subscriberReducer,
+    course: courseReducer,
+    subscriber: subscriberReducer,
     contact: contactReducer,
+    test: testReducer,
   },
 });
 

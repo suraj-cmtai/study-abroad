@@ -59,6 +59,7 @@ const searchSuggestions = [
   { label: "Subscribers", value: "leads", href: "/dashboard/subscribers" },
   { label: "Gallery", value: "gallery", href: "/dashboard/gallery" },
   { label: "Contact", value: "contact", href: "/dashboard/contact" },
+  {label: "Test", value: "test", href: "/dashboard/test" },
 ];
 
 const notifications = [

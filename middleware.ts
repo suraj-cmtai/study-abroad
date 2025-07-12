@@ -63,6 +63,13 @@ export default function middleware(request: NextRequest) {
       !pathname.includes("/published") &&
       request.method === "GET";
 
+    // Allow POST and OPTION PREFLIGHT to /api/routes/test as public, all other methods are admin
+    const isTestRoute = pathname.startsWith("/api/routes/test");
+    const isTestPost = isTestRoute && request.method === "POST" || request.method === "OPTIONS";
+    // Allow GET/PUT/DELETE for /api/routes/test as admin
+    const isTestOtherMethod =
+      isTestRoute && (request.method === "GET" || request.method === "PUT" || request.method === "DELETE");
+
     if (
       pathname.includes("/published") ||
       pathname.includes("/active") ||
@@ -72,12 +79,18 @@ export default function middleware(request: NextRequest) {
       pathname.includes("/public") ||
       pathname.includes("/auth") ||
       isBlogsSlug ||
-      isCourseIdGet
+      isCourseIdGet ||
+      isTestPost
     ) {
       // Public, do nothing
     } else if (isContactOrSubscribers && request.method === "POST") {
       // Allow POST requests for /api/contact and /api/subscribers
       // This is for public submission (e.g., contact form, newsletter signup)
+    } else if (isTestOtherMethod) {
+      // GET/PUT/DELETE for /api/routes/test require admin
+      if (!user || user.role !== "admin") {
+        return NextResponse.redirect(new URL("/login", request.url));
+      }
     } else {
       // All other API routes (including GET/PUT/DELETE for contact/subscribers) require admin
       if (!user || user.role !== "admin") {

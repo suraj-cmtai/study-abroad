@@ -37,6 +37,7 @@ const links = [
   { name: "Subscribers", href: "/dashboard/subscribers", icon: Users2, badge: null },
   { name: "Gallery", href: "/dashboard/gallery", icon: GalleryVerticalEnd, badge: null },
   { name: "Contact", href: "/dashboard/contact", icon: MailCheck, badge: null },
+  { name: "Test", href: "/dashboard/test", icon: FileText, badge: null },
 ];
 
 interface SidebarProps {
