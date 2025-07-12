@@ -21,7 +21,7 @@ const navItems = [
   { name: "Courses", href: "/courses", targetBlank: false },
   { name: "Gallery", href: "/gallery", targetBlank: false },
   { name: "Contact", href: "/contact", targetBlank: false },
-  { name: "Psychometric Test", href: "https://study-abroad-test.vercel.app", targetBlank: true },
+  { name: "Psychometric Test", href: "https://test.studyabroadind.com", targetBlank: true },
   // { name: "Login", href: "/login", targetBlank: false },
 ];
 
