@@ -14,14 +14,15 @@ import {
 } from "@/components/ui/sheet";
 import { usePathname } from "next/navigation";
 
+// Add targetBlank property to navItems
 const navItems = [
-  { name: "Home", href: "/" },
-  { name: "Blogs", href: "/blogs" },
-  { name: "Courses", href: "/courses" },
-  { name: "Gallery", href: "/gallery" },
-  { name: "Contact", href: "/contact" },
-  { name: "Psychometric Test", href: "https://study-abroad-test.vercel.app" },
-  // { name: "Login", href: "/login" },
+  { name: "Home", href: "/", targetBlank: false },
+  { name: "Blogs", href: "/blogs", targetBlank: false },
+  { name: "Courses", href: "/courses", targetBlank: false },
+  { name: "Gallery", href: "/gallery", targetBlank: false },
+  { name: "Contact", href: "/contact", targetBlank: false },
+  { name: "Psychometric Test", href: "https://study-abroad-test.vercel.app", targetBlank: true },
+  // { name: "Login", href: "/login", targetBlank: false },
 ];
 
 export function Navigation() {
@@ -59,6 +60,9 @@ export function Navigation() {
                     `group relative text-sm font-medium text-gray-700 hover:text-navy transition-colors flex flex-col items-center px-1` +
                     (isActive ? ' text-orange' : '')
                   }
+                  {...(item.targetBlank
+                    ? { target: "_blank", rel: "noopener noreferrer" }
+                    : {})}
                 >
                   {item.name}
                   <span
@@ -121,6 +125,9 @@ export function Navigation() {
                           (isActive ? ' text-orange' : '')
                         }
                         onClick={() => setIsOpen(false)}
+                        {...(item.targetBlank
+                          ? { target: "_blank", rel: "noopener noreferrer" }
+                          : {})}
                       >
                         <span className="text-base font-medium">{item.name}</span>
                         <span
