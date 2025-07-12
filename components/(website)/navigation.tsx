@@ -20,6 +20,7 @@ const navItems = [
   { name: "Courses", href: "/courses" },
   { name: "Gallery", href: "/gallery" },
   { name: "Contact", href: "/contact" },
+  { name: "Psychometric Test", href: "https://study-abroad-test.vercel.app" },
   // { name: "Login", href: "/login" },
 ];
 
