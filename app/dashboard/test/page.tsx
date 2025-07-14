@@ -352,7 +352,7 @@ export default function TestPage() {
 
       {/* View Test Details Dialog - Responsive */}
       <Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-4xl max-h-[50vh] sm:max-h-[60vh] md:max-h-[70vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Test Result Details</DialogTitle>
             <DialogDescription>
@@ -517,7 +517,7 @@ export default function TestPage() {
 
       {/* Statistics Dialog - Responsive */}
       <Dialog open={isStatsDialogOpen} onOpenChange={setIsStatsDialogOpen}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-2xl max-h-[50vh] sm:max-h-[60vh] md:max-h-[70vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Test Statistics</DialogTitle>
             <DialogDescription>

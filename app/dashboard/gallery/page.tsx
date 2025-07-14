@@ -459,7 +459,7 @@ export default function GalleryPage() {
 
       {/* Add/Edit Modal */}
       <Dialog open={modalOpen} onOpenChange={setModalOpen}>
-        <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
+        <DialogContent className="sm:max-w-md max-h-[50vh] sm:max-h-[60vh] md:max-h-[70vh] overflow-y-auto">
           <motion.form
             onSubmit={handleSubmit}
             className="space-y-6 w-full max-w-md mx-auto"

@@ -282,7 +282,7 @@ export default function BlogsPage() {
     setFormState: React.Dispatch<React.SetStateAction<any>>
   ) => {
     return (
-      <div className="grid gap-4 py-4 max-h-[70vh] overflow-y-auto pr-4">
+      <div className="grid gap-4 py-4 max-h-[50vh] sm:max-h-[60vh] md:max-h-[70vh] overflow-y-auto pr-4">
         {/* Title Field */}
         <div className="grid gap-2">
           <Label htmlFor="title">Title <span className="text-red-500">*</span></Label>
