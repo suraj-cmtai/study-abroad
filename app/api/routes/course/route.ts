@@ -108,9 +108,9 @@ export async function POST(req: Request) {
             learningHours: learningHours?.toString() || "",
             modeOfDelivery: modeOfDelivery?.toString() || "",
             modeOfAssessment: modeOfAssessment?.toString() || "",
-            modules: modules?.toString().split(',') || [],
-            prerequisites: prerequisites?.toString().split(',') || [],
-            careerOpportunities: careerOpportunities?.toString().split(',') || [],
+            modules: modules?.toString().split('.').map(s => s.trim()).filter(Boolean) || [],
+            prerequisites: prerequisites?.toString().split('.').map(s => s.trim()).filter(Boolean) || [],
+            careerOpportunities: careerOpportunities?.toString().split('.').map(s => s.trim()).filter(Boolean) || [],
             };
 
         const newCourse = await CourseService.addCourse(courseData);

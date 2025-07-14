@@ -226,9 +226,9 @@ export default function CoursesPage() {
       formData.append("learningHours", newCourseForm.learningHours.trim())
       formData.append("modeOfDelivery", newCourseForm.modeOfDelivery)
       formData.append("modeOfAssessment", newCourseForm.modeOfAssessment.trim())
-      formData.append("modules", newCourseForm.modules.split(',').map(s => s.trim()).filter(Boolean).join(','))
-      formData.append("prerequisites", newCourseForm.prerequisites.split(',').map(s => s.trim()).filter(Boolean).join(','))
-      formData.append("careerOpportunities", newCourseForm.careerOpportunities.split(',').map(s => s.trim()).filter(Boolean).join(','))
+      formData.append("modules", newCourseForm.modules.split('.').map(s => s.trim()).filter(Boolean).join('.'))
+      formData.append("prerequisites", newCourseForm.prerequisites.split('.').map(s => s.trim()).filter(Boolean).join('.'))
+      formData.append("careerOpportunities", newCourseForm.careerOpportunities.split('.').map(s => s.trim()).filter(Boolean).join('.'))
       
     if (newCourseForm.imageFile) {
       formData.append("image", newCourseForm.imageFile)
@@ -263,9 +263,9 @@ export default function CoursesPage() {
       learningHours: course.learningHours || "",
       modeOfDelivery: course.modeOfDelivery || "",
       modeOfAssessment: course.modeOfAssessment || "",
-      modules: course.modules?.join(',') || "",
-      prerequisites: course.prerequisites?.join(',') || "",
-      careerOpportunities: course.careerOpportunities?.join(',') || "",
+      modules: course.modules?.join('.') || "",
+      prerequisites: course.prerequisites?.join('.') || "",
+      careerOpportunities: course.careerOpportunities?.join('.') || "",
     })
     setIsEditDialogOpen(true)
   }
@@ -311,9 +311,9 @@ export default function CoursesPage() {
       formData.append("learningHours", editCourseForm.learningHours.trim())
       formData.append("modeOfDelivery", editCourseForm.modeOfDelivery)
       formData.append("modeOfAssessment", editCourseForm.modeOfAssessment.trim())
-      formData.append("modules", editCourseForm.modules.split(',').map(s => s.trim()).filter(Boolean).join(','))
-      formData.append("prerequisites", editCourseForm.prerequisites.split(',').map(s => s.trim()).filter(Boolean).join(','))
-      formData.append("careerOpportunities", editCourseForm.careerOpportunities.split(',').map(s => s.trim()).filter(Boolean).join(','))
+      formData.append("modules", editCourseForm.modules.split('.').map(s => s.trim()).filter(Boolean).join('.'))
+      formData.append("prerequisites", editCourseForm.prerequisites.split('.').map(s => s.trim()).filter(Boolean).join('.'))
+      formData.append("careerOpportunities", editCourseForm.careerOpportunities.split('.').map(s => s.trim()).filter(Boolean).join('.'))
 
     if (editCourseForm.imageFile) {
       formData.append("image", editCourseForm.imageFile)
@@ -619,9 +619,9 @@ export default function CoursesPage() {
           value={formState.modules}
           onChange={(e) => setFormState({ ...formState, modules: e.target.value })}
           rows={4}
-          placeholder="Enter modules, separated by commas"
+          placeholder="Enter modules, separated by full stop (.)"
         />
-        <span className="text-xs text-muted-foreground">Separate each module with a comma.</span>
+        <span className="text-xs text-muted-foreground">Separate each module with a full stop (.)</span>
       </div>
 
       <div className="grid gap-2">
@@ -631,9 +631,9 @@ export default function CoursesPage() {
           value={formState.prerequisites}
           onChange={(e) => setFormState({ ...formState, prerequisites: e.target.value })}
           rows={4}
-          placeholder="Enter prerequisites, separated by commas"
+          placeholder="Enter prerequisites, separated by full stop (.)"
         />
-        <span className="text-xs text-muted-foreground">Separate each prerequisite with a comma.</span>
+        <span className="text-xs text-muted-foreground">Separate each prerequisite with a full stop (.)</span>
       </div>
 
       <div className="grid gap-2">
@@ -643,9 +643,9 @@ export default function CoursesPage() {
           value={formState.careerOpportunities}
           onChange={(e) => setFormState({ ...formState, careerOpportunities: e.target.value })}
           rows={4}
-          placeholder="Enter career opportunities, separated by commas"
+          placeholder="Enter career opportunities, separated by full stop (.)"
         />
-        <span className="text-xs text-muted-foreground">Separate each opportunity with a comma.</span>
+        <span className="text-xs text-muted-foreground">Separate each opportunity with a full stop (.)</span>
       </div>
     </div>
   )
