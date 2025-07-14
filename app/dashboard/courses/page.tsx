@@ -226,9 +226,9 @@ export default function CoursesPage() {
       formData.append("learningHours", newCourseForm.learningHours.trim())
       formData.append("modeOfDelivery", newCourseForm.modeOfDelivery)
       formData.append("modeOfAssessment", newCourseForm.modeOfAssessment.trim())
-      formData.append("modules", newCourseForm.modules.split(',').map(s => s.trim()).filter(Boolean).join(','))
-      formData.append("prerequisites", newCourseForm.prerequisites.split(',').map(s => s.trim()).filter(Boolean).join(','))
-      formData.append("careerOpportunities", newCourseForm.careerOpportunities.split(',').map(s => s.trim()).filter(Boolean).join(','))
+      formData.append("modules", newCourseForm.modules.split('.').map(s => s.trim()).filter(Boolean).join('.'))
+      formData.append("prerequisites", newCourseForm.prerequisites.split('.').map(s => s.trim()).filter(Boolean).join('.'))
+      formData.append("careerOpportunities", newCourseForm.careerOpportunities.split('.').map(s => s.trim()).filter(Boolean).join('.'))
       
     if (newCourseForm.imageFile) {
       formData.append("image", newCourseForm.imageFile)
@@ -263,9 +263,9 @@ export default function CoursesPage() {
       learningHours: course.learningHours || "",
       modeOfDelivery: course.modeOfDelivery || "",
       modeOfAssessment: course.modeOfAssessment || "",
-      modules: course.modules?.join(',') || "",
-      prerequisites: course.prerequisites?.join(',') || "",
-      careerOpportunities: course.careerOpportunities?.join(',') || "",
+      modules: course.modules?.join('.') || "",
+      prerequisites: course.prerequisites?.join('.') || "",
+      careerOpportunities: course.careerOpportunities?.join('.') || "",
     })
     setIsEditDialogOpen(true)
   }
@@ -311,9 +311,9 @@ export default function CoursesPage() {
       formData.append("learningHours", editCourseForm.learningHours.trim())
       formData.append("modeOfDelivery", editCourseForm.modeOfDelivery)
       formData.append("modeOfAssessment", editCourseForm.modeOfAssessment.trim())
-      formData.append("modules", editCourseForm.modules.split(',').map(s => s.trim()).filter(Boolean).join(','))
-      formData.append("prerequisites", editCourseForm.prerequisites.split(',').map(s => s.trim()).filter(Boolean).join(','))
-      formData.append("careerOpportunities", editCourseForm.careerOpportunities.split(',').map(s => s.trim()).filter(Boolean).join(','))
+      formData.append("modules", editCourseForm.modules.split('.').map(s => s.trim()).filter(Boolean).join('.'))
+      formData.append("prerequisites", editCourseForm.prerequisites.split('.').map(s => s.trim()).filter(Boolean).join('.'))
+      formData.append("careerOpportunities", editCourseForm.careerOpportunities.split('.').map(s => s.trim()).filter(Boolean).join('.'))
 
     if (editCourseForm.imageFile) {
       formData.append("image", editCourseForm.imageFile)
