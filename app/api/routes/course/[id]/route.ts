@@ -100,9 +100,9 @@ export async function PUT(
         if (learningHours) courseData.learningHours = learningHours.toString();
         if (modeOfDelivery) courseData.modeOfDelivery = modeOfDelivery.toString();
         if (modeOfAssessment) courseData.modeOfAssessment = modeOfAssessment.toString();
-        if (modules) courseData.modules = modules.toString().split('.');
-        if (prerequisites) courseData.prerequisites = prerequisites.toString().split('.');
-        if (careerOpportunities) courseData.careerOpportunities = careerOpportunities.toString().split('.');
+        if (modules) courseData.modules = modules.toString().split(',');
+        if (prerequisites) courseData.prerequisites = prerequisites.toString().split(',');
+        if (careerOpportunities) courseData.careerOpportunities = careerOpportunities.toString().split(',');
         // Preserve createdAt and update updatedAt
         courseData.createdAt = existingCourse.createdAt; // Keep original creation date
         courseData.updatedAt = new Date(); // Set current date/time for update
