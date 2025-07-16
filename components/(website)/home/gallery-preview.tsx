@@ -167,7 +167,7 @@ export function GalleryPreview() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300">
                 <div className="absolute bottom-4 left-4 right-4">
-                    <h3 className="text-white font-semibold text-lg">
+                    <h3 className="hidden text-white font-semibold text-lg">
                       {image.title}
                     </h3>
                 </div>
@@ -281,9 +281,9 @@ export function GalleryPreview() {
 
                 {/* Image Info */}
                 <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/70 to-transparent text-center text-white">
-                  <h3 className="text-xl font-medium">{selectedImage.title}</h3>
+                  <h3 className="hidden text-xl font-medium">{selectedImage.title}</h3>
                   {selectedImage.category && (
-                    <p className="text-sm text-gray-300 mt-1">
+                    <p className="hidden text-sm text-gray-300 mt-1">
                       {selectedImage.category}
                     </p>
                   )}

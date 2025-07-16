@@ -236,10 +236,10 @@ export default function GalleryPage() {
                     </Badge>
                   </div>
                   <CardContent className="p-4">
-                    <h3 className="font-semibold text-navy mb-2 line-clamp-2">
+                    <h3 className="hidden font-semibold text-navy mb-2 line-clamp-2">
                       {item.title}
                     </h3>
-                    <p className="text-sm text-gray-600 line-clamp-2 mb-3">
+                    <p className="hidden text-sm text-gray-600 line-clamp-2 mb-3">
                       {item.description}
                     </p>
                     <div className="flex items-center text-xs text-gray-500">
@@ -341,7 +341,7 @@ export default function GalleryPage() {
 
                 {/* Image Info */}
                 <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/70 to-transparent text-center text-white">
-                  <h3 className="text-xl font-medium">{selectedImage.title}</h3>
+                  <h3 className="hidden text-xl font-medium">{selectedImage.title}</h3>
                   {selectedImage.category && (
                     <p className="text-sm text-gray-300 mt-1">
                       {selectedImage.category}
