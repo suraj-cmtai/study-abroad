@@ -21,8 +21,8 @@ const navItems = [
   { name: "Courses", href: "/courses", targetBlank: false },
   { name: "Gallery", href: "/gallery", targetBlank: false },
   { name: "Psychometric Test", href: "https://test.studyabroadind.com", targetBlank: true },
+  { name: "Get an appointment", href: "/appointment", targetBlank: false },
   { name: "Contact", href: "/contact", targetBlank: false },
-  // { name: "Login", href: "/login", targetBlank: false },
 ];
 
 export function Navigation() {
