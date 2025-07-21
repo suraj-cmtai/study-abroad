@@ -1,12 +1,24 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function Appointment1() {
+  const [calendlyLoaded, setCalendlyLoaded] = useState(false);
+  const widgetRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     const script = document.createElement("script");
     script.src = "https://assets.calendly.com/assets/external/widget.js";
     script.async = true;
+    script.onload = () => {
+      setCalendlyLoaded(true);
+    };
     document.body.appendChild(script);
+    // Fallback: if Calendly doesn't fire onload, set loaded after a delay
+    const fallback = setTimeout(() => setCalendlyLoaded(true), 3000);
+    return () => {
+      document.body.removeChild(script);
+      clearTimeout(fallback);
+    };
   }, []);
 
   return (
@@ -18,18 +30,22 @@ export default function Appointment1() {
             Book Your <span className="text-orange">Appointment</span>
           </h1>
           <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-            Ready to bring your creative vision to life? Let's discuss your project and create something extraordinary together.
+            Ready to bring your creative vision to life? Let&apos;s discuss your project and create something extraordinary together.
           </p>
         </div>
       </section>
 
       {/* Calendly Inline Widget */}
       <section className="w-full max-w-7xl mx-auto flex justify-center items-center px-4 sm:px-6 lg:px-8 pb-20">
-        <div className="w-full max-w-7xl mx-auto rounded-md border border-[color:var(--study-blue)] shadow-md overflow-hidden">
+        <div className="w-full max-w-7xl mx-auto rounded-md border border-[color:var(--study-blue)] shadow-md overflow-hidden min-h-[960px]">
+          {!calendlyLoaded && (
+            <div className="w-full h-[960px] bg-[color:var(--study-blue)]/10 animate-pulse" />
+          )}
           <div
+            ref={widgetRef}
+            style={{ display: calendlyLoaded ? "block" : "none", minWidth: "200px", width: "100%", height: "960px", paddingTop: "20px" }}
             className="calendly-inline-widget w-full"
             data-url="https://calendly.com/studyabroadbyvalueadz8/30min?background_color=ffffff&text_color=004672&primary_color=f78e40&back=1"
-            style={{ minWidth: "200px", width: "100%", height: "960px", paddingTop: "20px" }}
             data-auto-load="true"
           ></div>
         </div>
