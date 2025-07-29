@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { ReplaceImage, UploadImage } from "../../../controller/imageController";
-import CourseService, { CourseLevel, CourseStatus } from "../../../services/courseServices";
+import { ReplaceImage } from "../../../controller/imageController";
+import CourseService, { CourseStatus } from "../../../services/courseServices";
 import consoleManager from "../../../utils/consoleManager";
 
 // Get a specific course (GET)
@@ -57,7 +57,7 @@ export async function PUT(
         const instructor = formData.get("instructor");
         const category = formData.get("category");
         const duration = formData.get("duration");
-        const level = formData.get("level");
+        const country = formData.get("country");
         const price = formData.get("price");
         const status = formData.get("status");
         const file = formData.get("image");
@@ -93,7 +93,7 @@ export async function PUT(
         if (instructor) courseData.instructor = instructor.toString();
         if (category) courseData.category = category.toString();
         if (duration) courseData.duration = duration.toString();
-        if (level) courseData.level = level.toString();
+        if (country) courseData.country = country.toString().toLowerCase();
         if (price) courseData.price = Number(price);
         if (status) courseData.status = status.toString();
         if (imageUrl) courseData.image = imageUrl;

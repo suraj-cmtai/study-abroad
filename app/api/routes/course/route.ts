@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import { UploadImage } from "../../controller/imageController";
-import CourseService from "../../services/courseServices";
+import CourseService, { CourseStatus } from "../../services/courseServices";
 import consoleManager from "../../utils/consoleManager";
-import { CourseLevel, CourseStatus } from "../../services/courseServices";
 
 // Get all courses (GET)
 export async function GET(req: Request) {
@@ -11,7 +10,7 @@ export async function GET(req: Request) {
         const status = searchParams.get("status");
         const category = searchParams.get("category");
         const instructor = searchParams.get("instructor");
-        const level = searchParams.get("level");
+        const country = searchParams.get("country");
 
         let courses = await CourseService.getAllCourses();
 
@@ -25,8 +24,8 @@ export async function GET(req: Request) {
         if (instructor) {
             courses = courses.filter((course: any) => course.instructor === instructor);
         }
-        if (level) {
-            courses = courses.filter((course: any) => course.level === level);
+        if (country) {
+            courses = courses.filter((course: any) => course.country === country.toLowerCase());
         }
 
         consoleManager.log("Fetched courses with filters:", courses.length);
@@ -57,7 +56,7 @@ export async function POST(req: Request) {
         const instructor = formData.get("instructor");
         const category = formData.get("category");
         const duration = formData.get("duration");
-        const level = formData.get("level");
+        const country = formData.get("country");
         const price = formData.get("price");
         const status = formData.get("status") || "draft";
         const file = formData.get("image");
@@ -69,11 +68,11 @@ export async function POST(req: Request) {
         const careerOpportunities = formData.get("careerOpportunities");
 
         // Validate required fields
-        if (!title || !description || !instructor || !duration || !level || !price) {
+        if (!title || !description || !instructor || !duration || !country || !price) {
             return NextResponse.json({
                 statusCode: 400,
                 errorCode: "BAD_REQUEST",
-                errorMessage: "Title, description, instructor, duration, level, and price are required",
+                errorMessage: "Title, description, instructor, duration, country, and price are required",
             }, { status: 400 });
         }
 
@@ -93,16 +92,18 @@ export async function POST(req: Request) {
         if (file && file instanceof File) {
             imageUrl = await UploadImage(file, 1200, 800);
             consoleManager.log("Course image uploaded:", imageUrl);
-        }        // Save course data in Firestore
+        }
+
+        // Save course data in Firestore
         const courseData = {
             title: title.toString(),
             description: description.toString(),
             instructor: instructor.toString(),
             category: category?.toString() || "",
             duration: duration.toString(),
-            level: level.toString() as CourseLevel,
+            country: country.toString().toLowerCase(),
             price: priceNumber,
-            status: (status?.toString() || CourseStatus.DRAFT) as CourseStatus,
+            status: (status?.toString() || "draft") as CourseStatus,
             image: imageUrl as string | null,
             enrollmentCount: 0, // Initialize with 0 enrollments
             learningHours: learningHours?.toString() || "",
@@ -111,7 +112,7 @@ export async function POST(req: Request) {
             modules: modules?.toString().split('.') || [],
             prerequisites: prerequisites?.toString().split('.') || [],
             careerOpportunities: careerOpportunities?.toString().split('.') || [],
-            };
+        };
 
         const newCourse = await CourseService.addCourse(courseData);
 

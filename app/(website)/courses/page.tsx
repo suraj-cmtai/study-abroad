@@ -35,7 +35,7 @@ export default function CoursesPage() {
   const hasFetched = useSelector(selectCourseHasFetched)
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("all")
-  const [selectedLevel, setSelectedLevel] = useState("all")
+  const [selectedCountry, setSelectedCountry] = useState("all")
 
   useEffect(() => {
     if (!hasFetched) {
@@ -43,17 +43,17 @@ export default function CoursesPage() {
     }
   }, [dispatch, hasFetched])
 
-  // Get unique categories and levels from real data
+  // Get unique categories and countries from real data
   const categories = [...new Set(courses.map((course) => course.category))]
-  const levels = [...new Set(courses.map((course) => course.level))]
+  const countries = [...new Set(courses.map((course) => course.country).filter(Boolean))]
 
   const filteredCourses = courses.filter((course) => {
     const matchesSearch =
       course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       course.description.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesCategory = selectedCategory === "all" || course.category === selectedCategory
-    const matchesLevel = selectedLevel === "all" || course.level === selectedLevel
-    return matchesSearch && matchesCategory && matchesLevel
+    const matchesCountry = selectedCountry === "all" || (course.country && course.country === selectedCountry)
+    return matchesSearch && matchesCategory && matchesCountry
   })
 
   if (!hasFetched || isLoading) {
@@ -67,7 +67,7 @@ export default function CoursesPage() {
   // Define max lengths for truncation
   const MAX_TITLE_LENGTH = 50
   const MAX_CATEGORY_LENGTH = 20
-  const MAX_LEVEL_LENGTH = 20
+  const MAX_COUNTRY_LENGTH = 20
   const MAX_DESCRIPTION_LENGTH = 90
   const MAX_DURATION_LENGTH = 20
   const MAX_ENROLLMENT_LENGTH = 20
@@ -122,15 +122,15 @@ export default function CoursesPage() {
                 </SelectContent>
               </Select>
 
-              <Select value={selectedLevel} onValueChange={setSelectedLevel}>
+              <Select value={selectedCountry} onValueChange={setSelectedCountry}>
                 <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Level" />
+                  <SelectValue placeholder="Country" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Levels</SelectItem>
-                  {levels.map((level) => (
-                    <SelectItem key={level} value={level}>
-                      {truncateText(level, MAX_LEVEL_LENGTH)}
+                  <SelectItem value="all">All Countries</SelectItem>
+                  {countries.map((country) => (
+                    <SelectItem key={country} value={country}>
+                      {truncateText(country, MAX_COUNTRY_LENGTH)}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -174,7 +174,7 @@ export default function CoursesPage() {
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
                     <Badge className="absolute top-4 left-4 bg-orange text-white">
-                      {truncateText(course.level, MAX_LEVEL_LENGTH)}
+                      {truncateText(course.country, MAX_COUNTRY_LENGTH)}
                     </Badge>
                   </div>
 

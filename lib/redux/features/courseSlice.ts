@@ -9,7 +9,7 @@ interface Course {
   title: string;
   category: string;
   duration: string;
-  level: 'Beginner' | 'Intermediate' | 'Advanced';
+  country: string; // changed from level to country (string)
   price: number;
   status: 'active' | 'draft' | 'archived';  
   description: string;
@@ -36,7 +36,7 @@ interface CourseState {
   selectedCourse: Course | null;
   filters: {
     category: string;
-    level: string;
+    country: string;
     priceRange: [number, number];
     modeOfDelivery: string;
   };
@@ -45,14 +45,14 @@ interface CourseState {
 
 const initialState: CourseState = {
   courses: [],
-  activeCourses: [], // Initialize as empty array
+  activeCourses: [],
   loading: false,
   hasFetched: false,
   error: null,
   selectedCourse: null,
   filters: {
     category: '',
-    level: '',
+    country: '',
     priceRange: [0, 10000],
     modeOfDelivery: '',
   },
@@ -303,13 +303,14 @@ export const selectFilteredCourses = (state: RootState) => {
       course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       course.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
       course.instructor.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      course.category.toLowerCase().includes(searchQuery.toLowerCase());
+      course.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (course.country && course.country.toLowerCase().includes(searchQuery.toLowerCase()));
     
     // Category filter
     const matchesCategory = !filters.category || course.category === filters.category;
     
-    // Level filter
-    const matchesLevel = !filters.level || course.level === filters.level;
+    // Country filter
+    const matchesCountry = !filters.country || (course.country && course.country === filters.country);
     
     // Price range filter
     const matchesPrice = course.price >= filters.priceRange[0] && course.price <= filters.priceRange[1];
@@ -317,7 +318,7 @@ export const selectFilteredCourses = (state: RootState) => {
     // Mode of delivery filter
     const matchesDelivery = !filters.modeOfDelivery || course.modeOfDelivery === filters.modeOfDelivery;
     
-    return matchesSearch && matchesCategory && matchesLevel && matchesPrice && matchesDelivery;
+    return matchesSearch && matchesCategory && matchesCountry && matchesPrice && matchesDelivery;
   });
 };
 
@@ -334,13 +335,13 @@ export const selectCoursesByCategory = (state: RootState) => {
   }, {} as Record<string, Course[]>);
 };
 
-export const selectCoursesByLevel = (state: RootState) => {
+export const selectCoursesByCountry = (state: RootState) => {
   const courses = state.course.courses;
   return courses.reduce((acc, course) => {
-    if (!acc[course.level]) {
-      acc[course.level] = [];
+    if (!acc[course.country]) {
+      acc[course.country] = [];
     }
-    acc[course.level].push(course);
+    acc[course.country].push(course);
     return acc;
   }, {} as Record<string, Course[]>);
 };

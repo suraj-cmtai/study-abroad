@@ -1,25 +1,17 @@
+
 import { db } from "../config/firebase";
 import consoleManager from "../utils/consoleManager";
 import admin from "firebase-admin";
 
-export enum CourseLevel {
-  BEGINNER = "beginner",
-  INTERMEDIATE = "intermediate",
-  ADVANCED = "advanced"
-}
-
-export enum CourseStatus {
-  DRAFT = "draft",
-  PUBLISHED = "published",
-  ARCHIVED = "archived"
-}
+// Use status: 'active' | 'draft' | 'archived'
+export type CourseStatus = 'active' | 'draft' | 'archived';
 
 interface Course {
   id: string;
   title: string;
   category: string;
   duration: string;
-  level: CourseLevel;
+  country: string; // changed from level to country
   price: number;
   status: CourseStatus;
   description: string;
@@ -85,9 +77,9 @@ class CourseService {
       title: data.title || "",
       category: data.category || "",
       duration: data.duration || "",
-      level: data.level as CourseLevel,
+      country: (data.country || "").toLowerCase(), // always save as lowercase
       price: Number(data.price || 0),
-      status: data.status as CourseStatus,
+      status: (data.status as CourseStatus) || "draft",
       description: data.description || "",
       instructor: data.instructor || "",
       enrollmentCount: Number(data.enrollmentCount || 0),
@@ -145,8 +137,13 @@ class CourseService {
   static async addCourse(courseData: Omit<Course, 'id' | 'createdAt' | 'updatedAt'>) {
     try {
       const timestamp = admin.firestore.FieldValue.serverTimestamp();
-      const newCourseRef = await db.collection("courses").add({
+      // Ensure country is always saved as lowercase
+      const courseDataWithLowerCountry = {
         ...courseData,
+        country: (courseData.country || "").toLowerCase(),
+      };
+      const newCourseRef = await db.collection("courses").add({
+        ...courseDataWithLowerCountry,
         enrollmentCount: 0,
         createdAt: timestamp,
         updatedAt: timestamp,
@@ -202,10 +199,13 @@ class CourseService {
     try {
       const timestamp = admin.firestore.FieldValue.serverTimestamp();
       const courseRef = db.collection("courses").doc(id);
-      await courseRef.update({
+      // If country is being updated, ensure it's lowercase
+      const updateDataWithLowerCountry = {
         ...updateData,
+        ...(updateData.country !== undefined && { country: (updateData.country || "").toLowerCase() }),
         updatedAt: timestamp,
-      });
+      };
+      await courseRef.update(updateDataWithLowerCountry);
 
       consoleManager.log("Course updated successfully:", id);
       
@@ -262,9 +262,9 @@ class CourseService {
     return this.courses.filter(course => course.category === category);
   }
 
-  // Get courses by level
-  static async getCoursesByLevel(level: CourseLevel) {
-    return this.courses.filter(course => course.level === level);
+  // Get courses by country
+  static async getCoursesByCountry(country: string) {
+    return this.courses.filter(course => course.country === country.toLowerCase());
   }
 
   // Get courses by instructor
@@ -272,9 +272,9 @@ class CourseService {
     return this.courses.filter(course => course.instructor === instructor);
   }
 
-  // Get published courses
+  // Get published courses (for backward compatibility, treat 'active' as published)
   static async getPublishedCourses() {
-    return this.courses.filter(course => course.status === CourseStatus.PUBLISHED);
+    return this.courses.filter(course => course.status === "active");
   }
 
   // Search courses
@@ -284,7 +284,8 @@ class CourseService {
       course.title.toLowerCase().includes(searchTerm) ||
       course.description.toLowerCase().includes(searchTerm) ||
       course.category.toLowerCase().includes(searchTerm) ||
-      course.instructor.toLowerCase().includes(searchTerm)
+      course.instructor.toLowerCase().includes(searchTerm) ||
+      (course.country && course.country.toLowerCase().includes(searchTerm))
     );
   }
 

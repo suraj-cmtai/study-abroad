@@ -62,12 +62,13 @@ import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { toast } from "sonner"
 
+// Updated Course interface: country instead of level
 interface Course {
   id: string;
   title: string;
   category: string;
   duration: string;
-  level: 'Beginner' | 'Intermediate' | 'Advanced';
+  country: string; // country is a string, not an enum
   price: number;
   status: 'active' | 'draft' | 'archived';
   description: string;
@@ -84,11 +85,12 @@ interface Course {
   careerOpportunities?: string[];
 }
 
+// Updated CourseFormState: country instead of level
 interface CourseFormState {
   title: string;
   category: string;
   duration: string;
-  level: 'Beginner' | 'Intermediate' | 'Advanced';
+  country: string;
   price: number;
   status: 'active' | 'draft' | 'archived';
   description: string;
@@ -98,7 +100,7 @@ interface CourseFormState {
   imageFile: File | null;
   removeImage: boolean;
   learningHours: string;
-  modeOfDelivery: '' | 'Online' | 'On-campus' | 'Hybrid' | 'Self-paced';
+  modeOfDelivery: string;
   modeOfAssessment: string;
   modules: string;
   prerequisites: string;
@@ -109,7 +111,7 @@ const initialFormState: CourseFormState = {
   title: "",
   category: "",
   duration: "",
-  level: "Beginner",
+  country: "",
   price: 0,
   status: "draft",
   description: "",
@@ -165,7 +167,8 @@ export default function CoursesPage() {
   const filteredCourses = courses.filter(course =>
     course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     course.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    course.instructor.toLowerCase().includes(searchQuery.toLowerCase())
+    course.instructor.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (course.country && course.country.toLowerCase().includes(searchQuery.toLowerCase()))
   )
 
   const resetCreateForm = () => {
@@ -209,19 +212,23 @@ export default function CoursesPage() {
       toast.error("Duration is required")
       return
     }
+    if (!newCourseForm.country.trim()) {
+      toast.error("Country is required")
+      return
+    }
 
     setIsSubmitting(true)
 
     try {
-    const formData = new FormData()
+      const formData = new FormData()
       formData.append("title", newCourseForm.title.trim())
       formData.append("description", newCourseForm.description.trim())
       formData.append("instructor", newCourseForm.instructor.trim())
       formData.append("category", newCourseForm.category.trim())
       formData.append("duration", newCourseForm.duration.trim())
-    formData.append("level", newCourseForm.level)
+      formData.append("country", newCourseForm.country.trim())
       formData.append("price", Math.max(0, newCourseForm.price).toString())
-    formData.append("status", newCourseForm.status)
+      formData.append("status", newCourseForm.status)
       formData.append("enrollmentCount", Math.max(0, newCourseForm.enrollmentCount).toString())
       formData.append("learningHours", newCourseForm.learningHours.trim())
       formData.append("modeOfDelivery", newCourseForm.modeOfDelivery)
@@ -230,14 +237,14 @@ export default function CoursesPage() {
       formData.append("prerequisites", newCourseForm.prerequisites.split('.').map(s => s.trim()).filter(Boolean).join('.'))
       formData.append("careerOpportunities", newCourseForm.careerOpportunities.split('.').map(s => s.trim()).filter(Boolean).join('.'))
       
-    if (newCourseForm.imageFile) {
-      formData.append("image", newCourseForm.imageFile)
-    }
+      if (newCourseForm.imageFile) {
+        formData.append("image", newCourseForm.imageFile)
+      }
 
       await dispatch(createCourse(formData)).unwrap()
       resetCreateForm()
-        setIsCreateDialogOpen(false)
-        toast.success("Course created successfully!")
+      setIsCreateDialogOpen(false)
+      toast.success("Course created successfully!")
     } catch (err: any) {
       toast.error(err?.message || err || "Failed to create course")
     } finally {
@@ -251,7 +258,7 @@ export default function CoursesPage() {
       title: course.title,
       category: course.category,
       duration: course.duration,
-      level: course.level,
+      country: course.country || "",
       price: course.price,
       status: course.status,
       description: course.description,
@@ -294,19 +301,23 @@ export default function CoursesPage() {
       toast.error("Duration is required")
       return
     }
+    if (!editCourseForm.country.trim()) {
+      toast.error("Country is required")
+      return
+    }
 
     setIsSubmitting(true)
 
     try {
-    const formData = new FormData()
+      const formData = new FormData()
       formData.append("title", editCourseForm.title.trim())
       formData.append("description", editCourseForm.description.trim())
       formData.append("instructor", editCourseForm.instructor.trim())
       formData.append("category", editCourseForm.category.trim())
       formData.append("duration", editCourseForm.duration.trim())
-    formData.append("level", editCourseForm.level)
+      formData.append("country", editCourseForm.country.trim())
       formData.append("price", Math.max(0, editCourseForm.price).toString())
-    formData.append("status", editCourseForm.status)
+      formData.append("status", editCourseForm.status)
       formData.append("enrollmentCount", Math.max(0, editCourseForm.enrollmentCount).toString())
       formData.append("learningHours", editCourseForm.learningHours.trim())
       formData.append("modeOfDelivery", editCourseForm.modeOfDelivery)
@@ -315,17 +326,17 @@ export default function CoursesPage() {
       formData.append("prerequisites", editCourseForm.prerequisites.split('.').map(s => s.trim()).filter(Boolean).join('.'))
       formData.append("careerOpportunities", editCourseForm.careerOpportunities.split('.').map(s => s.trim()).filter(Boolean).join('.'))
 
-    if (editCourseForm.imageFile) {
-      formData.append("image", editCourseForm.imageFile)
-    }
-    if (editCourseForm.removeImage) {
-      formData.append("removeImage", "true")
-    }
+      if (editCourseForm.imageFile) {
+        formData.append("image", editCourseForm.imageFile)
+      }
+      if (editCourseForm.removeImage) {
+        formData.append("removeImage", "true")
+      }
 
       await dispatch(updateCourse({ id: selectedCourseId, data: formData })).unwrap()
-        setIsEditDialogOpen(false)
+      setIsEditDialogOpen(false)
       resetEditForm()
-        toast.success("Course updated successfully!")
+      toast.success("Course updated successfully!")
     } catch (err: any) {
       toast.error(err?.message || err || "Failed to update course")
     } finally {
@@ -440,6 +451,18 @@ export default function CoursesPage() {
           />
         </div>
         <div className="grid gap-2">
+          <Label htmlFor="country">Country <span className="text-red-500">*</span></Label>
+          <Input
+            id="country"
+            value={formState.country}
+            onChange={(e) => setFormState({ ...formState, country: e.target.value })}
+            placeholder="Enter country"
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div className="grid gap-2">
           <Label htmlFor="price">Price ($) <span className="text-red-500">*</span></Label>
           <Input
             id="price"
@@ -450,25 +473,6 @@ export default function CoursesPage() {
             onChange={(e) => setFormState({ ...formState, price: Math.max(0, Number(e.target.value)) })}
             placeholder="0.00"
           />
-        </div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
-        <div className="grid gap-2">
-          <Label htmlFor="level">Level <span className="text-red-500">*</span></Label>
-          <Select
-            value={formState.level}
-            onValueChange={(value: 'Beginner' | 'Intermediate' | 'Advanced') =>
-              setFormState({ ...formState, level: value })
-            }
-          >
-            <SelectTrigger><SelectValue /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="Beginner">Beginner</SelectItem>
-              <SelectItem value="Intermediate">Intermediate</SelectItem>
-              <SelectItem value="Advanced">Advanced</SelectItem>
-            </SelectContent>
-          </Select>
         </div>
         <div className="grid gap-2">
           <Label htmlFor="status">Status</Label>
@@ -500,9 +504,9 @@ export default function CoursesPage() {
             placeholder="0"
           />
         </div>
-      <div className="grid gap-2">
+        <div className="grid gap-2">
           <Label htmlFor="learningHours">Learning Hours</Label>
-        <Input
+          <Input
             id="learningHours"
             value={formState.learningHours}
             onChange={(e) => setFormState({ ...formState, learningHours: e.target.value })}
@@ -514,24 +518,14 @@ export default function CoursesPage() {
       <div className="grid grid-cols-2 gap-4">
         <div className="grid gap-2">
           <Label htmlFor="modeOfDelivery">Mode of Delivery</Label>
-          <Select
+          <Input
+            id="modeOfDelivery"
             value={formState.modeOfDelivery}
-            onValueChange={(value: '' | 'Online' | 'On-campus' | 'Hybrid' | 'Self-paced') =>
-              setFormState({ ...formState, modeOfDelivery: value })
-            }
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Select delivery mode" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="Online">Online</SelectItem>
-              <SelectItem value="On-campus">On-campus</SelectItem>
-              <SelectItem value="Hybrid">Hybrid</SelectItem>
-              <SelectItem value="Self-paced">Self-paced</SelectItem>
-            </SelectContent>
-          </Select>
+            onChange={(e) => setFormState({ ...formState, modeOfDelivery: e.target.value })}
+            placeholder="e.g., Online, On-campus, Hybrid, Self-paced"
+          />
         </div>
-      <div className="grid gap-2">
+        <div className="grid gap-2">
           <Label htmlFor="modeOfAssessment">Mode of Assessment</Label>
           <Input
             id="modeOfAssessment"
@@ -690,7 +684,8 @@ export default function CoursesPage() {
                   !newCourseForm.description.trim() ||
                   !newCourseForm.instructor.trim() ||
                   !newCourseForm.category.trim() ||
-                  !newCourseForm.duration.trim()
+                  !newCourseForm.duration.trim() ||
+                  !newCourseForm.country.trim()
                 }
               >
                 {isLoading || isSubmitting ? (
@@ -724,7 +719,7 @@ export default function CoursesPage() {
               <TableHead className="w-[100px]">Image</TableHead>
               <TableHead>Title</TableHead>
               <TableHead>Category</TableHead>
-              <TableHead>Level</TableHead>
+              <TableHead>Country</TableHead>
               <TableHead>Price</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Enrollments</TableHead>
@@ -790,7 +785,7 @@ export default function CoursesPage() {
                     {course.title}
                   </TableCell>
                   <TableCell>{course.category}</TableCell>
-                  <TableCell>{course.level}</TableCell>
+                  <TableCell>{course.country}</TableCell>
                   <TableCell>${course.price.toFixed(2)}</TableCell>
                   <TableCell>
                     <Badge
@@ -879,7 +874,8 @@ export default function CoursesPage() {
                 !editCourseForm?.description?.trim() ||
                 !editCourseForm?.instructor?.trim() ||
                 !editCourseForm?.category?.trim() ||
-                !editCourseForm?.duration?.trim()
+                !editCourseForm?.duration?.trim() ||
+                !editCourseForm?.country?.trim()
               }
             >
               {isLoading || isSubmitting ? (

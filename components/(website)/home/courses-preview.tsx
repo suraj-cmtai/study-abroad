@@ -28,7 +28,7 @@ function truncateText(text: string, maxLength: number) {
 // Define max lengths for truncation
 const MAX_TITLE_LENGTH = 50
 const MAX_CATEGORY_LENGTH = 20
-const MAX_LEVEL_LENGTH = 20
+const MAX_COUNTRY_LENGTH = 20
 const MAX_DESCRIPTION_LENGTH = 90
 const MAX_DURATION_LENGTH = 20
 const MAX_ENROLLMENT_LENGTH = 20
@@ -171,7 +171,7 @@ export function CoursesPreview() {
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   />
                   <Badge className="absolute top-4 left-4 bg-orange text-white">
-                    {truncateText(course.level, MAX_LEVEL_LENGTH)}
+                    {truncateText(course.country, MAX_COUNTRY_LENGTH)}
                   </Badge>
                 </div>
 

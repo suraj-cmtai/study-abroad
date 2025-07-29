@@ -1,3 +1,4 @@
+
 "use client"
 
 import { motion } from "framer-motion"
@@ -71,7 +72,8 @@ export default function CourseDetailPage() {
               transition={{ duration: 0.8 }}
               className="text-white max-w-3xl"
             >
-              <Badge className="bg-orange text-white mb-4">{course.level}</Badge>
+              {/* Changed from course.level to course.country */}
+              <Badge className="bg-orange text-white mb-4">{course.country}</Badge>
               <h1 className="text-4xl md:text-6xl font-bold mb-4">{course.title}</h1>
               <p className="text-xl text-gray-200 mb-6">{course.description?.substring(0, 200)}...</p>
               <div className="flex flex-wrap gap-6 text-sm">
@@ -240,10 +242,11 @@ export default function CourseDetailPage() {
                         <span className="font-medium ml-1">{course.duration}</span>
                       </div>
                     </div>
+                    {/* Changed from Level to Country */}
                     <div className="flex flex-col">
                       <div className="flex">
-                        <span className="text-gray-600 min-w-[80px]">Level:</span>
-                        <span className="font-medium ml-1">{course.level}</span>
+                        <span className="text-gray-600 min-w-[80px]">Country:</span>
+                        <span className="font-medium ml-1">{course.country}</span>
                       </div>
                     </div>
                     <div className="flex flex-col">
