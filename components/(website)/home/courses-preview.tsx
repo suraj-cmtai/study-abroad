@@ -19,6 +19,20 @@ import {
 } from "@/lib/redux/features/courseSlice"
 import { Skeleton } from "@/components/ui/skeleton"
 
+// Utility function to truncate text and add ellipsis if too long
+function truncateText(text: string, maxLength: number) {
+  if (!text) return ""
+  return text.length > maxLength ? text.slice(0, maxLength - 1) + "…" : text
+}
+
+// Define max lengths for truncation
+const MAX_TITLE_LENGTH = 50
+const MAX_CATEGORY_LENGTH = 20
+const MAX_LEVEL_LENGTH = 20
+const MAX_DESCRIPTION_LENGTH = 90
+const MAX_DURATION_LENGTH = 20
+const MAX_ENROLLMENT_LENGTH = 20
+
 function LoadingPreview() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
@@ -151,44 +165,55 @@ export function CoursesPreview() {
                   >
                     <Image
                     src={course.image || "/placeholder.svg"}
-                    alt={course.title}
+                    alt={truncateText(course.title, MAX_TITLE_LENGTH)}
                       fill
                       className="object-cover"
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   />
-                  <Badge className="absolute top-4 left-4 bg-orange text-white">{course.level}</Badge>
+                  <Badge className="absolute top-4 left-4 bg-orange text-white">
+                    {truncateText(course.level, MAX_LEVEL_LENGTH)}
+                  </Badge>
                 </div>
 
                 <CardHeader>
                   <div className="flex items-center justify-between mb-2">
                     <Badge variant="outline" className="text-navy border-navy">
-                      {course.category}
+                      {truncateText(course.category, MAX_CATEGORY_LENGTH)}
                     </Badge>
                     <div className="flex items-center text-sm text-gray-500">
                       <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 mr-1" />
                       4.8
                     </div>
                   </div>
-                  <CardTitle className="text-xl text-navy line-clamp-2">{course.title}</CardTitle>
+                  <CardTitle className="text-xl text-navy line-clamp-2">
+                    {truncateText(course.title, MAX_TITLE_LENGTH)}
+                  </CardTitle>
                 </CardHeader>
 
                 <CardContent className="space-y-4">
-                  <p className="text-gray-600 text-sm line-clamp-2">{course.description}</p>
+                  <p className="text-gray-600 text-sm line-clamp-2">
+                    {truncateText(course.description, MAX_DESCRIPTION_LENGTH)}
+                  </p>
 
                   <div className="flex items-center justify-between text-sm text-gray-500">
                     <div className="flex items-center">
                       <Clock className="h-4 w-4 mr-1" />
-                      {course.duration}
+                      {truncateText(course.duration, MAX_DURATION_LENGTH)}
                     </div>
                     <div className="flex items-center">
                       <Users className="h-4 w-4 mr-1" />
-                      {course.enrollmentCount} enrolled
+                      {truncateText(
+                        `${course.enrollmentCount} enrolled`,
+                        MAX_ENROLLMENT_LENGTH
+                      )}
                     </div>
                   </div>
 
                   <div className="flex items-center justify-between pt-4 border-t">
                     <div>
-                        <div className="text-2xl font-bold text-navy">${course.price?.toLocaleString?.() ?? course.price}</div>
+                        <div className="text-2xl font-bold text-navy">
+                          ${course.price?.toLocaleString?.() ?? course.price}
+                        </div>
                       <div className="text-sm text-gray-500">Total Program</div>
                     </div>
                     <Link href={`/courses/${course.id}`}>
