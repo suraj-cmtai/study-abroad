@@ -100,7 +100,7 @@ interface CourseFormState {
   imageFile: File | null;
   removeImage: boolean;
   learningHours: string;
-  modeOfDelivery: string;
+  modeOfDelivery: '' | 'Online' | 'On-campus' | 'Hybrid' | 'Self-paced';
   modeOfAssessment: string;
   modules: string;
   prerequisites: string;
@@ -518,12 +518,22 @@ export default function CoursesPage() {
       <div className="grid grid-cols-2 gap-4">
         <div className="grid gap-2">
           <Label htmlFor="modeOfDelivery">Mode of Delivery</Label>
-          <Input
-            id="modeOfDelivery"
+          <Select
             value={formState.modeOfDelivery}
-            onChange={(e) => setFormState({ ...formState, modeOfDelivery: e.target.value })}
-            placeholder="e.g., Online, On-campus, Hybrid, Self-paced"
-          />
+            onValueChange={(value: '' | 'Online' | 'On-campus' | 'Hybrid' | 'Self-paced') =>
+              setFormState({ ...formState, modeOfDelivery: value })
+            }
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select delivery mode" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="Online">Online</SelectItem>
+              <SelectItem value="On-campus">On-campus</SelectItem>
+              <SelectItem value="Hybrid">Hybrid</SelectItem>
+              <SelectItem value="Self-paced">Self-paced</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
         <div className="grid gap-2">
           <Label htmlFor="modeOfAssessment">Mode of Assessment</Label>
