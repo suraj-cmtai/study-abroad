@@ -27,6 +27,12 @@ function truncateText(text: string, maxLength: number) {
   return text.length > maxLength ? text.slice(0, maxLength - 1) + "…" : text
 }
 
+// Utility function to capitalize the first letter of a string
+function capitalizeFirstLetter(str: string) {
+  if (!str) return ""
+  return str.charAt(0).toUpperCase() + str.slice(1)
+}
+
 export default function CoursesPage() {
   const dispatch = useDispatch<AppDispatch>()
   const courses = useSelector(selectActiveCourses)
@@ -130,7 +136,7 @@ export default function CoursesPage() {
                   <SelectItem value="all">All Countries</SelectItem>
                   {countries.map((country) => (
                     <SelectItem key={country} value={country}>
-                      {truncateText(country, MAX_COUNTRY_LENGTH)}
+                      {truncateText(capitalizeFirstLetter(country), MAX_COUNTRY_LENGTH)}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -174,7 +180,7 @@ export default function CoursesPage() {
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
                     <Badge className="absolute top-4 left-4 bg-orange text-white">
-                      {truncateText(course.country, MAX_COUNTRY_LENGTH)}
+                      {truncateText(capitalizeFirstLetter(course.country), MAX_COUNTRY_LENGTH)}
                     </Badge>
                   </div>
 

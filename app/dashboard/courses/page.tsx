@@ -128,6 +128,12 @@ const initialFormState: CourseFormState = {
   careerOpportunities: "",
 };
 
+// Helper function to capitalize the first letter of a string
+function capitalizeFirstLetter(str: string) {
+  if (!str) return "";
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
 export default function CoursesPage() {
   const dispatch = useDispatch<AppDispatch>()
   const courses = useSelector(selectCourses)
@@ -795,7 +801,9 @@ export default function CoursesPage() {
                     {course.title}
                   </TableCell>
                   <TableCell>{course.category}</TableCell>
-                  <TableCell>{course.country}</TableCell>
+                  <TableCell>
+                    {capitalizeFirstLetter(course.country)}
+                  </TableCell>
                   <TableCell>${course.price.toFixed(2)}</TableCell>
                   <TableCell>
                     <Badge

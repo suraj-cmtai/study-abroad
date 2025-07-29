@@ -23,6 +23,12 @@ import { useEffect } from "react"
 import NotFound from "./not-found"
 import Link from "next/link"
 
+// Helper function to capitalize the first letter
+function capitalizeFirstLetter(str?: string) {
+  if (!str) return "";
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
 export default function CourseDetailPage() {
   const params = useParams();
   const id = typeof params.id === "string" ? params.id : Array.isArray(params.id) ? params.id[0] : "";
@@ -42,6 +48,9 @@ export default function CourseDetailPage() {
     <NotFound />
   );
   if (!course) return null;
+
+  // Capitalize country for display
+  const countryDisplay = capitalizeFirstLetter(course.country);
 
   return (
     <div className="w-full min-h-screen bg-gray-50">
@@ -73,7 +82,7 @@ export default function CourseDetailPage() {
               className="text-white max-w-3xl"
             >
               {/* Changed from course.level to course.country */}
-              <Badge className="bg-orange text-white mb-4">{course.country}</Badge>
+              <Badge className="bg-orange text-white mb-4">{countryDisplay}</Badge>
               <h1 className="text-4xl md:text-6xl font-bold mb-4">{course.title}</h1>
               <p className="text-xl text-gray-200 mb-6">{course.description?.substring(0, 200)}...</p>
               <div className="flex flex-wrap gap-6 text-sm">
@@ -246,7 +255,7 @@ export default function CourseDetailPage() {
                     <div className="flex flex-col">
                       <div className="flex">
                         <span className="text-gray-600 min-w-[80px]">Country:</span>
-                        <span className="font-medium ml-1">{course.country}</span>
+                        <span className="font-medium ml-1">{countryDisplay}</span>
                       </div>
                     </div>
                     <div className="flex flex-col">
