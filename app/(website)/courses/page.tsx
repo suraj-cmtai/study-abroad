@@ -21,6 +21,12 @@ import {
 } from "@/lib/redux/features/courseSlice"
 import Loading from "./loading"
 
+// Utility function to truncate text and add ellipsis if too long
+function truncateText(text: string, maxLength: number) {
+  if (!text) return ""
+  return text.length > maxLength ? text.slice(0, maxLength - 1) + "…" : text
+}
+
 export default function CoursesPage() {
   const dispatch = useDispatch<AppDispatch>()
   const courses = useSelector(selectActiveCourses)
@@ -57,6 +63,14 @@ export default function CoursesPage() {
       <p className="text-destructive text-lg">{error}</p>
     </div>)
   }
+
+  // Define max lengths for truncation
+  const MAX_TITLE_LENGTH = 50
+  const MAX_CATEGORY_LENGTH = 20
+  const MAX_LEVEL_LENGTH = 20
+  const MAX_DESCRIPTION_LENGTH = 90
+  const MAX_DURATION_LENGTH = 20
+  const MAX_ENROLLMENT_LENGTH = 20
 
   return (
     <div className="w-full min-h-screen bg-gray-50">
@@ -102,7 +116,7 @@ export default function CoursesPage() {
                   <SelectItem value="all">All Categories</SelectItem>
                   {categories.map((category) => (
                     <SelectItem key={category} value={category}>
-                      {category}
+                      {truncateText(category, MAX_CATEGORY_LENGTH)}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -116,7 +130,7 @@ export default function CoursesPage() {
                   <SelectItem value="all">All Levels</SelectItem>
                   {levels.map((level) => (
                     <SelectItem key={level} value={level}>
-                      {level}
+                      {truncateText(level, MAX_LEVEL_LENGTH)}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -134,7 +148,6 @@ export default function CoursesPage() {
               Showing {filteredCourses.length} of {courses.length} courses
             </p>
           </div>
-
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredCourses.map((course, index) => (
@@ -155,44 +168,61 @@ export default function CoursesPage() {
                   >
                     <Image
                       src={course.image || "/placeholder.svg"}
-                      alt={course.title}
+                      alt={truncateText(course.title, MAX_TITLE_LENGTH)}
                       fill
                       className="object-cover"
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
-                    <Badge className="absolute top-4 left-4 bg-orange text-white">{course.level}</Badge>
+                    <Badge className="absolute top-4 left-4 bg-orange text-white">
+                      {truncateText(course.level, MAX_LEVEL_LENGTH)}
+                    </Badge>
                   </div>
 
                   <CardHeader>
                     <div className="flex items-center justify-between mb-2">
                       <Badge variant="outline" className="text-navy border-navy">
-                        {course.category}
+                        {truncateText(course.category, MAX_CATEGORY_LENGTH)}
                       </Badge>
                       <div className="flex items-center text-sm text-gray-500">
                         <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 mr-1" />
                         4.8
                       </div>
                     </div>
-                    <CardTitle className="text-xl text-navy line-clamp-2">{course.title}</CardTitle>
+                    <CardTitle
+                      className="text-xl text-navy line-clamp-2"
+                      title={course.title}
+                    >
+                      {truncateText(course.title, MAX_TITLE_LENGTH)}
+                    </CardTitle>
                   </CardHeader>
 
                   <CardContent className="space-y-4">
-                    <p className="text-gray-600 text-sm line-clamp-2">{course.description}</p>
+                    <p
+                      className="text-gray-600 text-sm line-clamp-2"
+                      title={course.description}
+                    >
+                      {truncateText(course.description, MAX_DESCRIPTION_LENGTH)}
+                    </p>
 
                     <div className="flex items-center justify-between text-sm text-gray-500">
-                      <div className="flex items-center">
+                      <div className="flex items-center" title={course.duration}>
                         <Clock className="h-4 w-4 mr-1" />
-                        {course.duration}
+                        {truncateText(course.duration, MAX_DURATION_LENGTH)}
                       </div>
-                      <div className="flex items-center">
+                      <div className="flex items-center" title={String(course.enrollmentCount) + " enrolled"}>
                         <Users className="h-4 w-4 mr-1" />
-                        {course.enrollmentCount} enrolled
+                        {truncateText(
+                          `${course.enrollmentCount} enrolled`,
+                          MAX_ENROLLMENT_LENGTH
+                        )}
                       </div>
                     </div>
 
                     <div className="flex items-center justify-between pt-4 border-t">
                       <div>
-                          <div className="text-2xl font-bold text-navy">${course.price?.toLocaleString?.() ?? course.price}</div>
+                        <div className="text-2xl font-bold text-navy">
+                          ${course.price?.toLocaleString?.() ?? course.price}
+                        </div>
                         <div className="text-sm text-gray-500">Total Program</div>
                       </div>
                       <Link href={`/courses/${course.id}`}>
@@ -207,7 +237,6 @@ export default function CoursesPage() {
               </motion.div>
             ))}
           </div>
-
 
           {hasFetched && !isLoading && !error && filteredCourses.length === 0 && (
             <div className="text-center py-12">
