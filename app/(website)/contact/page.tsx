@@ -459,7 +459,7 @@ export default function ContactPage() {
             <CardContent className="p-0">
               <div className="relative w-full h-64">
                 <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3504.62164634621!2d77.24580388885497!3d28.551090000000016!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390ce3bbb01984e1%3A0x9ec3ec938b4ba853!2sLeverage%20Edu%20-%20Study%20Abroad%20Consultant%20in%20Nehru%20Place%2C%20New%20Delhi!5e0!3m2!1sen!2sin!4v1750497828940!5m2!1sen!2sin"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2572.2225728906656!2d77.2513416!3d28.548461!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390ce3d69e13e7ab%3A0x74b49cdeb3a73e11!2sValue%20Adz%20Global!5e1!3m2!1sen!2sin!4v1754144670802!5m2!1sen!2sin"
                   width="100%"
                   height="100%"
                   style={{ border: 0 }}
