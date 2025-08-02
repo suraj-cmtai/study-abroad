@@ -59,6 +59,8 @@ export async function PUT(
         const duration = formData.get("duration");
         const country = formData.get("country");
         const price = formData.get("price");
+        const feeType = formData.get("feeType");
+        const currency = formData.get("currency");
         const status = formData.get("status");
         const file = formData.get("image");
         const learningHours = formData.get("learningHours");
@@ -95,6 +97,8 @@ export async function PUT(
         if (duration) courseData.duration = duration.toString();
         if (country) courseData.country = country.toString().toLowerCase();
         if (price) courseData.price = Number(price);
+        if (feeType) courseData.feeType = feeType.toString();
+        if (currency) courseData.currency = currency.toString();
         if (status) courseData.status = status.toString();
         if (imageUrl) courseData.image = imageUrl;
         if (learningHours) courseData.learningHours = learningHours.toString();

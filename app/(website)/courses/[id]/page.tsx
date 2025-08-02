@@ -136,7 +136,7 @@ export default function CourseDetailPage() {
               </Card>
             </motion.div>
             {/* Course Modules */}
-            {course.modules && course.modules.length > 0 && (
+            {course.modules && course.modules.length > 0 && course.modules.some(module => module.trim() !== "") && (
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -148,7 +148,7 @@ export default function CourseDetailPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                      {course.modules.map((module, index) => (
+                      {course.modules.filter(module => module.trim() !== "").map((module, index) => (
                       <div key={index} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
                         <div
                           className="flex items-center justify-center text-sm font-bold text-white bg-orange rounded-full"
@@ -171,7 +171,7 @@ export default function CourseDetailPage() {
             </motion.div>
             )}
             {/* Prerequisites */}
-            {course.prerequisites && course.prerequisites.length > 0 && (
+            {course.prerequisites && course.prerequisites.length > 0 && course.prerequisites.some(prerequisite => prerequisite.trim() !== "") && (
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -183,7 +183,7 @@ export default function CourseDetailPage() {
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-2">
-                      {course.prerequisites.map((prerequisite, index) => (
+                      {course.prerequisites.filter(prerequisite => prerequisite.trim() !== "").map((prerequisite, index) => (
                       <li key={index} className="flex items-start space-x-3">
                         <div className="w-2 h-2 bg-orange rounded-full mt-2 flex-shrink-0"></div>
                         <span className="text-gray-700">{prerequisite}</span>
@@ -195,7 +195,7 @@ export default function CourseDetailPage() {
             </motion.div>
             )}
             {/* Career Opportunities */}
-            {course.careerOpportunities && course.careerOpportunities.length > 0 && (
+            {course.careerOpportunities && course.careerOpportunities.length > 0 && course.careerOpportunities.some(career => career.trim() !== "") && (
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -207,7 +207,7 @@ export default function CourseDetailPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                      {course.careerOpportunities.map((career, index) => (
+                      {course.careerOpportunities.filter(career => career.trim() !== "").map((career, index) => (
                       <div key={index} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
                         <Award className="h-5 w-5 text-orange flex-shrink-0" />
                         <span className="text-gray-700">{career}</span>
@@ -226,8 +226,10 @@ export default function CourseDetailPage() {
               <Card className="sticky top-24">
                 <CardHeader>
                   <div className="text-center">
-                    <div className="text-3xl font-bold text-navy mb-2">${course.price?.toLocaleString?.() ?? course.price}</div>
-                    <div className="text-gray-600">Total Program Fee</div>
+                    <div className="text-3xl font-bold text-navy mb-2">
+                      {course.currency} {course.price?.toLocaleString?.() ?? course.price}
+                    </div>
+                    <div className="text-gray-600">{course.feeType || "Total Program"}</div>
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-4">

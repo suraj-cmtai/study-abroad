@@ -13,6 +13,8 @@ interface Course {
   duration: string;
   country: string; // changed from level to country
   price: number;
+  feeType: string; // Field for fee duration/type (e.g., "per year", "full course fee")
+  currency: 'EUR' | 'CAD' | 'AUD' | 'GBP' | 'USD' | 'INR'; // Field for currency
   status: CourseStatus;
   description: string;
   instructor: string;
@@ -79,6 +81,8 @@ class CourseService {
       duration: data.duration || "",
       country: (data.country || "").toLowerCase(), // always save as lowercase
       price: Number(data.price || 0),
+      feeType: data.feeType || "",
+      currency: data.currency || "USD",
       status: (data.status as CourseStatus) || "draft",
       description: data.description || "",
       instructor: data.instructor || "",

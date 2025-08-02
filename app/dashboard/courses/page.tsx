@@ -70,6 +70,8 @@ interface Course {
   duration: string;
   country: string; // country is a string, not an enum
   price: number;
+  feeType: string; // Field for fee duration/type (e.g., "per year", "full course fee")
+  currency: 'EUR' | 'CAD' | 'AUD' | 'GBP' | 'USD' | 'INR'; // Field for currency
   status: 'active' | 'draft' | 'archived';
   description: string;
   instructor: string;
@@ -92,6 +94,8 @@ interface CourseFormState {
   duration: string;
   country: string;
   price: number;
+  feeType: string; // Field for fee duration/type (e.g., "per year", "full course fee")
+  currency: 'EUR' | 'CAD' | 'AUD' | 'GBP' | 'USD' | 'INR'; // Field for currency
   status: 'active' | 'draft' | 'archived';
   description: string;
   instructor: string;
@@ -113,6 +117,8 @@ const initialFormState: CourseFormState = {
   duration: "",
   country: "",
   price: 0,
+  feeType: "", // Initialize feeType
+  currency: "USD", // Initialize currency
   status: "draft",
   description: "",
   instructor: "",
@@ -234,6 +240,8 @@ export default function CoursesPage() {
       formData.append("duration", newCourseForm.duration.trim())
       formData.append("country", newCourseForm.country.trim())
       formData.append("price", Math.max(0, newCourseForm.price).toString())
+      formData.append("feeType", newCourseForm.feeType)
+      formData.append("currency", newCourseForm.currency)
       formData.append("status", newCourseForm.status)
       formData.append("enrollmentCount", Math.max(0, newCourseForm.enrollmentCount).toString())
       formData.append("learningHours", newCourseForm.learningHours.trim())
@@ -266,6 +274,8 @@ export default function CoursesPage() {
       duration: course.duration,
       country: course.country || "",
       price: course.price,
+      feeType: course.feeType || "", // Populate feeType
+      currency: course.currency, // Populate currency
       status: course.status,
       description: course.description,
       instructor: course.instructor,
@@ -323,6 +333,8 @@ export default function CoursesPage() {
       formData.append("duration", editCourseForm.duration.trim())
       formData.append("country", editCourseForm.country.trim())
       formData.append("price", Math.max(0, editCourseForm.price).toString())
+      formData.append("feeType", editCourseForm.feeType)
+      formData.append("currency", editCourseForm.currency)
       formData.append("status", editCourseForm.status)
       formData.append("enrollmentCount", Math.max(0, editCourseForm.enrollmentCount).toString())
       formData.append("learningHours", editCourseForm.learningHours.trim())
@@ -479,6 +491,39 @@ export default function CoursesPage() {
             onChange={(e) => setFormState({ ...formState, price: Math.max(0, Number(e.target.value)) })}
             placeholder="0.00"
           />
+        </div>
+        <div className="grid gap-2">
+          <Label htmlFor="feeType">Fee Type</Label>
+          <Input
+            id="feeType"
+            value={formState.feeType}
+            onChange={(e) => setFormState({ ...formState, feeType: e.target.value })}
+            placeholder="e.g., per year, full course fee"
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div className="grid gap-2">
+          <Label htmlFor="currency">Currency</Label>
+          <Select
+            value={formState.currency}
+            onValueChange={(value: 'EUR' | 'CAD' | 'AUD' | 'GBP' | 'USD' | 'INR') =>
+              setFormState({ ...formState, currency: value })
+            }
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select currency" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="USD">USD</SelectItem>
+              <SelectItem value="EUR">EUR</SelectItem>
+              <SelectItem value="CAD">CAD</SelectItem>
+              <SelectItem value="AUD">AUD</SelectItem>
+              <SelectItem value="GBP">GBP</SelectItem>
+              <SelectItem value="INR">INR</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
         <div className="grid gap-2">
           <Label htmlFor="status">Status</Label>
@@ -737,6 +782,8 @@ export default function CoursesPage() {
               <TableHead>Category</TableHead>
               <TableHead>Country</TableHead>
               <TableHead>Price</TableHead>
+              <TableHead>Fee Type</TableHead>
+              <TableHead>Currency</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Enrollments</TableHead>
               <TableHead>Created</TableHead>
@@ -750,13 +797,13 @@ export default function CoursesPage() {
           <TableBody>
             {isLoading && courses.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={13} className="text-center py-8">
+                <TableCell colSpan={16} className="text-center py-8">
                   <Loader2 className="h-6 w-6 animate-spin mx-auto" />
                 </TableCell>
               </TableRow>
             ) : filteredCourses.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={13} className="text-center py-8">
+                <TableCell colSpan={16} className="text-center py-8">
                   {searchQuery ? 'No courses found matching your search' : 'No courses found'}
                 </TableCell>
               </TableRow>
@@ -805,6 +852,8 @@ export default function CoursesPage() {
                     {capitalizeFirstLetter(course.country)}
                   </TableCell>
                   <TableCell>${course.price.toFixed(2)}</TableCell>
+                  <TableCell>{course.feeType}</TableCell>
+                  <TableCell>{course.currency}</TableCell>
                   <TableCell>
                     <Badge
                       variant="outline"

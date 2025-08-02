@@ -58,6 +58,8 @@ export async function POST(req: Request) {
         const duration = formData.get("duration");
         const country = formData.get("country");
         const price = formData.get("price");
+        const feeType = formData.get("feeType");
+        const currency = formData.get("currency");
         const status = formData.get("status") || "draft";
         const file = formData.get("image");
         const learningHours = formData.get("learningHours");
@@ -68,11 +70,11 @@ export async function POST(req: Request) {
         const careerOpportunities = formData.get("careerOpportunities");
 
         // Validate required fields
-        if (!title || !description || !instructor || !duration || !country || !price) {
+        if (!title || !description || !instructor || !duration || !country || !price || !feeType || !currency) {
             return NextResponse.json({
                 statusCode: 400,
                 errorCode: "BAD_REQUEST",
-                errorMessage: "Title, description, instructor, duration, country, and price are required",
+                errorMessage: "Title, description, instructor, duration, country, price, feeType, and currency are required",
             }, { status: 400 });
         }
 
@@ -83,6 +85,16 @@ export async function POST(req: Request) {
                 statusCode: 400,
                 errorCode: "BAD_REQUEST",
                 errorMessage: "Price must be a valid number",
+            }, { status: 400 });
+        }
+
+        // Validate currency
+        const validCurrencies = ['EUR', 'CAD', 'AUD', 'GBP', 'USD', 'INR'];
+        if (!validCurrencies.includes(currency.toString())) {
+            return NextResponse.json({
+                statusCode: 400,
+                errorCode: "BAD_REQUEST",
+                errorMessage: "Currency must be one of: EUR, CAD, AUD, GBP, USD, INR",
             }, { status: 400 });
         }
 
@@ -103,6 +115,8 @@ export async function POST(req: Request) {
             duration: duration.toString(),
             country: country.toString().toLowerCase(),
             price: priceNumber,
+            feeType: feeType?.toString() || "",
+            currency: currency.toString() as 'EUR' | 'CAD' | 'AUD' | 'GBP' | 'USD' | 'INR',
             status: (status?.toString() || "draft") as CourseStatus,
             image: imageUrl as string | null,
             enrollmentCount: 0, // Initialize with 0 enrollments

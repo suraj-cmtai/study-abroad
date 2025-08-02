@@ -227,9 +227,9 @@ export default function CoursesPage() {
                     <div className="flex items-center justify-between pt-4 border-t">
                       <div>
                         <div className="text-2xl font-bold text-navy">
-                          ${course.price?.toLocaleString?.() ?? course.price}
+                          {course.currency} {course.price?.toLocaleString?.() ?? course.price}
                         </div>
-                        <div className="text-sm text-gray-500">Total Program</div>
+                        <div className="text-gray-600">{course.feeType || "Total Program"}</div>
                       </div>
                       <Link href={`/courses/${course.id}`}>
                         <Button className="bg-navy hover:bg-navy/90 group transition-all">

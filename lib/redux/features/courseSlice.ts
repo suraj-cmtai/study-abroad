@@ -11,6 +11,8 @@ interface Course {
   duration: string;
   country: string; // changed from level to country (string)
   price: number;
+  feeType: string; // Field for fee duration/type (e.g., "per year", "full course fee")
+  currency: 'EUR' | 'CAD' | 'AUD' | 'GBP' | 'USD' | 'INR'; // Field for currency
   status: 'active' | 'draft' | 'archived';  
   description: string;
   instructor: string;
